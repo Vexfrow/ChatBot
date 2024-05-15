@@ -277,4 +277,48 @@ class ActivitiesRepository {
         initJardins(app)
         initFestivals(app)
     }
+
+    fun displayList(list: List<Activities>) {
+        for (activity in list) {
+            println(activity)
+        }
+    }
+
+    fun displayAll() {
+        displayList(museesList)
+        displayList(sitesList)
+        displayList(expositionsList)
+        displayList(contenusList)
+        displayList(edificesList)
+        displayList(jardinsList)
+        displayList(festivalsList)
+    }
+
+    fun displayMusees() {
+        displayList(museesList)
+    }
+
+    fun displaySites() {
+        displayList(sitesList)
+    }
+
+    fun displayExpositions() {
+        displayList(expositionsList)
+    }
+
+    fun displayContenus() {
+        displayList(contenusList)
+    }
+
+    fun displayEdifices() {
+        displayList(edificesList)
+    }
+
+    fun displayJardins() {
+        displayList(jardinsList)
+    }
+
+    fun displayFestivals() {
+        displayList(festivalsList)
+    }
 }

@@ -1037,6 +1037,4 @@ class ActivitiesRepositoryTest {
 
         Assert.assertEquals(expectedList, sortedList)
     }
-
-    // TODO : tester avec la tablette
 }

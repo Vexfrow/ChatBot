@@ -5,6 +5,7 @@ import fr.c1.chatbot.R
 import java.io.BufferedInputStream
 import java.io.InputStream
 
+// Fichiers CSV venant du site data.gouv.fr
 class ActivitiesRepository {
     // Liste des musées
     private val museesList = mutableListOf<Activities>()
@@ -20,6 +21,8 @@ class ActivitiesRepository {
     private val jardinsList = mutableListOf<Activities>()
     // Liste des festivals
     private val festivalsList = mutableListOf<Activities>()
+    // Liste des équipements sportifs
+    private val equipementsSportList = mutableListOf<Activities>()
 
     private fun init(InputStream: InputStream, List: MutableList<Activities>){
         val csvParser = InputStream.bufferedReader().lineSequence().map { it.split(";") }
@@ -79,6 +82,10 @@ class ActivitiesRepository {
 
     fun getFestivalsList(): List<Activities> {
         return festivalsList
+    }
+
+    fun getEquipementsSportList(): List<Activities> {
+        return equipementsSportList
     }
 
     fun initMusees(app: Application) {
@@ -268,6 +275,40 @@ class ActivitiesRepository {
         }
     }
 
+    fun initEquipementsSport(app: Application) {
+        // Lire le fichier csv
+        val csvIS: InputStream =
+            BufferedInputStream(app.resources.openRawResource(R.raw.liste_equipements_sportifs))
+        val csvParser = csvIS.bufferedReader().lineSequence().map { it.split(";") }
+
+        // Créer la liste des équipements sportifs
+        csvParser.drop(1).forEach { csvRecord ->
+            println(csvRecord[0] + csvRecord[1])
+            val departement = csvRecord[8]
+            val commune = csvRecord[5]
+            val adresse = csvRecord[2]
+            val nom = csvRecord[1]
+            val codePostal = csvRecord[3]
+            val identifiant = csvRecord[0]
+            val accessible = csvRecord[6].contains("True")
+            val url = csvRecord[7]
+            val activity = Activities(
+                "",
+                departement,
+                identifiant,
+                commune,
+                nom,
+                adresse,
+                "",
+                codePostal,
+                "",
+                url,
+                accessible
+            )
+            equipementsSportList.add(activity)
+        }
+    }
+
     fun initAll(app: Application) {
         initMusees(app)
         initSites(app)
@@ -276,6 +317,7 @@ class ActivitiesRepository {
         initEdifices(app)
         initJardins(app)
         initFestivals(app)
+        initEquipementsSport(app)
     }
 
     fun displayList(list: List<Activities>) {
@@ -285,13 +327,14 @@ class ActivitiesRepository {
     }
 
     fun displayAll() {
-        displayList(museesList)
-        displayList(sitesList)
-        displayList(expositionsList)
-        displayList(contenusList)
-        displayList(edificesList)
-        displayList(jardinsList)
-        displayList(festivalsList)
+        displayMusees()
+        displaySites()
+        displayExpositions()
+        displayContenus()
+        displayEdifices()
+        displayJardins()
+        displayFestivals()
+        displayEquipementsSport()
     }
 
     fun displayMusees() {
@@ -320,5 +363,65 @@ class ActivitiesRepository {
 
     fun displayFestivals() {
         displayList(festivalsList)
+    }
+
+    fun displayEquipementsSport() {
+        displayList(equipementsSportList)
+    }
+
+    fun trierParRegion(list: List<Activities>): List<Activities> {
+        return list.sortedBy { it.region }
+    }
+
+    fun selectionnerParRegion(list: List<Activities>, region: String): List<Activities> {
+        return list.filter { it.region == region }
+    }
+
+    fun trierParDepartement(list: List<Activities>): List<Activities> {
+        return list.sortedBy { it.departement }
+    }
+
+    fun selectionnerParDepartement(list: List<Activities>, departement: String): List<Activities> {
+        return list.filter { it.departement == departement }
+    }
+
+    fun trierParCommune(list: List<Activities>): List<Activities> {
+        return list.sortedBy { it.commune }
+    }
+
+    fun selectionnerParCommune(list: List<Activities>, commune: String): List<Activities> {
+        return list.filter { it.commune == commune }
+    }
+
+    fun trierParNom(list: List<Activities>): List<Activities> {
+        return list.sortedBy { it.nom }
+    }
+
+    fun selectionnerParNom(list: List<Activities>, nom: String): List<Activities> {
+        return list.filter { it.nom == nom }
+    }
+
+    fun trierParLieu(list: List<Activities>): List<Activities> {
+        return list.sortedBy { it.lieu }
+    }
+
+    fun selectionnerParLieu(list: List<Activities>, lieu: String): List<Activities> {
+        return list.filter { it.lieu == lieu }
+    }
+
+    fun trierParCodePostal(list: List<Activities>): List<Activities> {
+        return list.sortedBy { it.codePostal }
+    }
+
+    fun selectionnerParCodePostal(list: List<Activities>, codePostal: String): List<Activities> {
+        return list.filter { it.codePostal == codePostal }
+    }
+
+    fun selectionnerParAccessible(list: List<Activities>, accessible: Boolean): List<Activities> {
+        return list.filter { it.accessible == accessible }
+    }
+
+    fun trierParIdentifiant(list: List<Activities>): List<Activities> {
+        return list.sortedBy { it.identifiant }
     }
 }

@@ -374,7 +374,7 @@ class ActivitiesRepository {
     }
 
     fun selectionnerParRegion(list: List<Activities>, region: String): List<Activities> {
-        return list.filter { it.region == region }
+        return list.filter { it.region.lowercase().contains(region.lowercase()) }
     }
 
     fun trierParDepartement(list: List<Activities>): List<Activities> {
@@ -382,7 +382,7 @@ class ActivitiesRepository {
     }
 
     fun selectionnerParDepartement(list: List<Activities>, departement: String): List<Activities> {
-        return list.filter { it.departement == departement }
+        return list.filter { it.departement.lowercase().contains(departement.lowercase()) }
     }
 
     fun trierParCommune(list: List<Activities>): List<Activities> {
@@ -390,7 +390,7 @@ class ActivitiesRepository {
     }
 
     fun selectionnerParCommune(list: List<Activities>, commune: String): List<Activities> {
-        return list.filter { it.commune == commune }
+        return list.filter { it.commune.lowercase().contains(commune.lowercase()) }
     }
 
     fun trierParNom(list: List<Activities>): List<Activities> {
@@ -398,7 +398,7 @@ class ActivitiesRepository {
     }
 
     fun selectionnerParNom(list: List<Activities>, nom: String): List<Activities> {
-        return list.filter { it.nom == nom }
+        return list.filter { it.nom.lowercase().contains(nom.lowercase()) }
     }
 
     fun trierParLieu(list: List<Activities>): List<Activities> {
@@ -406,7 +406,7 @@ class ActivitiesRepository {
     }
 
     fun selectionnerParLieu(list: List<Activities>, lieu: String): List<Activities> {
-        return list.filter { it.lieu == lieu }
+        return list.filter { it.lieu.lowercase().contains(lieu.lowercase()) }
     }
 
     fun trierParCodePostal(list: List<Activities>): List<Activities> {

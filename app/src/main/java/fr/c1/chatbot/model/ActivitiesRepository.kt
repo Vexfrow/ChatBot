@@ -23,6 +23,8 @@ class ActivitiesRepository {
     private val festivalsList = mutableListOf<Activities>()
     // Liste des équipements sportifs
     private val equipementsSportList = mutableListOf<Activities>()
+    // Liste des associations
+    private val associationsList = mutableListOf<Activities>()
 
     private fun init(InputStream: InputStream, List: MutableList<Activities>){
         val csvParser = InputStream.bufferedReader().lineSequence().map { it.split(";") }
@@ -86,6 +88,10 @@ class ActivitiesRepository {
 
     fun getEquipementsSportList(): List<Activities> {
         return equipementsSportList
+    }
+
+    fun getAssociationsList(): List<Activities> {
+        return associationsList
     }
 
     fun initMusees(app: Application) {
@@ -309,6 +315,38 @@ class ActivitiesRepository {
         }
     }
 
+    fun initAsso(app: Application) {
+        // Lire le fichier csv
+        // id, date_creation, titre, adresse1, code_postal, commune
+        val csvIS: InputStream =
+            BufferedInputStream(app.resources.openRawResource(R.raw.liste_asso))
+
+        val csvParser = csvIS.bufferedReader().lineSequence().map { it.split(",") }
+
+        // Créer la liste des associations
+        csvParser.drop(1).forEach { csvRecord ->
+            val departement = csvRecord[4].substring(0, 2)
+            val identifiant = csvRecord[0]
+            val commune = csvRecord[5]
+            val nom = csvRecord[2]
+            val adresse = csvRecord[3]
+            val codePostal = csvRecord[4]
+            val activity = Activities(
+                "",
+                departement,
+                identifiant,
+                commune,
+                nom,
+                adresse,
+                "",
+                codePostal,
+                "", "",
+                true
+            )
+            associationsList.add(activity)
+        }
+    }
+
     fun initAll(app: Application) {
         initMusees(app)
         initSites(app)
@@ -318,6 +356,7 @@ class ActivitiesRepository {
         initJardins(app)
         initFestivals(app)
         initEquipementsSport(app)
+        initAsso(app)
     }
 
     fun displayList(list: List<Activities>) {
@@ -335,6 +374,7 @@ class ActivitiesRepository {
         displayJardins()
         displayFestivals()
         displayEquipementsSport()
+        displayAssociations()
     }
 
     fun displayMusees() {
@@ -367,6 +407,10 @@ class ActivitiesRepository {
 
     fun displayEquipementsSport() {
         displayList(equipementsSportList)
+    }
+
+    fun displayAssociations() {
+        displayList(associationsList)
     }
 
     fun trierParRegion(list: List<Activities>): List<Activities> {

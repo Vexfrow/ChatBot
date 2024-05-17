@@ -72,7 +72,7 @@ fun ChatBotTheme(
 }
 
 @Composable
-fun ChatBotPrev(content: @Composable () -> Unit) = ChatBotTheme {
+fun ChatBotPrev(content: @Composable BoxScope.() -> Unit) = ChatBotTheme {
     Surface(modifier = Modifier.fillMaxSize()) {
         Box { content() }
     }

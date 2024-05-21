@@ -9,24 +9,32 @@ import java.io.InputStream
 class ActivitiesRepository {
     // Liste des musées
     private val museesList = mutableListOf<Activities>()
+
     // Liste des sites patrimoniaux
     private val sitesList = mutableListOf<Activities>()
+
     // Liste des expositions
     private val expositionsList = mutableListOf<Activities>()
+
     // Liste des contenus culturels
     private val contenusList = mutableListOf<Activities>()
+
     // Liste des edifices avec architecture remarquable
     private val edificesList = mutableListOf<Activities>()
+
     // Liste des jardins remarquables
     private val jardinsList = mutableListOf<Activities>()
+
     // Liste des festivals
     private val festivalsList = mutableListOf<Activities>()
+
     // Liste des équipements sportifs
     private val equipementsSportList = mutableListOf<Activities>()
+
     // Liste des associations
     private val associationsList = mutableListOf<Activities>()
 
-    private fun init(InputStream: InputStream, List: MutableList<Activities>){
+    private fun init(InputStream: InputStream, List: MutableList<Activities>) {
         val csvParser = InputStream.bufferedReader().lineSequence().map { it.split(";") }
 
         // Créer la liste des sites patrimoniaux
@@ -231,8 +239,8 @@ class ActivitiesRepository {
             val adresse = csvRecord[4]
             val nom = csvRecord[0]
             val codePostal = csvRecord[1]
-            println(csvRecord[21])
-            println("nom $nom")
+//            println(csvRecord[21])
+//            println("nom $nom")
             val accessible = csvRecord[21].contains("ouvert") || csvRecord[21].contains("Ouvert")
             val activity = Activities(
                 region,
@@ -289,7 +297,7 @@ class ActivitiesRepository {
 
         // Créer la liste des équipements sportifs
         csvParser.drop(1).forEach { csvRecord ->
-            println(csvRecord[0] + csvRecord[1])
+//            println(csvRecord[0] + csvRecord[1])
             val departement = csvRecord[8]
             val commune = csvRecord[5]
             val adresse = csvRecord[2]
@@ -356,7 +364,7 @@ class ActivitiesRepository {
         initJardins(app)
         initFestivals(app)
         initEquipementsSport(app)
-        initAsso(app)
+//        initAsso(app)
     }
 
     fun displayList(list: List<Activities>) {

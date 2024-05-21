@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -42,7 +43,8 @@ fun SpeechBubble(
                 .padding(start = tipSize + 5.dp, top = 5.dp, end = 5.dp, bottom = tipSize + 5.dp)
                 .fillMaxSize(),
             text = text,
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
+            lineHeight = MaterialTheme.typography.bodyLarge.fontSize
         )
     }
 }
@@ -57,7 +59,7 @@ private fun Prev() = ChatBotPrev {
     ) {
         SpeechBubble(
             modifier = Modifier.offset(10.dp, 10.dp),
-            text = "Bonjour".padEnd(1000, '-')
+            text = "Test ${(0..25).joinToString()}"
         )
 
         Text(

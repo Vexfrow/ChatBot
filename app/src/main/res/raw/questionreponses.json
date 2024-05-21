@@ -1,141 +1,140 @@
 {
-    "label": null,
-    "question": "Bonjour, que puis-je faire pour vous ?",
-    "answers": [
-     {
+  "label": null,
+  "question": "Bonjour, que puis-je faire pour vous ?",
+  "answers": [
+    {
       "label": "Bonjour, je souhaite faire une activité",
       "question": "Quand est-ce que vous souhaitez la faire ?",
       "answers": [
-       {
-        "label": "**Entrer une date**",
-        "question": "Où êtes-vous situé ?",
-        "answers": [
-         {
-          "label": "**Entrer un nom de ville**",
-          "question": "Jusqu'à quelle distance (en km) pouvez-vous vous déplacer ?",
+        {
+          "label": "**Entrer une date**",
+          "question": "Où êtes-vous situé ?",
           "answers": [
-           {
-            "label": "**Entrer un entier**",
-            "question": "Quelle type d'activité souhaitez-vous faire ?",
-            "answers": [
-               {
-                "label": "Activité Physique",
-                "question": "Êtes vous sportif ?" ,
-                "answers": [
-                   {
-                    "label": "Oui",
-                    "question": "Souhaitez-vous rencontrer d'autres personnes ?" ,
-                    "answers": [
-                       {
-                       "label": "Oui",
-                       "question": null,
-                       "answers": null
-                       },
-                       {
-                       "label": "Non",
-                       "question": null ,
-                       "answers": null 
-                       }
-                       ]
-                   },
-                   {
-                    "label": "Non",
-                    "question": "Souhaitez-vous rencontrer d'autres personnes ?" ,
-                    "answers": [
-                       {
-                       "label": "Oui",
-                       "question": null,
-                       "answers": null
-                       },
-                       {
-                       "label": "Non",
-                       "question": null ,
-                       "answers": null 
-                       }
-                       ]
-                   }
-                   ]
-               },
-               {
-                "label": "Activité Culturelle",
-                "question": "Quelles sont vos passions ?" , 
-                "answers": null
-               }
-               ]
-           }
-           ]
-          },
-          
-         {
-          "label": "Géocaliser",
-          "answers": [
-           {
-            "label": "**Entrer un nom de ville**",
-            "question": "Jusqu'à quelle distance (en km) pouvez-vous vous déplacer ?",
-            "answers": [
-             {
-              "label": "**Entrer un entier**",
-              "question": "Quelle type d'activité souhaitez-vous faire ?",
+            {
+              "label": "**Entrer un nom de ville**",
+              "question": "Jusqu'à quelle distance (en km) pouvez-vous vous déplacer ?",
               "answers": [
-                 {
-                  "label": "Activité Physique",
-                  "question": "Êtes vous sportif ?" ,
+                {
+                  "label": "**Entrer un entier**",
+                  "question": "Quelle type d'activité souhaitez-vous faire ?",
                   "answers": [
-                     {
-                      "label": "Oui",
-                      "question": "Souhaitez-vous rencontrer d'autres personnes ?" ,
+                    {
+                      "label": "Activité Physique",
+                      "question": "Êtes vous sportif ?",
                       "answers": [
-                         {
-                         "label": "Oui",
-                         "question": null,
-                         "answers": null
-                         },
-                         {
-                         "label": "Non",
-                         "question": null ,
-                         "answers": null 
-                         }
-                         ]
-                     },
-                     {
-                      "label": "Non",
-                      "question": "Souhaitez-vous rencontrer d'autres personnes ?" ,
+                        {
+                          "label": "Oui",
+                          "question": "Souhaitez-vous rencontrer d'autres personnes ?",
+                          "answers": [
+                            {
+                              "label": "Oui",
+                              "question": null,
+                              "answers": null
+                            },
+                            {
+                              "label": "Non",
+                              "question": null,
+                              "answers": null
+                            }
+                          ]
+                        },
+                        {
+                          "label": "Non",
+                          "question": "Souhaitez-vous rencontrer d'autres personnes ?",
+                          "answers": [
+                            {
+                              "label": "Oui",
+                              "question": null,
+                              "answers": null
+                            },
+                            {
+                              "label": "Non",
+                              "question": null,
+                              "answers": null
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Activité Culturelle",
+                      "question": "Quelles sont vos passions ?",
+                      "answers": null
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "label": "Géocaliser",
+              "answers": [
+                {
+                  "label": "**Entrer un nom de ville**",
+                  "question": "Jusqu'à quelle distance (en km) pouvez-vous vous déplacer ?",
+                  "answers": [
+                    {
+                      "label": "**Entrer un entier**",
+                      "question": "Quelle type d'activité souhaitez-vous faire ?",
                       "answers": [
-                         {
-                         "label": "Oui",
-                         "question": null,
-                         "answers": null
-                         },
-                         {
-                         "label": "Non",
-                         "question": null ,
-                         "answers": null 
-                         }
-                         ]
-                     }
-                     ]
-                 },
-                 {
-                  "label": "Activité Culturelle",
-                  "question": "Quelles sont vos passions ?" , 
-                  "answers": null
-                 }
-                 ]
-             }
-             ]
-         }
-        ]
-       }
-         ]
-       }
-       ]
-     },
-     {
+                        {
+                          "label": "Activité Physique",
+                          "question": "Êtes vous sportif ?",
+                          "answers": [
+                            {
+                              "label": "Oui",
+                              "question": "Souhaitez-vous rencontrer d'autres personnes ?",
+                              "answers": [
+                                {
+                                  "label": "Oui",
+                                  "question": null,
+                                  "answers": null
+                                },
+                                {
+                                  "label": "Non",
+                                  "question": null,
+                                  "answers": null
+                                }
+                              ]
+                            },
+                            {
+                              "label": "Non",
+                              "question": "Souhaitez-vous rencontrer d'autres personnes ?",
+                              "answers": [
+                                {
+                                  "label": "Oui",
+                                  "question": null,
+                                  "answers": null
+                                },
+                                {
+                                  "label": "Non",
+                                  "question": null,
+                                  "answers": null
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "label": "Activité Culturelle",
+                          "question": "Quelles sont vos passions ?",
+                          "answers": null
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
       "label": "Bonjour, je souhaite trouver une association",
       "question": "Veuillez écrire un nom d'association ou un lieu",
       "answers": null
-     },
-     {
+    },
+    {
       "label": "Bonjour, j'ai besoin d'aide",
       "question": "Comment puis-je vous aider ?????????",
       "answers": [
@@ -145,33 +144,33 @@
           "answers": [
             {
               "label": "Les rappels",
-              "question" : "Les rappels ont été désactivées",
-              "answers" : null
+              "question": "Les rappels ont été désactivées",
+              "answers": null
             },
             {
-              "label":"Les suggestions",
-              "question" : "Les suggestions ont été désactivées",
-              "answers" : null
+              "label": "Les suggestions",
+              "question": "Les suggestions ont été désactivées",
+              "answers": null
             }
-            ]
+          ]
         },
         {
-          "label" : "Comment voir mon historique de recherche ?",
-          "question" : "Vous pouvez le faire, mais ne le faîte pas svp, corenthin est un piètre developpeur et l'historique ne fonctionne pas",
+          "label": "Comment voir mon historique de recherche ?",
+          "question": "Vous pouvez le faire, mais ne le faîte pas svp, corenthin est un piètre developpeur et l'historique ne fonctionne pas",
           "answers": null
         },
         {
-          "label" : "Je ne trouve plus d'activité intéressante",
-          "question" : "Si vous ne trouvez plus une activité qui vous intéresse regardez dans :\n- L'historique de recherche\n- Les activités enregistrées",
-          "answers" : null
+          "label": "Je ne trouve plus d'activité intéressante",
+          "question": "Si vous ne trouvez plus une activité qui vous intéresse regardez dans :\n- L'historique de recherche\n- Les activités enregistrées",
+          "answers": null
         },
         {
-          "label" : "Je souhaite proposer de nouvelles activités",
-          "question" : "Non",
-          "answers" : null
+          "label": "Je souhaite proposer de nouvelles activités",
+          "question": "Non",
+          "answers": null
         }
-        ]
-     }
-     ]
-   }
+      ]
+    }
+  ]
+}
    

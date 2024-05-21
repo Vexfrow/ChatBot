@@ -21,6 +21,16 @@ class Tree {
 
         println(currentAnswer.answers);
     }
+    fun getAnswersLabels() : ArrayList<String>{
+        val labels = arrayListOf<String>()
+        for(a in currentAnswer.answers){
+            labels.add(a.label)
+        }
+        return labels
+    }
+    fun selectAnswer(index : Int) {
+        currentAnswer = currentAnswer.getAnswers(index)
+    }
 
     fun saveAnswer(){
 

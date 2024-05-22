@@ -1,8 +1,6 @@
 package fr.c1.chatbot.model
 
-import java.net.URL
-
-class Activities(
+class Musees(
     val region: String,
     val departement: String,
     val identifiant: String,

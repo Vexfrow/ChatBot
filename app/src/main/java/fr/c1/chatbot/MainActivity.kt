@@ -7,6 +7,7 @@ import fr.c1.chatbot.ui.theme.ChatBotTheme
 import fr.c1.chatbot.ui.theme.colorSchemeExtension
 import fr.c1.chatbot.utils.rememberMutableStateListOf
 import fr.c1.chatbot.utils.rememberMutableStateOf
+import kotlinx.coroutines.launch
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -17,11 +18,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,10 +49,14 @@ class MainActivity : ComponentActivity() {
                         val tree = (application as ChatBot).chatbotTree
                         val messages = rememberMutableStateListOf(tree.currentAnswer.question)
 
+                        val crtScope = rememberCoroutineScope()
+                        val lazyListState = rememberLazyListState()
+
                         LazyColumn(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .weight(1f)
+                                .weight(1f),
+                            state = lazyListState
                         ) {
                             itemsIndexed(messages) { i, message ->
                                 val isBot = i % 2 == 0
@@ -81,6 +88,10 @@ class MainActivity : ComponentActivity() {
                             tree.selectAnswer(i)
                             messages += tree.currentAnswer.question
                             answers = tree.getAnswersLabels()
+
+                            crtScope.launch {
+                                lazyListState.animateScrollToItem(lazyListState.layoutInfo.totalItemsCount)
+                            }
                         }
 
                         var searchBarEnabled by rememberMutableStateOf(value = true)

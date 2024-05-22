@@ -1,5 +1,5 @@
 {
-    "label": null,
+    "label": "",
     "question": "Bonjour, que puis-je faire pour vous ?",
     "answers": [
      {
@@ -28,13 +28,13 @@
                     "answers": [
                        {
                        "label": "Oui",
-                       "question": null,
-                       "answers": null
+                       "question": "",
+                       "answers": []
                        },
                        {
                        "label": "Non",
-                       "question": null ,
-                       "answers": null 
+                       "question": "" ,
+                       "answers": [] 
                        }
                        ]
                    },
@@ -44,13 +44,13 @@
                     "answers": [
                        {
                        "label": "Oui",
-                       "question": null,
-                       "answers": null
+                       "question": "",
+                       "answers": []
                        },
                        {
                        "label": "Non",
-                       "question": null ,
-                       "answers": null 
+                       "question": "" ,
+                       "answers": [] 
                        }
                        ]
                    }
@@ -59,7 +59,7 @@
                {
                 "label": "Activité Culturelle",
                 "question": "Quelles sont vos passions ?" , 
-                "answers": null
+                "answers": []
                }
                ]
            }
@@ -68,12 +68,9 @@
           
          {
           "label": "Géocaliser",
+           "question": "Jusqu'à quelle distance (en km) pouvez-vous vous déplacer ?",
           "answers": [
            {
-            "label": "**Entrer un nom de ville**",
-            "question": "Jusqu'à quelle distance (en km) pouvez-vous vous déplacer ?",
-            "answers": [
-             {
               "label": "**Entrer un entier**",
               "question": "Quelle type d'activité souhaitez-vous faire ?",
               "answers": [
@@ -87,13 +84,13 @@
                       "answers": [
                          {
                          "label": "Oui",
-                         "question": null,
-                         "answers": null
+                         "question": "",
+                         "answers": []
                          },
                          {
                          "label": "Non",
-                         "question": null ,
-                         "answers": null 
+                         "question": "" ,
+                         "answers": [] 
                          }
                          ]
                      },
@@ -103,13 +100,13 @@
                       "answers": [
                          {
                          "label": "Oui",
-                         "question": null,
-                         "answers": null
+                         "question": "",
+                         "answers": []
                          },
                          {
                          "label": "Non",
-                         "question": null ,
-                         "answers": null 
+                         "question": "" ,
+                         "answers": [] 
                          }
                          ]
                      }
@@ -118,9 +115,7 @@
                  {
                   "label": "Activité Culturelle",
                   "question": "Quelles sont vos passions ?" , 
-                  "answers": null
-                 }
-                 ]
+                  "answers": []
              }
              ]
          }
@@ -133,7 +128,7 @@
      {
       "label": "Bonjour, je souhaite trouver une association",
       "question": "Veuillez écrire un nom d'association ou un lieu",
-      "answers": null
+      "answers": []
      },
      {
       "label": "Bonjour, j'ai besoin d'aide",
@@ -146,29 +141,29 @@
             {
               "label": "Les rappels",
               "question" : "Les rappels ont été désactivées",
-              "answers" : null
+              "answers" : []
             },
             {
               "label":"Les suggestions",
               "question" : "Les suggestions ont été désactivées",
-              "answers" : null
+              "answers" : []
             }
             ]
         },
         {
           "label" : "Comment voir mon historique de recherche ?",
           "question" : "Vous pouvez le faire, mais ne le faîte pas svp, corenthin est un piètre developpeur et l'historique ne fonctionne pas",
-          "answers": null
+          "answers": []
         },
         {
           "label" : "Je ne trouve plus d'activité intéressante",
           "question" : "Si vous ne trouvez plus une activité qui vous intéresse regardez dans :\n- L'historique de recherche\n- Les activités enregistrées",
-          "answers" : null
+          "answers" : []
         },
         {
           "label" : "Je souhaite proposer de nouvelles activités",
           "question" : "Non",
-          "answers" : null
+          "answers" : []
         }
         ]
      }

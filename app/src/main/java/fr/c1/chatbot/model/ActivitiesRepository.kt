@@ -325,7 +325,8 @@ class ActivitiesRepository {
 
         // Créer la liste des associations
         csvParser.drop(1).forEach { csvRecord ->
-            val departement = csvRecord[4].substring(0, 2)
+            // Checker la taille du csvRecord[4] pour éviter les erreurs
+            val departement = if (csvRecord[4].length < 2) "" else csvRecord[4].substring(0, 2)
             val identifiant = csvRecord[0]
             val commune = csvRecord[5]
             val nom = csvRecord[2]

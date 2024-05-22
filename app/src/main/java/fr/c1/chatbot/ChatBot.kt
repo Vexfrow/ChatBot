@@ -13,8 +13,6 @@ class ChatBot : Application() {
         chatbotTree.initTree(fileIS)
         val activitiesRepository = ActivitiesRepository()
         activitiesRepository.initAll(this)
-        // Afficher la liste des musées
-        activitiesRepository.displayAll()
     }
 
 }

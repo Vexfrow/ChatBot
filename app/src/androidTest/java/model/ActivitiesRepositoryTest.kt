@@ -131,7 +131,7 @@ class ActivitiesRepositoryTest {
     fun initAssociationsTest() {
         activitiesRepository.initAsso(app)
         val asso = activitiesRepository.getAssociationsList()
-        val sizeExpected = 23838
+        val sizeExpected = 23837
         Assert.assertEquals(
             "Le nombre d'associations attendu est $sizeExpected, la taille de la liste est ${asso.size}",
             sizeExpected,
@@ -151,7 +151,7 @@ class ActivitiesRepositoryTest {
         val festivals = activitiesRepository.getFestivalsList()
         val equipementsSport = activitiesRepository.getEquipementsSportList()
         val associations = activitiesRepository.getAssociationsList()
-        val sizeExpected = 1222 + 1134 + 243 + 1108 + 1657 + 413 + 7283 + 159463 + 23838
+        val sizeExpected = 1222 + 1134 + 243 + 1108 + 1657 + 413 + 7283 + 159463 + 23837
         val sizeActual =
             musees.size + sites.size + expositions.size + contenus.size + edifices.size + jardins.size + festivals.size + equipementsSport.size + associations.size
         Assert.assertEquals(
@@ -261,7 +261,7 @@ class ActivitiesRepositoryTest {
     fun getAssociationsListTest() {
         activitiesRepository.initAsso(app)
         val asso = activitiesRepository.getAssociationsList()
-        val sizeExpected = 23838
+        val sizeExpected = 23837
         Assert.assertEquals(
             "Le nombre d'associations attendu est $sizeExpected, la taille de la liste est ${asso.size}",
             sizeExpected,

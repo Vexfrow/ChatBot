@@ -5,6 +5,7 @@ import fr.c1.chatbot.ui.theme.ChatBotPrev
 import fr.c1.chatbot.ui.theme.LocalColorSchemeExtension
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -16,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,17 +32,38 @@ fun SpeechBubble(
     modifier: Modifier = Modifier,
     color: Color = LocalColorSchemeExtension.current.bot,
     cornerRadius: Dp = 15.dp,
-    tipSize: Dp = 15.dp
+    tipSize: Dp = 15.dp,
+    reversed: Boolean = false
 ) {
-    Box(
-        modifier = modifier
-            .size(400.dp, 200.dp)
-            .clip(SpeechBubbleShape(cornerRadius, tipSize))
-            .background(color = color)
-    ) {
+    var mod = modifier
+        .size(400.dp, 200.dp)
+
+    if (reversed)
+        mod = mod.graphicsLayer(rotationY = 180f)
+
+    mod = mod.clip(SpeechBubbleShape(cornerRadius, tipSize))
+
+    if (reversed)
+        mod = mod.graphicsLayer(rotationY = -180f)
+
+    mod = mod.background(color)
+
+    Box(modifier = mod) {
+        val padding = if (reversed) PaddingValues(
+            start = 5.dp,
+            top = 5.dp,
+            end = tipSize + 5.dp,
+            bottom = tipSize + 5.dp
+        ) else PaddingValues(
+            start = tipSize + 5.dp,
+            top = 5.dp,
+            end = 5.dp,
+            bottom = tipSize + 5.dp
+        )
+
         Text(
             modifier = Modifier
-                .padding(start = tipSize + 5.dp, top = 5.dp, end = 5.dp, bottom = tipSize + 5.dp)
+                .padding(padding)
                 .fillMaxSize(),
             text = text,
             style = MaterialTheme.typography.bodyLarge,

@@ -35,7 +35,8 @@ class MainActivity : ComponentActivity() {
                         EventList(events, Modifier.padding(innerPadding))
                     }
                     if (!calendar1.hasWriteCalendarPermission(this)) {
-                        requestCalendarPermission()
+                        // TODO : synchroniser les demandes de permissions
+                        //requestCalendarPermission()
                     } else {
                         val startMillis: Long = System.currentTimeMillis()
                         val endMillis: Long = startMillis + 3600000 // 1 heure

@@ -11,13 +11,13 @@ import java.io.InputStreamReader
 
 class Robot {
     var id: Int = 0
-    var text: String? = null
+    var text: String = ""
     var action: String? = null // Optional field
 }
 
 class Humain {
     var id: Int = 0
-    var text: String? = null
+    var text: String = ""
     var action: String? = null // Optional field
 }
 
@@ -72,28 +72,31 @@ class Tree {
 
 
     //Lorsqu'on choisie une réponse, la question est maj et le nom de l'action est renvoyé
-    fun selectAnswer(idReponse: Int) : String? {
-        var res : String? = ""
+    fun selectAnswer(idReponse: Int) {
         for (r in data?.link!!) {
             if (r.from == currentQuestionId && r.answer == idReponse) {
                 currentQuestionId = r.to
-                if (!data?.humain?.get(idReponse)?.action.equals(""))
-                    res = data?.humain?.get(idReponse)?.action
-                else if (!data?.robot?.get(currentQuestionId)?.action.equals(""))
-                    res = data?.robot?.get(currentQuestionId)?.action
-                break
             }
         }
-        return res
     }
 
 
-    fun getAnswerText(idReponse: Int): String? {
-        return data?.humain?.get(idReponse)?.text
+    fun getAnswerText(idReponse: Int): String {
+        for(h in data?.humain!!){
+            if(h.id == idReponse){
+                return h.text
+            }
+        }
+        return ""
     }
 
     fun getActionUtilisateur(idReponse: Int): String? {
-        return data?.humain?.get(idReponse)?.action
+        for(h in data?.humain!!){
+            if(h.id == idReponse){
+                return h.action
+            }
+        }
+        return ""
     }
 
 

@@ -345,7 +345,6 @@ class ActivitiesRepository {
 
         // Créer la liste des équipements sportifs
         csvParser.drop(1).forEach { csvRecord ->
-            println(csvRecord[0] + csvRecord[1])
             val departement = csvRecord[8]
             val identifiant = csvRecord[0]
             val commune = csvRecord[5]

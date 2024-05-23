@@ -6,11 +6,13 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.CalendarContract
+import android.util.Log
 import androidx.core.content.ContextCompat
 
+private const val TAG = "Calendar"
+
 class Calendar {
-    val PERMISSIONS_REQUEST_READ_CALENDAR = 100
-    val PERMISSIONS_REQUEST_WRITE_CALENDAR = 101
+    val PERMISSIONS_REQUEST_CALENDAR = 100
 
     /**
      * Vérifie si l'application a la permission de lire le calendrier
@@ -67,8 +69,11 @@ class Calendar {
         val endTime = event.dtEnd
         val title = event.title
 
+        // Récupérer l'ide du calendrier
+        val calendarId = getCalendarId(context)
+
         val values = ContentValues().apply {
-            put(CalendarContract.Events.CALENDAR_ID, 1)
+            put(CalendarContract.Events.CALENDAR_ID, calendarId)
             put(CalendarContract.Events.DTSTART, beginTime)
             put(CalendarContract.Events.DTEND, endTime)
             put(CalendarContract.Events.TITLE, title)
@@ -77,6 +82,36 @@ class Calendar {
         }
         val contentResolver = context.contentResolver
         contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)
-        System.err.println("Event added")
+        Log.i(TAG, "writeEvent: Event added to calendar")
     }
+
+    /**
+     * Récupérer l'id des calendriers
+     */
+    private fun getCalendarId(context: Context): Long {
+        val projection = arrayOf(
+            CalendarContract.Calendars._ID,
+            CalendarContract.Calendars.CALENDAR_DISPLAY_NAME
+        )
+        val uri: Uri = CalendarContract.Calendars.CONTENT_URI
+        val cursor = context.contentResolver.query(uri, projection, null, null, null)
+        // Récupérer l'id des calendriers disponibles
+        cursor?.use {
+            val idIndex = it.getColumnIndexOrThrow(CalendarContract.Calendars._ID)
+            val nameIndex =
+                it.getColumnIndexOrThrow(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME)
+            // Choisir le calendrier "My Calendar"
+            while (it.moveToNext()) {
+                val id = it.getLong(idIndex)
+                val name = it.getString(nameIndex)
+                Log.d("Calendar", "id: $id, name: $name")
+                if (name == "My Calendar") {
+                    return id
+                }
+            }
+        }
+        Log.d(TAG, "getCalendarId: My Calendar not found")
+        return 1
+    }
+
 }

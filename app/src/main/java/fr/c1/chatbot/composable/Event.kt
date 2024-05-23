@@ -1,5 +1,6 @@
-package fr.c1.chatbot.utils
+package fr.c1.chatbot.composable
 
+import fr.c1.chatbot.model.Event
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,16 +13,6 @@ import androidx.compose.ui.unit.dp
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
-data class Event(
-    val title: String,
-    val dtStart: Long,
-    val dtEnd: Long
-) {
-    override fun toString(): String {
-        return "Event(title='$title', dtStart=$dtStart, dtEnd=$dtEnd)"
-    }
-}
 
 @Composable
 fun EventList(events: List<Event>, modifier: Modifier = Modifier) {

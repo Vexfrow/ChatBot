@@ -1,5 +1,6 @@
 package fr.c1.chatbot
 
+import android.app.Activity
 import fr.c1.chatbot.composable.EventList
 import fr.c1.chatbot.model.Event
 import fr.c1.chatbot.ui.theme.ChatBotTheme
@@ -17,6 +18,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import fr.c1.chatbot.utils.Calendar.PermissionsRequest.hasReadCalendarPermission
+import fr.c1.chatbot.utils.Calendar.PermissionsRequest.hasWriteCalendarPermission
+import fr.c1.chatbot.utils.Calendar.fetchCalendarEvents
 
 private const val TAG = "MainActivity"
 
@@ -26,58 +39,54 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ChatBotTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    if (!Calendar.PermissionsRequest.hasReadCalendarPermission(this)) {
-                        Calendar.PermissionsRequest.requestCalendarPermissions(this)
-                    } else {
-                        val events = Calendar.fetchCalendarEvents(this)
-                        EventList(events, Modifier.padding(innerPadding))
-                    }
-                    if (!Calendar.PermissionsRequest.hasWriteCalendarPermission(this)) {
-                        // TODO : synchroniser les demandes de permissions
-                        Calendar.PermissionsRequest.requestCalendarPermissions(this)
-                    } else {
-                        val startMillis: Long = System.currentTimeMillis()
-                        val endMillis: Long = startMillis + 3600000 // 1 heure
-                        val event = Event("Test12345 permission", startMillis, endMillis)
-                        Calendar.writeEvent(this, event)
-                        val events = Calendar.fetchCalendarEvents(this)
-                        EventList(events, Modifier.padding(innerPadding))
-                    }
-                }
+                PermissionsContent()
             }
         }
     }
+}
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>, grantResults: IntArray
-    ) {
-        when (requestCode) {
-            Calendar.PermissionsRequest.REQUEST_CODE -> {
-                // If request is cancelled, the result arrays are empty.
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    // La permission est accordée
-                    // Créer un évenement dans le calendrier
-                    val startMillis: Long = System.currentTimeMillis()
-                    val endMillis: Long = startMillis + 3600000 // 1 heure
-                    val event = Event("Test12345 pas de permission", startMillis, endMillis)
-                    Calendar.writeEvent(this, event)
-                    // Récupérer les événements du calendrier
-                    val events = Calendar.fetchCalendarEvents(this)
-                    setContent {
-                        ChatBotTheme {
-                            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                                EventList(events, Modifier.padding(innerPadding))
-                            }
-                        }
-                    }
-                } else {
-                    // La permission est refusée, ne rien faire
-                    Log.e(TAG, "Calendar permission denied")
-                }
-                return
-            }
+@Composable
+fun PermissionsContent() {
+    val context = LocalContext.current
+
+    var hasReadPermission by remember { mutableStateOf(false) }
+    var hasWritePermission by remember { mutableStateOf(false) }
+    var events by remember { mutableStateOf<List<Event>>(emptyList()) }
+
+    val requestPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        hasReadPermission = permissions[android.Manifest.permission.READ_CALENDAR] == true
+        hasWritePermission = permissions[android.Manifest.permission.WRITE_CALENDAR] == true
+        if (hasReadPermission && hasWritePermission) {
+            events = fetchCalendarEvents(context)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        if (!hasReadCalendarPermission(context) || !hasWriteCalendarPermission(context)) {
+            requestPermissionLauncher.launch(
+                arrayOf(
+                    android.Manifest.permission.READ_CALENDAR,
+                    android.Manifest.permission.WRITE_CALENDAR
+                )
+            )
+        } else {
+            hasReadPermission = true
+            hasWritePermission = true
+            events = fetchCalendarEvents(context)
+        }
+    }
+
+    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+        if (hasReadPermission && hasWritePermission) {
+            val startMillis: Long = System.currentTimeMillis()
+            val endMillis: Long = startMillis + 3600000 // 1 heure
+            val event = Event("Test123456 permission", startMillis, endMillis)
+            Calendar.writeEvent(context, event)
+            EventList(events, Modifier.padding(innerPadding))
+        } else {
+            Text("Requesting permissions...", modifier = Modifier.padding(innerPadding))
         }
     }
 }

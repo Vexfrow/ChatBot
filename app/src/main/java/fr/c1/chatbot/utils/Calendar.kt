@@ -8,6 +8,8 @@ import android.content.Context
 import android.net.Uri
 import android.provider.CalendarContract
 import android.util.Log
+import fr.c1.chatbot.utils.Calendar.PermissionsRequest.hasReadCalendarPermission
+import fr.c1.chatbot.utils.Calendar.PermissionsRequest.hasWriteCalendarPermission
 
 private const val TAG = "Calendar"
 
@@ -42,6 +44,10 @@ object Calendar {
      * Récupère les événements du calendrier
      */
     fun fetchCalendarEvents(context: Context): List<Event> {
+        if (!hasReadCalendarPermission(context)) {
+            Log.i(TAG, "fetchCalendarEvents: No permission to read calendar")
+            return emptyList()
+        }
         val events = mutableListOf<Event>()
         val projection = arrayOf(
             CalendarContract.Events._ID,
@@ -69,6 +75,10 @@ object Calendar {
      * Ecrit un événement dans le calendrier
      */
     fun writeEvent(context: Context, event: Event) {
+        if (!hasWriteCalendarPermission(context)) {
+            Log.i(TAG, "writeEvent: No permission to write in calendar")
+            return
+        }
         val beginTime = event.dtStart
         val endTime = event.dtEnd
         val title = event.title

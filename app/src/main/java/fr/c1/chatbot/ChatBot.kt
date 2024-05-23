@@ -1,11 +1,15 @@
 package fr.c1.chatbot
 
-import android.app.Application
 import fr.c1.chatbot.model.ActivitiesRepository
 import fr.c1.chatbot.model.Tree
+import fr.c1.chatbot.utils.TTS
+import android.app.Application
 
 class ChatBot : Application() {
     val chatbotTree = Tree()
+
+    lateinit var tts: TTS
+        private set
 
     override fun onCreate() {
         super.onCreate()
@@ -14,8 +18,7 @@ class ChatBot : Application() {
         chatbotTree.initTree(fileIS)
         val activitiesRepository = ActivitiesRepository()
         activitiesRepository.initAll(this)
-        // Afficher la liste des musées
-//        activitiesRepository.displayAll()
-    }
 
+        tts = TTS(this)
+    }
 }

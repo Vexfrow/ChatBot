@@ -11,6 +11,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
+import android.content.Context
+import android.content.pm.PackageManager
 
 val application: ChatBot
     @Composable
@@ -28,3 +31,8 @@ fun <T> rememberMutableStateListOf(): SnapshotStateList<T> = remember { mutableS
 @Composable
 fun <T> rememberMutableStateListOf(vararg elements: T): SnapshotStateList<T> =
     remember { mutableStateListOf(*elements) }
+
+fun Context.hasPermission(permission: String) = ContextCompat.checkSelfPermission(
+    this,
+    permission
+) == PackageManager.PERMISSION_GRANTED

@@ -1,9 +1,8 @@
 package model
 
-import android.app.Activity
 import androidx.test.core.app.ApplicationProvider
 import fr.c1.chatbot.ChatBot
-import fr.c1.chatbot.model.Activities
+import fr.c1.chatbot.model.activity.Musees
 import fr.c1.chatbot.model.ActivitiesRepository
 import org.junit.After
 import org.junit.Assert
@@ -272,13 +271,14 @@ class ActivitiesRepositoryTest {
     @Test
     fun displayEmptyListTest() {
         // Liste vide
-        activitiesRepository.displayList(emptyList())
+        val emptyList = emptyList<Musees>()
+        activitiesRepository.displayList(emptyList)
     }
 
     @Test
     fun displayListTest() {
         // Liste activities non vide
-        val activity1: Activities = Activities(
+        val activity1 = Musees(
             "region1",
             "departement1",
             "identifiant1",
@@ -291,7 +291,7 @@ class ActivitiesRepositoryTest {
             "url1",
             true
         )
-        val activity2: Activities = Activities(
+        val activity2 = Musees(
             "region2",
             "departement2",
             "identifiant2",
@@ -323,7 +323,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun trierParRegionTest() {
-        val activity1 = Activities(
+        val activity1 = Musees(
             "region1",
             "departement1",
             "identifiant1",
@@ -337,7 +337,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Activities(
+        val activity2 = Musees(
             "region2",
             "departement2",
             "identifiant2",
@@ -351,7 +351,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Activities(
+        val activity3 = Musees(
             "region1",
             "departement3",
             "identifiant3",
@@ -376,7 +376,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun selectionnerParRegionTest() {
-        val activity1 = Activities(
+        val activity1 = Musees(
             "region1",
             "departement1",
             "identifiant1",
@@ -390,7 +390,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Activities(
+        val activity2 = Musees(
             "region2",
             "departement2",
             "identifiant2",
@@ -404,7 +404,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Activities(
+        val activity3 = Musees(
             "region1",
             "departement3",
             "identifiant3",
@@ -429,7 +429,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun trierParDepartementTest() {
-        val activity1 = Activities(
+        val activity1 = Musees(
             "region1",
             "departement3",
             "identifiant1",
@@ -443,7 +443,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Activities(
+        val activity2 = Musees(
             "region2",
             "departement2",
             "identifiant2",
@@ -457,7 +457,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Activities(
+        val activity3 = Musees(
             "region1",
             "departement1",
             "identifiant3",
@@ -482,7 +482,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun selectionnerParDepartementTest() {
-        val activity1 = Activities(
+        val activity1 = Musees(
             "region1",
             "departement3",
             "identifiant1",
@@ -496,7 +496,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Activities(
+        val activity2 = Musees(
             "region2",
             "departement2",
             "identifiant2",
@@ -510,7 +510,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Activities(
+        val activity3 = Musees(
             "region1",
             "departement1",
             "identifiant3",
@@ -535,7 +535,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun trierParCommuneTest() {
-        val activity1 = Activities(
+        val activity1 = Musees(
             "region1",
             "departement1",
             "identifiant1",
@@ -549,7 +549,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Activities(
+        val activity2 = Musees(
             "region2",
             "departement2",
             "identifiant2",
@@ -563,7 +563,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Activities(
+        val activity3 = Musees(
             "region1",
             "departement3",
             "identifiant3",
@@ -588,7 +588,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun selectionnerParCommuneTest() {
-        val activity1 = Activities(
+        val activity1 = Musees(
             "region1",
             "departement1",
             "identifiant1",
@@ -602,7 +602,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Activities(
+        val activity2 = Musees(
             "region2",
             "departement2",
             "identifiant2",
@@ -616,7 +616,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Activities(
+        val activity3 = Musees(
             "region1",
             "departement3",
             "identifiant3",
@@ -641,7 +641,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun trierParNomTest() {
-        val activity1 = Activities(
+        val activity1 = Musees(
             "region1",
             "departement1",
             "identifiant1",
@@ -655,7 +655,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Activities(
+        val activity2 = Musees(
             "region2",
             "departement2",
             "identifiant2",
@@ -669,7 +669,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Activities(
+        val activity3 = Musees(
             "region1",
             "departement3",
             "identifiant3",
@@ -694,7 +694,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun selectionnerParNomTest() {
-        val activity1 = Activities(
+        val activity1 = Musees(
             "region1",
             "departement1",
             "identifiant1",
@@ -708,7 +708,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Activities(
+        val activity2 = Musees(
             "region2",
             "departement2",
             "identifiant2",
@@ -722,7 +722,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Activities(
+        val activity3 = Musees(
             "region1",
             "departement3",
             "identifiant3",
@@ -747,7 +747,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun trierParLieuTest() {
-        val activity1 = Activities(
+        val activity1 = Musees(
             "region1",
             "departement1",
             "identifiant1",
@@ -761,7 +761,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Activities(
+        val activity2 = Musees(
             "region2",
             "departement2",
             "identifiant2",
@@ -775,7 +775,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Activities(
+        val activity3 = Musees(
             "region1",
             "departement3",
             "identifiant3",
@@ -800,7 +800,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun selectionnerParLieuTest() {
-        val activity1 = Activities(
+        val activity1 = Musees(
             "region1",
             "departement1",
             "identifiant1",
@@ -814,7 +814,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Activities(
+        val activity2 = Musees(
             "region2",
             "departement2",
             "identifiant2",
@@ -828,7 +828,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Activities(
+        val activity3 = Musees(
             "region1",
             "departement3",
             "identifiant3",
@@ -853,7 +853,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun trierParCodePostalTest() {
-        val activity1 = Activities(
+        val activity1 = Musees(
             "region1",
             "departement1",
             "identifiant1",
@@ -867,7 +867,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Activities(
+        val activity2 = Musees(
             "region2",
             "departement2",
             "identifiant2",
@@ -881,7 +881,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Activities(
+        val activity3 = Musees(
             "region1",
             "departement3",
             "identifiant3",
@@ -906,7 +906,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun selectionnerParCodePostalTest() {
-        val activity1 = Activities(
+        val activity1 = Musees(
             "region1",
             "departement1",
             "identifiant1",
@@ -920,7 +920,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Activities(
+        val activity2 = Musees(
             "region2",
             "departement2",
             "identifiant2",
@@ -934,7 +934,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Activities(
+        val activity3 = Musees(
             "region1",
             "departement3",
             "identifiant3",
@@ -959,7 +959,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun selectionnerParAccessibleTest() {
-        val activity1 = Activities(
+        val activity1 = Musees(
             "region1",
             "departement1",
             "identifiant1",
@@ -973,7 +973,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Activities(
+        val activity2 = Musees(
             "region2",
             "departement2",
             "identifiant2",
@@ -987,7 +987,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Activities(
+        val activity3 = Musees(
             "region1",
             "departement3",
             "identifiant3",
@@ -1012,7 +1012,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun trierParIdentifiantTest() {
-        val activity1 = Activities(
+        val activity1 = Musees(
             "region1",
             "departement1",
             "identifiant3",
@@ -1026,7 +1026,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Activities(
+        val activity2 = Musees(
             "region2",
             "departement2",
             "identifiant2",
@@ -1040,7 +1040,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Activities(
+        val activity3 = Musees(
             "region1",
             "departement3",
             "identifiant1",

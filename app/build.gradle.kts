@@ -47,27 +47,57 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    testOptions {
+        packaging {
+            resources {
+                excludes += ("META-INF/LICENSE.md")
+                excludes += ("META-INF/LICENSE-notice.md")
+            }
+        }
+    }
 }
 
 dependencies {
+//    region implementation
+//    region androidx
 
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
 
-    testImplementation(libs.junit)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.core)
+    implementation(libs.androidx.material3)
 
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+//    endregion
+
+//    region google
+
+    implementation(libs.google.material)
+    implementation(libs.google.gson)
+
+//    endregion
+//    endregion
+
+//    region testImplementation
+
+    testImplementation(libs.junit.jupiter)
+
+//    endregion
+
+//    region androidTestImplementation
+
+//    endregion
+
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
+
+    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.androidx.test.runner)
+
+    androidTestImplementation(libs.junit.jupiter)
+
+//    debugImplementation
+
     debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+
+//    endregion
 }

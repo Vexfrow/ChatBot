@@ -2,6 +2,15 @@ package fr.c1.chatbot.model
 
 import android.app.Application
 import fr.c1.chatbot.R
+import fr.c1.chatbot.model.activity.Associations
+import fr.c1.chatbot.model.activity.Contenus
+import fr.c1.chatbot.model.activity.Edifices
+import fr.c1.chatbot.model.activity.EquipementsSport
+import fr.c1.chatbot.model.activity.Expositions
+import fr.c1.chatbot.model.activity.Festivals
+import fr.c1.chatbot.model.activity.Jardins
+import fr.c1.chatbot.model.activity.Musees
+import fr.c1.chatbot.model.activity.Sites
 import java.io.BufferedInputStream
 import java.io.InputStream
 

@@ -1,4 +1,4 @@
-package fr.c1.chatbot.model
+package fr.c1.chatbot.model.activity
 
 class Jardins(
     val region: String,

@@ -1,9 +1,8 @@
 package model
 
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.test.core.app.ApplicationProvider
 import fr.c1.chatbot.ChatBot
-import fr.c1.chatbot.model.Musees
+import fr.c1.chatbot.model.activity.Musees
 import fr.c1.chatbot.model.ActivitiesRepository
 import org.junit.After
 import org.junit.Assert

@@ -19,7 +19,7 @@ class Tree {
         val jsonString =bufferedReader.readText()
         val currentAnswer = Gson().fromJson(jsonString, Answers::class.java)
 
-        println(currentAnswer.answers);
+//        println(currentAnswer.answers);
     }
     fun getAnswersLabels() : ArrayList<String>{
         val labels = arrayListOf<String>()

@@ -1,37 +1,41 @@
 package fr.c1.chatbot.utils
 
+import fr.c1.chatbot.model.Event
 import android.Manifest
+import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.CalendarContract
 import android.util.Log
-import androidx.core.content.ContextCompat
 
 private const val TAG = "Calendar"
 
-class Calendar {
-    val PERMISSIONS_REQUEST_CALENDAR = 100
+/** An object to manage the calendar */
+object Calendar {
+    /** Codes of the permission requests */
+    object PermissionsRequest {
+        /** Permission to read the calendar */
+        const val REQUEST_CODE = 100
 
-    /**
-     * Vérifie si l'application a la permission de lire le calendrier
-     */
-    fun hasReadCalendarPermission(context: Context): Boolean {
-        return ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.READ_CALENDAR
-        ) == PackageManager.PERMISSION_GRANTED
-    }
+        /**
+         * Vérifie si l'application a la permission de lire le calendrier
+         */
+        fun hasReadCalendarPermission(context: Context): Boolean =
+            context.hasPermission(Manifest.permission.READ_CALENDAR)
 
-    /**
-     * Vérifie si l'application a la permission d'écrire dans le calendrier
-     */
-    fun hasWriteCalendarPermission(context: Context): Boolean {
-        return ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.WRITE_CALENDAR
-        ) == PackageManager.PERMISSION_GRANTED
+        /**
+         * Vérifie si l'application a la permission d'écrire dans le calendrier
+         */
+        fun hasWriteCalendarPermission(context: Context): Boolean =
+            context.hasPermission(Manifest.permission.WRITE_CALENDAR)
+
+        fun requestCalendarPermissions(activity: Activity) {
+            activity.requestPermissions(
+                arrayOf(Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR),
+                REQUEST_CODE
+            )
+        }
     }
 
     /**

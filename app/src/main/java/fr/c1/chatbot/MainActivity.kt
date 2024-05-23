@@ -1,7 +1,9 @@
 package fr.c1.chatbot
 
-import fr.c1.chatbot.utils.*
-import android.os.Bundle
+import fr.c1.chatbot.composable.EventList
+import fr.c1.chatbot.model.Event
+import fr.c1.chatbot.ui.theme.ChatBotTheme
+import fr.c1.chatbot.utils.Calendar
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -12,37 +14,34 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import fr.c1.chatbot.ui.theme.ChatBotTheme
-import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Bundle
 import android.util.Log
 
 private const val TAG = "MainActivity"
 
 class MainActivity : ComponentActivity() {
-    var calendar1 = Calendar()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             ChatBotTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    if (!calendar1.hasReadCalendarPermission(this)) {
-                        requestCalendarPermission()
+                    if (!Calendar.PermissionsRequest.hasReadCalendarPermission(this)) {
+                        Calendar.PermissionsRequest.requestCalendarPermissions(this)
                     } else {
-                        val events = calendar1.fetchCalendarEvents(this)
+                        val events = Calendar.fetchCalendarEvents(this)
                         EventList(events, Modifier.padding(innerPadding))
                     }
-                    if (!calendar1.hasWriteCalendarPermission(this)) {
+                    if (!Calendar.PermissionsRequest.hasWriteCalendarPermission(this)) {
                         // TODO : synchroniser les demandes de permissions
-                        //requestCalendarPermission()
+                        Calendar.PermissionsRequest.requestCalendarPermissions(this)
                     } else {
                         val startMillis: Long = System.currentTimeMillis()
                         val endMillis: Long = startMillis + 3600000 // 1 heure
                         val event = Event("Test12345 permission", startMillis, endMillis)
-                        calendar1.writeEvent(this, event)
-                        val events = calendar1.fetchCalendarEvents(this)
+                        Calendar.writeEvent(this, event)
+                        val events = Calendar.fetchCalendarEvents(this)
                         EventList(events, Modifier.padding(innerPadding))
                     }
                 }
@@ -50,31 +49,22 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun requestCalendarPermission() {
-        requestPermissions(
-            arrayOf(Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR),
-            calendar1.PERMISSIONS_REQUEST_CALENDAR
-        )
-    }
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>, grantResults: IntArray
     ) {
         when (requestCode) {
-            calendar1.PERMISSIONS_REQUEST_CALENDAR -> {
+            Calendar.PermissionsRequest.REQUEST_CODE -> {
                 // If request is cancelled, the result arrays are empty.
-                if ((grantResults.isNotEmpty() &&
-                            grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                ) {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     // La permission est accordée
                     // Créer un évenement dans le calendrier
                     val startMillis: Long = System.currentTimeMillis()
                     val endMillis: Long = startMillis + 3600000 // 1 heure
                     val event = Event("Test12345 pas de permission", startMillis, endMillis)
-                    calendar1.writeEvent(this, event)
+                    Calendar.writeEvent(this, event)
                     // Récupérer les événements du calendrier
-                    val events = calendar1.fetchCalendarEvents(this)
+                    val events = Calendar.fetchCalendarEvents(this)
                     setContent {
                         ChatBotTheme {
                             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->

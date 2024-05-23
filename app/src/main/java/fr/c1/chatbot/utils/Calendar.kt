@@ -121,7 +121,7 @@ object Calendar {
             val nameIndex =
                 it.getColumnIndexOrThrow(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME)
             val primaryIndex = it.getColumnIndexOrThrow(CalendarContract.Calendars.IS_PRIMARY)
-
+            // Choisir le calendrier "primaire"
             while (it.moveToNext()) {
                 val id = it.getLong(idIndex)
                 val name = it.getString(nameIndex)

@@ -1,7 +1,7 @@
 package fr.c1.chatbot
 
 import fr.c1.chatbot.model.ActivitiesRepository
-import fr.c1.chatbot.model.Tree
+import fr.c1.chatbot.model.flowChart.Tree
 import fr.c1.chatbot.utils.TTS
 import android.app.Application
 
@@ -13,7 +13,7 @@ class ChatBot : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        val fileIS = resources.openRawResource(R.raw.questionreponses)
+        val fileIS = resources.openRawResource(R.raw.flow_chart)
 
         chatbotTree.initTree(fileIS)
         val activitiesRepository = ActivitiesRepository()

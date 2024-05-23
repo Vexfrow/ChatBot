@@ -3,10 +3,10 @@ package fr.c1.chatbot.model.flowChart
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.BufferedReader
-import java.lang.reflect.Type
 import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
+import java.lang.reflect.Type
 
 
 class Robot {
@@ -52,10 +52,9 @@ class Tree {
         }
     }
 
-
     //Renvoie le texte de la question posé par le bot
-    fun getQuestion(): String? {
-        return data?.robot?.get(currentQuestionId)?.text
+    fun getQuestion(): String {
+        return data?.robot?.get(currentQuestionId)?.text ?: ""
     }
 
     //Renvoie la liste des id des réponses possibles lié à la question actuelle

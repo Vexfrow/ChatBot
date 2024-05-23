@@ -55,7 +55,7 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                     ) {
                         val tree = (application as ChatBot).chatbotTree
-                        val messages = rememberMutableStateListOf(tree.currentAnswer.question)
+                        val messages = rememberMutableStateListOf(tree.getQuestion())
 
                         val crtScope = rememberCoroutineScope()
                         val lazyListState = rememberLazyListState()
@@ -110,20 +110,22 @@ class MainActivity : ComponentActivity() {
                             }
                         }
 
-                        var answers by rememberMutableStateOf(value = tree.getAnswersLabels())
+                        var answers by rememberMutableStateOf(value = tree.getAnswersId()
+                            .map { tree.getAnswerText(it) })
 
                         ProposalList(proposals = answers) {
+                            answers = emptyList()
                             Log.i(TAG, "Choose '$it'")
-                            val i = tree.currentAnswer.answers
-                                .indexOfFirst { answer -> answer.label == it }
+                            val i = tree.getAnswersId()
+                                .first { i -> tree.getAnswerText(i) == it }
                             messages += it
                             tree.selectAnswer(i)
 
                             crtScope.launch {
                                 lazyListState.animateScrollToItem(messages.size)
                                 delay(1.seconds)
-                                messages += tree.currentAnswer.question
-                                answers = tree.getAnswersLabels()
+                                messages += tree.getQuestion()
+                                answers = tree.getAnswersId().map { i -> tree.getAnswerText(i) }
                                 lazyListState.animateScrollToItem(messages.size)
                             }
                         }

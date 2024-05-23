@@ -1,4 +1,4 @@
-package fr.c1.chatbot.model
+package fr.c1.chatbot.model.activity
 
 class Contenus(
     val identifiant: String,

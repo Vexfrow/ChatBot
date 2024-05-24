@@ -1,128 +1,187 @@
 package fr.c1.chatbot
 
+import android.content.Intent
 import android.os.Bundle
+import android.speech.RecognitionListener
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import fr.c1.chatbot.ui.theme.ChatBotTheme
-import android.Manifest
-import android.annotation.SuppressLint
-import android.content.Context
-import android.content.pm.PackageManager
-import android.net.Uri
-import android.provider.CalendarContract
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.*
-import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
-import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
+private const val TAG = "MainActivity"
+
 class MainActivity : ComponentActivity() {
-    private val PERMISSIONS_REQUEST_READ_CALENDAR = 100
+    private lateinit var speechRecognizer: SpeechRecognizer
+    private val REQUEST_CODE_SPEECH_INPUT = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requestCalendarPermission()
         enableEdgeToEdge()
+
+        initializeSpeechRecognizer()
         setContent {
             ChatBotTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    if (!hasCalendarPermission(this)) {
-                        requestCalendarPermission()
-                    } else {
-                        val events = fetchCalendarEvents(this)
-                        EventList(events, Modifier.padding(innerPadding))
-                    }
-                }
-            }
-        }
-    }
+                    Column(
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .fillMaxSize()
+                    ) {
+                        val context = LocalContext.current
 
-    private fun hasCalendarPermission(context: Context): Boolean {
-        return ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.READ_CALENDAR
-        ) == PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun requestCalendarPermission() {
-        requestPermissions(
-            arrayOf(Manifest.permission.READ_CALENDAR),
-            PERMISSIONS_REQUEST_READ_CALENDAR
-        )
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>, grantResults: IntArray
-    ) {
-        when (requestCode) {
-            PERMISSIONS_REQUEST_READ_CALENDAR -> {
-                // If request is cancelled, the result arrays are empty.
-                if ((grantResults.isNotEmpty() &&
-                            grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                ) {
-                    // La permission est accordée, récupérer les événements du calendrier
-                    val events = fetchCalendarEvents(this)
-                    setContent {
-                        ChatBotTheme {
-                            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                                EventList(events, Modifier.padding(innerPadding))
-                                Text(
-                                    "Permission granted",
-                                    modifier = Modifier.padding(innerPadding)
-                                )
+                        val speechRecognizerLauncher = rememberLauncherForActivityResult(
+                            contract = ActivityResultContracts.RequestPermission()
+                        ) { isGranted ->
+                            if (isGranted) {
+                                startSpeechRecognition()
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Permission refusée",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         }
+                        IconButton(onClick = {
+                                val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+
+                                // on below line we are passing language model
+                                // and model free form in our intent
+                                intent.putExtra(
+                                    RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                                    RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+                                )
+
+                                // on below line we are passing our
+                                // language as a default language.
+                                intent.putExtra(
+                                    RecognizerIntent.EXTRA_LANGUAGE,
+                                    Locale.getDefault()
+                                )
+
+                                // on below line we are specifying a prompt
+                                // message as speak to text on below line.
+                                intent.putExtra(
+                                    RecognizerIntent.EXTRA_PROMPT, "Vous pouvez parler" +
+                                            "\nYou can speak"
+                                )
+
+                                // on below line we are specifying a try catch block.
+                                // in this block we are calling a start activity
+                                // for result method and passing our result code.
+                                try {
+                                    startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT)
+                                } catch (e: Exception) {
+                                    // on below line we are displaying error message in toast
+                                    Toast
+                                        .makeText(
+                                            this@MainActivity, " " + e.message,
+                                            Toast.LENGTH_SHORT
+                                        )
+                                        .show()
+                                }
+                            }) {
+                            Icon(
+                                painter = painterResource(id = android.R.drawable.ic_btn_speak_now),
+                                contentDescription = "Microphone"
+                            )
+                        }
                     }
-                } else {
-                    // La permission est refusée, ne rien faire
                 }
-                return
             }
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
 
-    data class Event(val title: String, val dtStart: Long, val dtEnd: Long)
+        // in this method we are checking request
+        // code with our result code.
+        if (requestCode == REQUEST_CODE_SPEECH_INPUT) {
+            // on below line we are checking if result code is ok
+            if (resultCode == RESULT_OK && data != null) {
 
-    private fun fetchCalendarEvents(context: Context): List<Event> {
-        val events = mutableListOf<Event>()
-        val projection = arrayOf(
-            CalendarContract.Events._ID,
-            CalendarContract.Events.TITLE,
-            CalendarContract.Events.DTSTART,
-            CalendarContract.Events.DTEND
-        )
-        val uri: Uri = CalendarContract.Events.CONTENT_URI
-        val cursor = context.contentResolver.query(uri, projection, null, null, null)
-        cursor?.use {
-            val titleIndex = it.getColumnIndexOrThrow(CalendarContract.Events.TITLE)
-            val dtStartIndex = it.getColumnIndexOrThrow(CalendarContract.Events.DTSTART)
-            val dtEndIndex = it.getColumnIndexOrThrow(CalendarContract.Events.DTEND)
-            while (it.moveToNext()) {
-                val title = it.getString(titleIndex)
-                val dtStart = it.getLong(dtStartIndex)
-                val dtEnd = it.getLong(dtEndIndex)
-                events.add(Event(title, dtStart, dtEnd))
+                // in that case we are extracting the
+                // data from our array list
+                val res: ArrayList<String> =
+                    data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS) as ArrayList<String>
+
+                // on below line we are setting data
+                // to our output text view.
+                Log.d(TAG, res[0])
             }
         }
-        return events
+    }
+
+    private fun initializeSpeechRecognizer() {
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this).apply {
+            setRecognitionListener(object : RecognitionListener {
+                override fun onReadyForSpeech(params: Bundle?) {}
+                override fun onBeginningOfSpeech() {}
+                override fun onRmsChanged(rmsdB: Float) {}
+                override fun onBufferReceived(buffer: ByteArray?) {}
+                override fun onEndOfSpeech() {}
+                override fun onError(error: Int) {
+                    runOnUiThread {
+                        Toast.makeText(this@MainActivity, "Error: $error", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+
+                override fun onResults(results: Bundle?) {
+                    val matches =
+                        results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                    if (!matches.isNullOrEmpty()) {
+                        val recognizedText = matches[0]
+                        // Handle the recognized text
+                    }
+                }
+
+                override fun onPartialResults(partialResults: Bundle?) {}
+                override fun onEvent(eventType: Int, params: Bundle?) {}
+            })
+        }
+    }
+
+    private fun startSpeechRecognition() {
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+            )
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, "fr-FR")
+            putExtra(RecognizerIntent.EXTRA_PROMPT, "Parlez pour convertir en texte")
+        }
+        speechRecognizer.startListening(intent)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        speechRecognizer.destroy()
     }
 }
+
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
@@ -137,27 +196,5 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 fun GreetingPreview() {
     ChatBotTheme {
         Greeting("Android")
-    }
-}
-
-@Composable
-fun EventList(events: List<MainActivity.Event>, modifier: Modifier = Modifier) {
-    LazyColumn(modifier = modifier) {
-        items(events) { event ->
-            EventItem(event = event)
-        }
-    }
-}
-
-@Composable
-fun EventItem(event: MainActivity.Event) {
-    val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
-    val startTime = dateFormat.format(Date(event.dtStart))
-    val endTime = dateFormat.format(Date(event.dtEnd))
-
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text(text = event.title, style = MaterialTheme.typography.titleLarge)
-        Text(text = "Début : $startTime", style = MaterialTheme.typography.bodyMedium)
-        Text(text = "Fin : $endTime", style = MaterialTheme.typography.bodyMedium)
     }
 }

@@ -38,11 +38,11 @@
     },
     {
       "id": 9,
-      "text": "Comment puis-je vous aider ?????????"
+      "text": "Comment puis-je vous aider ?"
     },
     {
       "id": 10,
-      "text": "Quelle notification voulait-vous désactiver ?"
+      "text": "Quelle notification voulez-vous désactiver ?"
     },
     {
       "id": 11,
@@ -54,7 +54,7 @@
     },
     {
       "id": 13,
-      "text": "Vous pouvez le faire, mais ne le faîte pas svp, corenthin est un piètre developpeur et l'historique ne fonctionne pas"
+      "text": "**Indication pour voir l'historique de recherche**"
     },
     {
       "id": 14,
@@ -62,12 +62,12 @@
     },
     {
       "id": 15,
-      "text": "Non, juste non"
+      "text": "Cette action n'est pas possible pour le moment"
     },
     {
       "id": 16,
       "text": "Voici des résultats qui correspondent a vos demandes et qui pourraient vous plaire",
-      "action": "resultat"
+      "action": "AfficherResultat"
     }
   ],
   "humain": [
@@ -78,17 +78,17 @@
     {
       "id": 1001,
       "text": "Choisir une date",
-      "action": "date"
+      "action": "EntrerDate"
     },
     {
       "id": 1002,
       "text": "Choisir une ville",
-      "action": "ville"
+      "action": "EntrerVille"
     },
     {
       "id": 1003,
       "text": "Rentrer une distance (en km)",
-      "action": "distance"
+      "action": "EntrerDistance"
     },
     {
       "id": 1004,
@@ -100,7 +100,8 @@
     },
     {
       "id": 1006,
-      "text": "Utiliser la géolocalisation"
+      "text": "Utiliser la géolocalisation",
+      "action": "Geolocalisation"
     },
     {
       "id": 1007,
@@ -149,6 +150,15 @@
     {
       "id": 1018,
       "text": "Je souhaite proposer de nouvelles activités"
+    },
+    {
+      "id": 1019,
+      "text": "Choisir passions",
+      "actions": "ChoisirPassions"
+    },
+    {
+      "id": 1020,
+      "text": "Passer à la suite"
     }
   ],
   "link": [
@@ -234,6 +244,11 @@
     },
     {
       "from": 6,
+      "to": 16,
+      "answer": 1010
+    },
+    {
+      "from": 7,
       "to": 16,
       "answer": 1010
     },

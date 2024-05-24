@@ -12,7 +12,7 @@ class ChatBot : Application() {
     override fun onCreate() {
         super.onCreate()
         val chatbotTree = Tree()
-        val fileIS = resources.openRawResource(R.raw.questionreponses)
+        val fileIS = resources.openRawResource(R.raw.flow_chart)
 
         chatbotTree.initTree(fileIS)
         val activitiesRepository = ActivitiesRepository()

@@ -1,6 +1,8 @@
 package fr.c1.chatbot.utils
 
 import fr.c1.chatbot.model.Event
+import fr.c1.chatbot.utils.Calendar.PermissionsRequest.hasReadCalendarPermission
+import fr.c1.chatbot.utils.Calendar.PermissionsRequest.hasWriteCalendarPermission
 import android.Manifest
 import android.app.Activity
 import android.content.ContentValues
@@ -8,8 +10,6 @@ import android.content.Context
 import android.net.Uri
 import android.provider.CalendarContract
 import android.util.Log
-import fr.c1.chatbot.utils.Calendar.PermissionsRequest.hasReadCalendarPermission
-import fr.c1.chatbot.utils.Calendar.PermissionsRequest.hasWriteCalendarPermission
 
 private const val TAG = "Calendar"
 
@@ -86,6 +86,11 @@ object Calendar {
         // Récupérer l'ide du calendrier
         val calendarId = getCalendarId(context)
 
+        if (calendarId == -1L) {
+            Log.e(TAG, "writeEvent: No one calendar in edit mode!")
+            return
+        }
+
         val values = ContentValues().apply {
             put(CalendarContract.Events.CALENDAR_ID, calendarId)
             put(CalendarContract.Events.DTSTART, beginTime)
@@ -96,7 +101,7 @@ object Calendar {
         }
         val contentResolver = context.contentResolver
         contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)
-        Log.i(TAG, "writeEvent: Event added to calendar")
+        Log.i(TAG, "writeEvent: Event added to calendar $calendarId")
     }
 
     /**
@@ -105,7 +110,8 @@ object Calendar {
     private fun getCalendarId(context: Context): Long {
         val projection = arrayOf(
             CalendarContract.Calendars._ID,
-            CalendarContract.Calendars.CALENDAR_DISPLAY_NAME
+            CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,
+            CalendarContract.Calendars.IS_PRIMARY
         )
         val uri: Uri = CalendarContract.Calendars.CONTENT_URI
         val cursor = context.contentResolver.query(uri, projection, null, null, null)
@@ -114,18 +120,22 @@ object Calendar {
             val idIndex = it.getColumnIndexOrThrow(CalendarContract.Calendars._ID)
             val nameIndex =
                 it.getColumnIndexOrThrow(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME)
-            // Choisir le calendrier "My Calendar"
+            val primaryIndex = it.getColumnIndexOrThrow(CalendarContract.Calendars.IS_PRIMARY)
+            // Choisir le calendrier "primaire"
             while (it.moveToNext()) {
                 val id = it.getLong(idIndex)
                 val name = it.getString(nameIndex)
-                Log.d("Calendar", "id: $id, name: $name")
-                if (name == "My Calendar") {
+                val primary = it.getInt(primaryIndex)
+
+                Log.d("Calendar", "id: $id, name: $name, prim: $primary")
+
+                if (primary == 1) {
                     return id
                 }
             }
         }
-        Log.d(TAG, "getCalendarId: My Calendar not found")
-        return 1
+
+        return -1L
     }
 
 }

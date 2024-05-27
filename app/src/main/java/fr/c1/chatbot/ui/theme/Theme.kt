@@ -65,7 +65,7 @@ fun ChatBotTheme(
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
-            typography = Typography,
+            typography = Typography(),
             content = content
         )
     }

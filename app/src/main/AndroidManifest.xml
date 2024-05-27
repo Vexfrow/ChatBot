@@ -9,6 +9,11 @@
     <!-- Ajoutez la permission pour faire des notifications -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
+    <!--  Ajouter les permissions pour accéder au stockage externe  -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:name=".ChatBot"
         android:allowBackup="true"

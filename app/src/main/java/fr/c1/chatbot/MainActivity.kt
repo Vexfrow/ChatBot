@@ -102,8 +102,15 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
     val lazyListState = rememberLazyListState()
     val animated = rememberMutableStateListOf<Boolean>()
 
+    val tts = application.tts
+
     if (!enabled)
         return
+
+    LaunchedEffect(key1 = messages.size) {
+        if (Settings.tts && messages.lastIndex % 2 == 0)
+            tts.speak(messages.last())
+    }
 
     Column(modifier = modifier.fillMaxSize()) {
         LazyColumn(

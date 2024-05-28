@@ -91,8 +91,6 @@ class TTS(ctx: Context) {
         ) {
             Log.e(TAG, "speak: $id cannot speak")
         }
-
-        Log.i(TAG, tts.setVoice(tts.voices.elementAt(0)).toString())
     }
 
     fun shutdown() {

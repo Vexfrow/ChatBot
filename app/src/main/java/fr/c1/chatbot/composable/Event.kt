@@ -18,7 +18,9 @@ import java.util.Locale
 fun EventList(events: List<Event>, modifier: Modifier = Modifier) {
     LazyColumn(modifier = modifier) {
         items(events) { event ->
-            EventItem(event = event)
+            if(event.dtStart > System.currentTimeMillis()) {
+                EventItem(event = event)
+            }
         }
     }
 }
@@ -34,4 +36,8 @@ fun EventItem(event: Event) {
         Text(text = "Début : $startTime", style = MaterialTheme.typography.bodyMedium)
         Text(text = "Fin : $endTime", style = MaterialTheme.typography.bodyMedium)
     }
+}
+
+fun getNewID(events: List<Event>): Long {
+    return events.maxOfOrNull { it.id }?.plus(1) ?: 0
 }

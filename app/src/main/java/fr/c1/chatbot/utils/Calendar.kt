@@ -10,6 +10,8 @@ import android.content.Context
 import android.net.Uri
 import android.provider.CalendarContract
 import android.util.Log
+import fr.c1.chatbot.composable.getNewID
+import fr.c1.chatbot.model.toDate
 
 private const val TAG = "Calendar"
 
@@ -53,19 +55,29 @@ object Calendar {
             CalendarContract.Events._ID,
             CalendarContract.Events.TITLE,
             CalendarContract.Events.DTSTART,
-            CalendarContract.Events.DTEND
+            CalendarContract.Events.DTEND,
+            CalendarContract.Events.DELETED
         )
+        val selection = "${CalendarContract.Events.DELETED} = ?"
+        val selectionArgs = arrayOf("0") // Récupérer uniquement les événements non supprimés
+        val sortOrder = "${CalendarContract.Events.DTSTART} ASC"
         val uri: Uri = CalendarContract.Events.CONTENT_URI
-        val cursor = context.contentResolver.query(uri, projection, null, null, null)
+        val cursor = context.contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)
         cursor?.use {
+            val idIndex = it.getColumnIndexOrThrow(CalendarContract.Events._ID)
             val titleIndex = it.getColumnIndexOrThrow(CalendarContract.Events.TITLE)
             val dtStartIndex = it.getColumnIndexOrThrow(CalendarContract.Events.DTSTART)
             val dtEndIndex = it.getColumnIndexOrThrow(CalendarContract.Events.DTEND)
+            val deletedIndex = it.getColumnIndexOrThrow(CalendarContract.Events.DELETED)
             while (it.moveToNext()) {
+                val id = it.getLong(idIndex)
                 val title = it.getString(titleIndex)
                 val dtStart = it.getLong(dtStartIndex)
                 val dtEnd = it.getLong(dtEndIndex)
-                events.add(Event(title, dtStart, dtEnd))
+                val deleted = it.getInt(deletedIndex)
+                if (deleted == 0) { // Vérifie que l'événement n'est pas marqué comme supprimé
+                    events.add(Event(id, title, dtStart, dtEnd))
+                }
             }
         }
         return events
@@ -74,7 +86,7 @@ object Calendar {
     /**
      * Ecrit un événement dans le calendrier
      */
-    fun writeEvent(context: Context, event: Event) {
+    private fun writeEvent(context: Context, event: Event) {
         if (!hasWriteCalendarPermission(context)) {
             Log.i(TAG, "writeEvent: No permission to write in calendar")
             return
@@ -102,6 +114,12 @@ object Calendar {
         val contentResolver = context.contentResolver
         contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)
         Log.i(TAG, "writeEvent: Event added to calendar $calendarId")
+    }
+
+    fun writeEvent(context: Context, title: String, startMillis: Long, endMillis: Long, events: List<Event>) {
+        val id = getNewID(events)
+        val event = Event(id, title, startMillis, endMillis)
+        writeEvent(context, event)
     }
 
     /**
@@ -134,8 +152,51 @@ object Calendar {
                 }
             }
         }
-
         return -1L
+    }
+
+    fun deleteAllDayEvents(context: Context) {
+        val projection = arrayOf(
+            CalendarContract.Events._ID,
+            CalendarContract.Events.TITLE,
+            CalendarContract.Events.DTSTART,
+            CalendarContract.Events.DTEND,
+            CalendarContract.Events.DELETED
+        )
+        val selection = "${CalendarContract.Events.DELETED} = ?"
+        val selectionArgs = arrayOf("0") // Récupérer uniquement les événements non supprimés
+        val sortOrder = "${CalendarContract.Events.DTSTART} ASC"
+        val uri: Uri = CalendarContract.Events.CONTENT_URI
+        val cursor = context.contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)
+        cursor?.use {
+            val idIndex = it.getColumnIndexOrThrow(CalendarContract.Events._ID)
+            val dtStartIndex = it.getColumnIndexOrThrow(CalendarContract.Events.DTSTART)
+            val deletedIndex = it.getColumnIndexOrThrow(CalendarContract.Events.DELETED)
+            while (it.moveToNext()) {
+                val id = it.getLong(idIndex)
+                val dtStart = it.getLong(dtStartIndex)
+                val deleted = it.getInt(deletedIndex)
+                if (deleted == 0) { // Vérifie que l'événement n'est pas marqué comme supprimé
+                    if (isAllDayEvent(dtStart)) {
+                        deleteEvent(context, id)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun isAllDayEvent(dtStart: Long): Boolean {
+        val date = dtStart.toDate()
+        Log.d(TAG, "isAllDayEvent: ${date.substring(0, 9)}")
+        val res = date.substring(0, 10) == "27/05/2024"
+        return res
+    }
+
+    private fun deleteEvent(context: Context, eventId: Long) {
+        val uri = CalendarContract.Events.CONTENT_URI
+        val selection = "${CalendarContract.Events._ID} = ?"
+        val selectionArgs = arrayOf(eventId.toString())
+        context.contentResolver.delete(uri, selection, selectionArgs)
     }
 
 }

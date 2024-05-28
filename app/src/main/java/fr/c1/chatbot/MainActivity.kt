@@ -1,6 +1,7 @@
 package fr.c1.chatbot
 
 import android.Manifest
+import android.content.Context
 import fr.c1.chatbot.composable.EventList
 import fr.c1.chatbot.model.Event
 import fr.c1.chatbot.ui.theme.ChatBotTheme
@@ -30,6 +31,9 @@ import fr.c1.chatbot.utils.Calendar
 import fr.c1.chatbot.utils.Calendar.PermissionsRequest.hasReadCalendarPermission
 import fr.c1.chatbot.utils.Calendar.PermissionsRequest.hasWriteCalendarPermission
 import fr.c1.chatbot.utils.Calendar.fetchCalendarEvents
+import fr.c1.chatbot.utils.buildTree
+import fr.c1.chatbot.utils.parseJson
+import fr.c1.chatbot.utils.printTree
 import fr.c1.chatbot.utils.scheduleEventReminders
 
 private const val TAG = "MainActivity"
@@ -48,6 +52,15 @@ class MainActivity : ComponentActivity() {
                 PermissionsContent()
                 PermissionNotification()
             }
+        }
+
+        val jsonData = parseJson(this, R.raw.flow_chart)
+        val root = buildTree(jsonData)
+
+        if(root != null) {
+            printTree(root, 0)
+        } else {
+            Log.e(TAG, "onCreate: Root is null")
         }
     }
 

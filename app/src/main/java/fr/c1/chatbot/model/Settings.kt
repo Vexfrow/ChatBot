@@ -30,7 +30,7 @@ private const val TAG = "Settings"
 
 object Settings {
     var textSize: TextUnit by mutableStateOf(40.sp)
-    var stt: Boolean by mutableStateOf(false)
+    var tts: Boolean by mutableStateOf(false)
     var botIcon: ImageVector by mutableStateOf(Icons.Default.Bot)
     var botImage: Uri? by mutableStateOf(null)
     var userIcon: ImageVector by mutableStateOf(Icons.Default.Person)
@@ -61,7 +61,7 @@ object Settings {
 
     fun reset() {
         textSize = 40.sp
-        stt = false
+        tts = false
         botIcon = Icons.Default.Bot
         botImage = null
         userIcon = Icons.Default.Person
@@ -70,7 +70,7 @@ object Settings {
 
     private fun from(pref: SharedPreferences) = pref.run {
         getSp(::textSize, 40.sp)
-        getBool(::stt, false)
+        getBool(::tts, false)
         botIcon = iconFromName(getString(::botIcon.name, "Filled.Bot")!!)
         getNullable(
             ::botImage,
@@ -93,7 +93,7 @@ object Settings {
             putBoolean("init", true)
 
             putSp(::textSize)
-            putBool(::stt)
+            putBool(::tts)
             putString(::botIcon.name, botIcon.name)
             putOrRemove(::botImage)
             putString(::userIcon.name, userIcon.name)
@@ -103,6 +103,6 @@ object Settings {
         }
 
     override fun toString(): String {
-        return "Settings(textSize=$textSize, stt=$stt, botIcon=$botIcon, botImage=$botImage, userIcon=$userIcon, userImage=$userImage)"
+        return "Settings(textSize=$textSize, stt=$tts, botIcon=$botIcon, botImage=$botImage, userIcon=$userIcon, userImage=$userImage)"
     }
 }

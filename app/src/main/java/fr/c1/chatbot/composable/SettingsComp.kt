@@ -123,13 +123,13 @@ fun MySettings() {
         ) {
             Button(
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = with(Color) { if (Settings.stt) Green else Red }
+                    containerColor = with(Color) { if (Settings.tts) Green else Red }
                 ),
                 onClick = {
-                    Settings.stt = !Settings.stt
+                    Settings.tts = !Settings.tts
                 }
             ) {
-                Text(text = "Lecture Audio: ${if (Settings.stt) "ON" else "OFF"}")
+                Text(text = "Lecture Audio: ${if (Settings.tts) "ON" else "OFF"}")
             }
             Button(onClick = { botDialog = true; isDialogOpen = true }) {
                 Text(text = "Changer l'icône du Robot")

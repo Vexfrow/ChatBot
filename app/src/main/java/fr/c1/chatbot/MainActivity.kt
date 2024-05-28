@@ -10,7 +10,6 @@ import fr.c1.chatbot.ui.theme.colorSchemeExtension
 import fr.c1.chatbot.utils.application
 import fr.c1.chatbot.utils.rememberMutableStateListOf
 import fr.c1.chatbot.utils.rememberMutableStateOf
-import fr.c1.chatbot.utils.toFloat
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import androidx.activity.ComponentActivity
@@ -42,7 +41,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -66,7 +64,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         var settings by rememberMutableStateOf(value = false)
 
-                        MyColumn(modifier = Modifier.alpha((!settings).toFloat()))
+                        MyColumn(modifier = Modifier, enabled = !settings)
 
                         val ctx = LocalContext.current
                         IconButton(
@@ -97,88 +95,91 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MyColumn(modifier: Modifier = Modifier) = Column(modifier = modifier.fillMaxSize()) {
+fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
     val tree = application.chatbotTree
     val messages = rememberMutableStateListOf(tree.getQuestion())
-
     val crtScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
-
     val animated = rememberMutableStateListOf<Boolean>()
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .weight(1f),
-        state = lazyListState
-    ) {
-        itemsIndexed(messages) { i, message ->
-            val scale: Animatable<Float, AnimationVector1D> =
-                remember { Animatable(0f) }
+    if (!enabled)
+        return
 
-            LaunchedEffect(key1 = Unit) {
-                scale.animateTo(
-                    1f,
-                    animationSpec = tween(durationMillis = 500)
-                ) {
-                    if (value == 1f)
-                        animated.add(true)
+    Column(modifier = modifier.fillMaxSize()) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            state = lazyListState
+        ) {
+            itemsIndexed(messages) { i, message ->
+                val scale: Animatable<Float, AnimationVector1D> =
+                    remember { Animatable(0f) }
+
+                LaunchedEffect(key1 = Unit) {
+                    scale.animateTo(
+                        1f,
+                        animationSpec = tween(durationMillis = 500)
+                    ) {
+                        if (value == 1f)
+                            animated.add(true)
+                    }
                 }
-            }
 
-            val isBot = i % 2 == 0
-            val mod = Modifier.graphicsLayer(
-                scaleX = scale.value,
-                scaleY = scale.value
-            )
-
-            if (isBot)
-                SpeechBubble(
-                    modifier = if (i == messages.lastIndex) mod else Modifier,
-                    text = message,
-                    color = MaterialTheme.colorSchemeExtension.bot,
+                val isBot = i % 2 == 0
+                val mod = Modifier.graphicsLayer(
+                    scaleX = scale.value,
+                    scaleY = scale.value
                 )
-            else
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .then(if (i == messages.lastIndex) mod else Modifier)
-                ) {
+
+                if (isBot)
                     SpeechBubble(
-                        modifier = Modifier.align(Alignment.CenterEnd),
+                        modifier = if (i == messages.lastIndex) mod else Modifier,
                         text = message,
-                        color = MaterialTheme.colorSchemeExtension.user,
-                        reversed = true
+                        color = MaterialTheme.colorSchemeExtension.bot,
                     )
-                }
+                else
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .then(if (i == messages.lastIndex) mod else Modifier)
+                    ) {
+                        SpeechBubble(
+                            modifier = Modifier.align(Alignment.CenterEnd),
+                            text = message,
+                            color = MaterialTheme.colorSchemeExtension.user,
+                            reversed = true
+                        )
+                    }
+            }
         }
-    }
 
-    var answers by rememberMutableStateOf(value = tree.getAnswersId()
-        .map { tree.getAnswerText(it) })
+        var answers by rememberMutableStateOf(value = tree.getAnswersId()
+            .map { tree.getAnswerText(it) })
 
-    ProposalList(proposals = answers) {
-        answers = emptyList()
-        Log.i(TAG, "Choose '$it'")
-        val i = tree.getAnswersId()
-            .first { i -> tree.getAnswerText(i) == it }
-        messages += it
-        tree.selectAnswer(i)
+        ProposalList(proposals = answers) {
+            answers = emptyList()
+            Log.i(TAG, "Choose '$it'")
+            val i = tree.getAnswersId()
+                .first { i -> tree.getAnswerText(i) == it }
+            messages += it
+            tree.selectAnswer(i)
 
-        crtScope.launch {
-            lazyListState.animateScrollToItem(messages.size)
-            delay(1.seconds)
-            messages += tree.getQuestion()
-            answers = tree.getAnswersId().map { i -> tree.getAnswerText(i) }
-            lazyListState.animateScrollToItem(messages.size)
+            crtScope.launch {
+                lazyListState.animateScrollToItem(messages.size)
+                delay(1.seconds)
+                messages += tree.getQuestion()
+                answers = tree.getAnswersId().map { i -> tree.getAnswerText(i) }
+                lazyListState.animateScrollToItem(messages.size)
+            }
         }
+
+        var searchBarEnabled by rememberMutableStateOf(value = true)
+        var searchBarText by rememberMutableStateOf(value = "Search")
+
+        MySearchBar(
+            placeholder = searchBarText,
+            enabled = searchBarEnabled
+        ) { Log.i(TAG, "Searched $it") }
     }
-
-    var searchBarEnabled by rememberMutableStateOf(value = true)
-    var searchBarText by rememberMutableStateOf(value = "Search")
-
-    MySearchBar(
-        placeholder = searchBarText,
-        enabled = searchBarEnabled
-    ) { Log.i(TAG, "Searched $it") }
 }

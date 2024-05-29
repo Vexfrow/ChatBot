@@ -71,6 +71,8 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation("com.google.code.gson:gson:2.10.1")
 
+    implementation(libs.coil)
+
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     androidTestImplementation("androidx.test:runner:1.5.2")
 

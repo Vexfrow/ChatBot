@@ -1,5 +1,17 @@
 package fr.c1.chatbot
 
+import fr.c1.chatbot.composable.MySearchBar
+import fr.c1.chatbot.composable.MySettings
+import fr.c1.chatbot.composable.ProposalList
+import fr.c1.chatbot.composable.SpeechBubble
+import fr.c1.chatbot.model.Settings
+import fr.c1.chatbot.ui.theme.ChatBotTheme
+import fr.c1.chatbot.ui.theme.colorSchemeExtension
+import fr.c1.chatbot.utils.application
+import fr.c1.chatbot.utils.rememberMutableStateListOf
+import fr.c1.chatbot.utils.rememberMutableStateOf
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -13,12 +25,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -28,6 +44,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import fr.c1.chatbot.composable.MessageBot
 import fr.c1.chatbot.composable.MySearchBar
@@ -49,44 +67,80 @@ class MainActivity : ComponentActivity() {
         setContent {
             ChatBotTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Column(
+                    Box(
                         modifier = Modifier
                             .padding(innerPadding)
                             .fillMaxSize()
                     ) {
-                        val tree = (application as ChatBot).chatbotTree
-                        val messages = rememberMutableStateListOf(tree.getQuestion())
+                        var settings by rememberMutableStateOf(value = false)
 
-                        val crtScope = rememberCoroutineScope()
-                        val lazyListState = rememberLazyListState()
+                        MyColumn(modifier = Modifier, enabled = !settings)
 
-                        val animated = rememberMutableStateListOf<Boolean>()
-
-                        LazyColumn(
+                        val ctx = LocalContext.current
+                        IconButton(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f),
-                            state = lazyListState
+                                .align(Alignment.TopEnd)
+                                .padding(end = 10.dp, top = 10.dp),
+                            onClick = {
+                                if (settings)
+                                    Settings.save(ctx)
+
+                                settings = !settings
+                            }
                         ) {
-                            itemsIndexed(messages) { i, message ->
-                                val scale: Animatable<Float, AnimationVector1D> =
-                                    remember { Animatable(0f) }
+                            Icon(
+                                modifier = Modifier.size(50.dp),
+                                imageVector = Icons.Default.Settings,
+                                contentDescription = "Settings"
+                            )
+                        }
 
-                                LaunchedEffect(key1 = Unit) {
-                                    scale.animateTo(
-                                        1f,
-                                        animationSpec = tween(durationMillis = 500)
-                                    ) {
-                                        if (value == 1f)
-                                            animated.add(true)
-                                    }
-                                }
+                        if (settings)
+                            MySettings()
+                    }
+                }
+            }
+        }
+    }
+}
 
-                                val isBot = i % 2 == 0
-                                val mod = Modifier.graphicsLayer(
-                                    scaleX = scale.value,
-                                    scaleY = scale.value
-                                )
+@Composable
+fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
+    val tree = application.chatbotTree
+    val messages = rememberMutableStateListOf(tree.getQuestion())
+    val crtScope = rememberCoroutineScope()
+    val lazyListState = rememberLazyListState()
+    val animated = rememberMutableStateListOf<Boolean>()
+
+    if (!enabled)
+        return
+
+    Column(modifier = modifier.fillMaxSize()) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            state = lazyListState
+        ) {
+            itemsIndexed(messages) { i, message ->
+                val scale: Animatable<Float, AnimationVector1D> =
+                    remember { Animatable(0f) }
+
+                LaunchedEffect(key1 = Unit) {
+                    scale.animateTo(
+                        1f,
+                        animationSpec = tween(durationMillis = 500)
+                    ) {
+                        if (value == 1f)
+                            animated.add(true)
+                    }
+                }
+
+                val isBot = i % 2 == 0
+                val mod = Modifier.graphicsLayer(
+                    scaleX = scale.value,
+                    scaleY = scale.value
+                )
 
                                 if (isBot)
                                     MessageBot(
@@ -110,52 +164,32 @@ class MainActivity : ComponentActivity() {
                             }
                         }
 
-                        var answers by rememberMutableStateOf(value = tree.getAnswersId()
-                            .map { tree.getAnswerText(it) })
+        var answers by rememberMutableStateOf(value = tree.getAnswersId()
+            .map { tree.getAnswerText(it) })
 
-                        ProposalList(proposals = answers) {
-                            answers = emptyList()
-                            Log.i(TAG, "Choose '$it'")
-                            val i = tree.getAnswersId()
-                                .first { i -> tree.getAnswerText(i) == it }
-                            messages += it
-                            tree.selectAnswer(i)
+        ProposalList(proposals = answers) {
+            answers = emptyList()
+            Log.i(TAG, "Choose '$it'")
+            val i = tree.getAnswersId()
+                .first { i -> tree.getAnswerText(i) == it }
+            messages += it
+            tree.selectAnswer(i)
 
-                            crtScope.launch {
-                                lazyListState.animateScrollToItem(messages.size)
-                                delay(1.seconds)
-                                messages += tree.getQuestion()
-                                answers = tree.getAnswersId().map { i -> tree.getAnswerText(i) }
-                                lazyListState.animateScrollToItem(messages.size)
-                            }
-                        }
-
-                        var searchBarEnabled by rememberMutableStateOf(value = true)
-                        var searchBarText by rememberMutableStateOf(value = "Search")
-
-                        MySearchBar(
-                            placeholder = searchBarText,
-                            enabled = searchBarEnabled
-                        ) { Log.i(TAG, "Searched $it") }
-                    }
-                }
+            crtScope.launch {
+                lazyListState.animateScrollToItem(messages.size)
+                delay(1.seconds)
+                messages += tree.getQuestion()
+                answers = tree.getAnswersId().map { i -> tree.getAnswerText(i) }
+                lazyListState.animateScrollToItem(messages.size)
             }
         }
-    }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+        var searchBarEnabled by rememberMutableStateOf(value = true)
+        var searchBarText by rememberMutableStateOf(value = "Search")
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    ChatBotTheme {
-        Greeting("Android")
+        MySearchBar(
+            placeholder = searchBarText,
+            enabled = searchBarEnabled
+        ) { Log.i(TAG, "Searched $it") }
     }
 }

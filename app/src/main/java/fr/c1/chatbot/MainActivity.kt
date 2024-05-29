@@ -1,17 +1,7 @@
 package fr.c1.chatbot
 
-import fr.c1.chatbot.composable.MySearchBar
-import fr.c1.chatbot.composable.MySettings
-import fr.c1.chatbot.composable.ProposalList
-import fr.c1.chatbot.composable.SpeechBubble
-import fr.c1.chatbot.model.Settings
-import fr.c1.chatbot.ui.theme.ChatBotTheme
-import fr.c1.chatbot.ui.theme.colorSchemeExtension
-import fr.c1.chatbot.utils.application
-import fr.c1.chatbot.utils.rememberMutableStateListOf
-import fr.c1.chatbot.utils.rememberMutableStateOf
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -44,8 +34,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import android.os.Bundle
-import android.util.Log
+import fr.c1.chatbot.composable.Message
+import fr.c1.chatbot.composable.MySearchBar
+import fr.c1.chatbot.composable.MySettings
+import fr.c1.chatbot.composable.ProposalList
+import fr.c1.chatbot.model.Settings
+import fr.c1.chatbot.ui.theme.ChatBotTheme
+import fr.c1.chatbot.ui.theme.colorSchemeExtension
+import fr.c1.chatbot.utils.application
+import fr.c1.chatbot.utils.rememberMutableStateListOf
+import fr.c1.chatbot.utils.rememberMutableStateOf
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 private const val TAG = "MainActivity"
@@ -140,7 +140,7 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
                 )
 
                 if (isBot)
-                    SpeechBubble(
+                    Message(
                         modifier = if (i == messages.lastIndex) mod else Modifier,
                         text = message,
                         color = MaterialTheme.colorSchemeExtension.bot,
@@ -151,11 +151,11 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
                             .fillMaxWidth()
                             .then(if (i == messages.lastIndex) mod else Modifier)
                     ) {
-                        SpeechBubble(
+                        Message(
                             modifier = Modifier.align(Alignment.CenterEnd),
                             text = message,
                             color = MaterialTheme.colorSchemeExtension.user,
-                            reversed = true
+                            isUser = true
                         )
                     }
             }
@@ -181,8 +181,8 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
             }
         }
 
-        var searchBarEnabled by rememberMutableStateOf(value = true)
-        var searchBarText by rememberMutableStateOf(value = "Search")
+        val searchBarEnabled by rememberMutableStateOf(value = true)
+        val searchBarText by rememberMutableStateOf(value = "Search")
 
         MySearchBar(
             placeholder = searchBarText,

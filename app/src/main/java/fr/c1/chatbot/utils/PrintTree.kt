@@ -6,7 +6,7 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
-private const val TAG = "Tree"
+private const val TAG = "PrintTree"
 
 data class Node(
     val id: Int,
@@ -63,9 +63,9 @@ fun buildTree(jsonData: JsonData): TreeNode? {
 
 fun printTree(node: TreeNode, level: Int = 0) {
     // Utiliser Log.d pour afficher les messages dans Logcat
-    Log.d("TreePrinter", "${"|  ".repeat(level)}${node.text}")
+    Log.d(TAG, "${"|  ".repeat(level)}${node.text}")
     node.links.forEach { (linkText, child) ->
-        Log.d("TreePrinter", "${"|  ".repeat(level + 1)}-> $linkText")
+        Log.d(TAG, "${"|  ".repeat(level + 1)}-> $linkText")
         printTree(child, level + 2)
     }
 }

@@ -1,14 +1,7 @@
 package fr.c1.chatbot
 
-import fr.c1.chatbot.composable.MySearchBar
-import fr.c1.chatbot.composable.ProposalList
-import fr.c1.chatbot.composable.SpeechBubble
-import fr.c1.chatbot.ui.theme.ChatBotTheme
-import fr.c1.chatbot.ui.theme.colorSchemeExtension
-import fr.c1.chatbot.utils.rememberMutableStateListOf
-import fr.c1.chatbot.utils.rememberMutableStateOf
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -36,8 +29,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
-import android.os.Bundle
-import android.util.Log
+import fr.c1.chatbot.composable.MessageBot
+import fr.c1.chatbot.composable.MySearchBar
+import fr.c1.chatbot.composable.ProposalList
+import fr.c1.chatbot.ui.theme.ChatBotTheme
+import fr.c1.chatbot.ui.theme.colorSchemeExtension
+import fr.c1.chatbot.utils.rememberMutableStateListOf
+import fr.c1.chatbot.utils.rememberMutableStateOf
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 private const val TAG = "MainActivity"
@@ -89,7 +89,7 @@ class MainActivity : ComponentActivity() {
                                 )
 
                                 if (isBot)
-                                    SpeechBubble(
+                                    MessageBot(
                                         modifier = if (i == messages.lastIndex) mod else Modifier,
                                         text = message,
                                         color = MaterialTheme.colorSchemeExtension.bot,
@@ -100,11 +100,11 @@ class MainActivity : ComponentActivity() {
                                             .fillMaxWidth()
                                             .then(if (i == messages.lastIndex) mod else Modifier)
                                     ) {
-                                        SpeechBubble(
+                                        MessageBot(
                                             modifier = Modifier.align(Alignment.CenterEnd),
                                             text = message,
                                             color = MaterialTheme.colorSchemeExtension.user,
-                                            reversed = true
+                                            isUser = true
                                         )
                                     }
                             }

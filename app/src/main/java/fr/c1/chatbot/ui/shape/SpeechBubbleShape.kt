@@ -25,7 +25,8 @@ import android.content.res.Configuration
 
 class SpeechBubbleShape(
     private val cornerRadius: Dp = 15.dp,
-    private val tipSize: Dp = 15.dp
+    private val tipSize: Dp = 15.dp,
+    private var sizeBubble : Size = Size(400f, 200f)
 ) : Shape {
 
     override fun createOutline(
@@ -40,8 +41,8 @@ class SpeechBubbleShape(
                 RoundRect(
                     left = tipSize,
                     top = 0f,
-                    right = size.width,
-                    bottom = size.height - tipSize,
+                    right = sizeBubble.width,
+                    bottom = sizeBubble.height - tipSize,
                     radiusX = cornerRadius,
                     radiusY = cornerRadius
                 )
@@ -49,17 +50,17 @@ class SpeechBubbleShape(
 
             moveTo(
                 x = tipSize,
-                y = size.height - tipSize - cornerRadius
+                y = sizeBubble.height - tipSize - cornerRadius
             )
 
             lineTo(
                 x = 0f,
-                y = size.height
+                y = sizeBubble.height
             )
 
             lineTo(
                 x = tipSize + cornerRadius,
-                y = size.height - tipSize
+                y = sizeBubble.height - tipSize
             )
 
             close()

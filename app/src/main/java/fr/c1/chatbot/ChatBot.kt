@@ -1,17 +1,19 @@
 package fr.c1.chatbot
 
 import fr.c1.chatbot.model.ActivitiesRepository
+import fr.c1.chatbot.model.Settings
 import fr.c1.chatbot.model.Tree
 import fr.c1.chatbot.utils.TTS
 import android.app.Application
 
 class ChatBot : Application() {
+    val chatbotTree = Tree()
+
     lateinit var tts: TTS
         private set
 
     override fun onCreate() {
         super.onCreate()
-        val chatbotTree = Tree()
         val fileIS = resources.openRawResource(R.raw.flow_chart)
 
         chatbotTree.initTree(fileIS)
@@ -19,5 +21,7 @@ class ChatBot : Application() {
         activitiesRepository.initAll(this)
 
         tts = TTS(this)
+
+        Settings.init(this)
     }
 }

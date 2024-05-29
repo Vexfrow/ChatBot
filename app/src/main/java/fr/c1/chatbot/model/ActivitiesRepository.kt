@@ -421,7 +421,7 @@ class ActivitiesRepository {
         initJardins(app)
         initFestivals(app)
         initEquipementsSport(app)
-        initAsso(app)
+//        initAsso(app)
     }
 
     /**

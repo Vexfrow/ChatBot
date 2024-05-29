@@ -92,11 +92,13 @@
     },
     {
       "id": 1004,
-      "text": "Activité physique"
+      "text": "Activité physique",
+        "action": "ActivitePhysique"
     },
     {
       "id": 1005,
-      "text": "Activité Culturelle"
+      "text": "Activité Culturelle",
+        "action": "ActiviteCulturelle"
     },
     {
       "id": 1006,

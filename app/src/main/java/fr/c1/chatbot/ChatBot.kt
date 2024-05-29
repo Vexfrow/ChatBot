@@ -7,6 +7,7 @@ import fr.c1.chatbot.utils.TTS
 import android.app.Application
 
 class ChatBot : Application() {
+    val activitiesRepository: ActivitiesRepository = ActivitiesRepository()
     val chatbotTree = Tree()
 
     lateinit var tts: TTS

@@ -7,6 +7,7 @@ class Festivals(
     val nom: String,
     val adresse: String,
     val codePostal: String,
+    val discipline: String,
     val accessible: Boolean
 ) : AbstractActivity() {
 

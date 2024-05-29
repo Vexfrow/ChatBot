@@ -7,7 +7,8 @@ class Associations(
     val nom: String,
     val adresse: String,
     val codePostal: String,
-    val accessible: Boolean) {
+    val accessible: Boolean
+) : AbstractActivity() {
 
     override fun toString(): String {
         return "Activities(departement='$departement', identifiant='$identifiant', commune='$commune', nom='$nom', adresse='$adresse', codePostal='$codePostal', accessible='$accessible')"

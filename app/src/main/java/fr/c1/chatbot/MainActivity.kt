@@ -52,6 +52,9 @@ import androidx.compose.ui.unit.dp
 import android.Manifest
 import android.os.Bundle
 import android.util.Log
+import androidx.work.WorkManager
+import fr.c1.chatbot.model.*
+import fr.c1.chatbot.utils.*
 import kotlin.time.Duration.Companion.seconds
 
 private const val TAG = "MainActivity"

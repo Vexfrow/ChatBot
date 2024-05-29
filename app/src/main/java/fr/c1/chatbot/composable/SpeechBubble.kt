@@ -1,7 +1,8 @@
 package fr.c1.chatbot.composable
 
+import android.net.Uri
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,7 +10,9 @@ import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +25,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -30,6 +35,9 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import fr.c1.chatbot.model.Settings
 import fr.c1.chatbot.ui.shape.SpeechBubbleShape
 import fr.c1.chatbot.ui.theme.ChatBotPrev
 import fr.c1.chatbot.ui.theme.LocalColorSchemeExtension
@@ -92,55 +100,87 @@ fun SpeechBubble(
     }
 }
 
-@Composable
-private fun CircleBot(
-    color: Color,
-    radius: Float,
-    modifier: Modifier = Modifier
-) {
-
-}
-
 
 @Composable
-fun MessageBot(
+fun Message(
     text: String,
     modifier: Modifier = Modifier,
     color: Color = LocalColorSchemeExtension.current.bot,
     isUser: Boolean = false
-
 ) {
-    var textSize by remember { mutableStateOf(IntSize(100, 100)) }
+    //var textSize by remember { mutableStateOf(IntSize(100, 100)) }
 
     Box(
         modifier = modifier
-            .widthIn(0.dp, 500.dp + 150f.dp)
-            .heightIn(0.dp, 500.dp)
+            .widthIn(0.dp, 600.dp) // Adjusted width
+            .heightIn(0.dp, 600.dp) // Adjusted height
+            .padding(10.dp) // General padding for the box
     ) {
+        // Speech Bubble positioned in the upper right corner
         Column(
-            modifier = Modifier
+            modifier = if (isUser)
+                Modifier
+                    .align(Alignment.TopStart)
+                    .padding(end = 120.dp)
+            else Modifier
                 .align(Alignment.TopEnd)
-                .padding(PaddingValues(start = 150f.dp))
-                .onGloballyPositioned { layoutCoordinates ->
-                    textSize = layoutCoordinates.size
-                },
-            verticalArrangement = Arrangement.spacedBy(100.dp) // Adjust the spacing as needed
+                .padding(start = 120.dp)// Adjust padding to position bubble correctly
         ) {
             SpeechBubble(
                 text = text,
+                color = color,
                 isUser = isUser
             )
         }
 
-        CircleBot(
-            color = Color.Red,
-            radius = 80f,
-            modifier = Modifier
-                //.align(Alignment.BottomStart)
-                .padding(PaddingValues(top = textSize.height.dp))
-        )
-    }
+        // Icon or Image positioned in the lower left corner
+        val iconModifier = if (isUser)
+            Modifier
+            .size(100.dp)
+            .align(Alignment.BottomEnd) // Aligning to the bottom start (lower left corner)
+            .padding(PaddingValues(end = 20.dp, top = 10.dp))
+        else
+            Modifier
+                .size(100.dp)
+                .align(Alignment.BottomStart) // Aligning to the bottom start (lower left corner)
+                .padding(PaddingValues(start = 20.dp, top = 10.dp))
 
+        val context = LocalContext.current
+
+        @Composable
+        fun MyIcon(icon: ImageVector) {
+            Icon(
+                modifier = iconModifier,
+                imageVector = icon,
+                contentDescription = null
+            )
+        }
+
+        @Composable
+        fun MyImage(img: Uri) {
+            Image(
+                modifier = iconModifier,
+                painter = rememberAsyncImagePainter(
+                    ImageRequest.Builder(context).data(img).build()
+                ),
+                contentDescription = null
+            )
+        }
+
+        if (!isUser) {
+            if (Settings.botImage == null) {
+                MyIcon(icon = Settings.botIcon)
+            } else {
+                MyImage(img = Settings.botImage!!)
+            }
+        } else {
+            if (Settings.userImage == null) {
+                MyIcon(icon = Settings.userIcon)
+            } else {
+                MyImage(img = Settings.userImage!!)
+            }
+        }
+    }
 }
 
 
@@ -148,6 +188,9 @@ fun MessageBot(
 //@Preview(device = Devices.PIXEL_TABLET, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun Prev() = ChatBotPrev {
-    MessageBot(" Jtsttttt, je n'aime pas le cassoulet", Modifier.align(Alignment.TopStart))
+    Message(
+        " J'ai envie de crevvvvvvvvvvvvvvvvvvvvveeeeeeeeeeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrrrrrrrrrrrrrrrr",
+        Modifier.align(Alignment.TopStart), isUser = true
+    )
     //SpeechBubble(text = "bllllllllllllllllllllllbblblblblblblblblblblblblblblbllblblblb",modifier = Modifier.align(Alignment.TopStart),isUser = true)
 }

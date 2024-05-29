@@ -1,16 +1,5 @@
 package fr.c1.chatbot
 
-import fr.c1.chatbot.composable.MySearchBar
-import fr.c1.chatbot.composable.MySettings
-import fr.c1.chatbot.composable.ProposalList
-import fr.c1.chatbot.model.Settings
-import fr.c1.chatbot.ui.theme.ChatBotTheme
-import fr.c1.chatbot.ui.theme.colorSchemeExtension
-import fr.c1.chatbot.utils.application
-import fr.c1.chatbot.utils.rememberMutableStateListOf
-import fr.c1.chatbot.utils.rememberMutableStateOf
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -45,12 +34,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.tooling.preview.Preview
-import fr.c1.chatbot.composable.MessageBot
+import fr.c1.chatbot.composable.Message
 import fr.c1.chatbot.composable.MySearchBar
+import fr.c1.chatbot.composable.MySettings
 import fr.c1.chatbot.composable.ProposalList
+import fr.c1.chatbot.model.Settings
 import fr.c1.chatbot.ui.theme.ChatBotTheme
 import fr.c1.chatbot.ui.theme.colorSchemeExtension
+import fr.c1.chatbot.utils.application
 import fr.c1.chatbot.utils.rememberMutableStateListOf
 import fr.c1.chatbot.utils.rememberMutableStateOf
 import kotlinx.coroutines.delay
@@ -141,27 +132,27 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
                     scaleY = scale.value
                 )
 
-                                if (isBot)
-                                    MessageBot(
-                                        modifier = if (i == messages.lastIndex) mod else Modifier,
-                                        text = message,
-                                        color = MaterialTheme.colorSchemeExtension.bot,
-                                    )
-                                else
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .then(if (i == messages.lastIndex) mod else Modifier)
-                                    ) {
-                                        MessageBot(
-                                            modifier = Modifier.align(Alignment.CenterEnd),
-                                            text = message,
-                                            color = MaterialTheme.colorSchemeExtension.user,
-                                            isUser = true
-                                        )
-                                    }
-                            }
-                        }
+                if (isBot)
+                    Message(
+                        modifier = if (i == messages.lastIndex) mod else Modifier,
+                        text = message,
+                        color = MaterialTheme.colorSchemeExtension.bot,
+                    )
+                else
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .then(if (i == messages.lastIndex) mod else Modifier)
+                    ) {
+                        Message(
+                            modifier = Modifier.align(Alignment.CenterEnd),
+                            text = message,
+                            color = MaterialTheme.colorSchemeExtension.user,
+                            isUser = true
+                        )
+                    }
+            }
+        }
 
         var answers by rememberMutableStateOf(value = tree.getAnswersId()
             .map { tree.getAnswerText(it) })
@@ -183,8 +174,8 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
             }
         }
 
-        var searchBarEnabled by rememberMutableStateOf(value = true)
-        var searchBarText by rememberMutableStateOf(value = "Search")
+        val searchBarEnabled by rememberMutableStateOf(value = true)
+        val searchBarText by rememberMutableStateOf(value = "Search")
 
         MySearchBar(
             placeholder = searchBarText,

@@ -70,6 +70,9 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.squareup.sdk:point-of-sale-sdk:2.1")
+    implementation("com.squareup.moshi:moshi:1.15.1")
+    implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
 
     implementation(libs.coil)
 
@@ -83,4 +86,16 @@ dependencies {
     androidTestImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    val workVersion = "2.9.0"
+    // Kotlin + coroutines
+    implementation("androidx.work:work-runtime-ktx:$workVersion")
+    // optional - RxJava2 support
+    implementation("androidx.work:work-rxjava2:$workVersion")
+    // optional - GCMNetworkManager support
+    implementation("androidx.work:work-gcm:$workVersion")
+    // optional - Test helpers
+    androidTestImplementation("androidx.work:work-testing:$workVersion")
+    // optional - Multiprocess support
+    implementation("androidx.work:work-multiprocess:$workVersion")
 }

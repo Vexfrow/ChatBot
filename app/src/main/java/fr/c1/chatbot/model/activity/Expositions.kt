@@ -7,10 +7,16 @@ class Expositions(
     val commune: String,
     val nom: String,
     val url: String,
-    val accessible: Boolean
+    val accessible: Boolean,
+    passions: List<String> = listOf(
+        "exposition", "musée", "peinture", "sculpture",
+        "photographie", "art", "histoire", "culture",
+        "patrimoine", "visite", "visite guidée", "visite libre",
+        "visite commentée", "visite virtuelle", "exposition virtuelle",
+    )
 ) : AbstractActivity() {
 
     override fun toString(): String {
-        return "Activities(region='$region', departement='$departement', identifiant='$identifiant', commune='$commune', nom='$nom', url='$url', accessible='$accessible')"
+        return "Exposition (region='$region', departement='$departement', identifiant='$identifiant', commune='$commune', nom='$nom', url='$url', accessible='$accessible')"
     }
 }

@@ -1,5 +1,7 @@
 package fr.c1.chatbot.model
 
+import android.app.Application
+import android.location.Location
 import fr.c1.chatbot.R
 import fr.c1.chatbot.model.activity.AbstractActivity
 import fr.c1.chatbot.model.activity.Associations
@@ -11,7 +13,7 @@ import fr.c1.chatbot.model.activity.Festivals
 import fr.c1.chatbot.model.activity.Jardins
 import fr.c1.chatbot.model.activity.Musees
 import fr.c1.chatbot.model.activity.Sites
-import android.app.Application
+import fr.c1.chatbot.model.activity.Type
 import java.io.BufferedInputStream
 import java.io.InputStream
 
@@ -62,18 +64,80 @@ class ActivitiesRepository {
      */
     private val associationsList = mutableListOf<Associations>()
 
-    val all: List<List<AbstractActivity>>
-        get() = listOf(
-            museesList,
-            sitesList,
-            expositionsList,
-            contenusList,
-            edificesList,
-            jardinsList,
-            festivalsList,
-            equipementsSportList,
-            associationsList
-        )
+    val all: List<AbstractActivity>
+        get() = museesList + sitesList + expositionsList + contenusList + edificesList + jardinsList + festivalsList + equipementsSportList + associationsList
+
+    /**
+     * Lise de villes de l'utilisateur
+     */
+    private val villesList = mutableListOf<String>()
+
+    /**
+     * Date souhaitée par l'utilisateur
+     */
+    private var date: String = ""
+
+    /**
+     * Distance souhaitée par l'utilisateur
+     */
+    private var distance: Int = 0
+
+    /**
+     * Type d'activité souhaitée par l'utilisateur
+     */
+    private var type: Type = Type.ALL
+
+    /**
+     * Localisation de l'utilisateur
+     */
+    private var localisation: Location = Location("")
+
+    /**
+     * Passions de l'utilisateur
+     */
+    private val passions = mutableListOf<String>()
+
+    /**
+     * Ajouter une ville
+     */
+    fun addVille(ville: String) {
+        villesList.add(ville)
+    }
+
+    /**
+     * Ajouter une date
+     */
+    fun setDate(date: String) {
+        this.date = date
+    }
+
+    /**
+     * Ajouter une distance
+     */
+    fun setDistance(distance: Int) {
+        this.distance = distance
+    }
+
+    /**
+     * Ajouter un type d'activité
+     */
+    fun setType(type: Type) {
+        this.type = type
+    }
+
+    /**
+     * Ajouter une localisation
+     */
+    fun setLocalisation(localisation: Location) {
+        this.localisation = localisation
+    }
+
+    /**
+     * Ajouter une passion
+     */
+    fun addPassion(passion: String) {
+        passions.add(passion)
+    }
 
     /**
      * Récupérer la liste des musées
@@ -136,6 +200,48 @@ class ActivitiesRepository {
      */
     fun getAssociationsList(): List<Associations> {
         return associationsList
+    }
+
+    /**
+     * Récupérer la liste des villes
+     */
+    fun getVillesList(): List<String> {
+        return villesList
+    }
+
+    /**
+     * Récupérer la date
+     */
+    fun getDate(): String {
+        return date
+    }
+
+    /**
+     * Récupérer la distance
+     */
+    fun getDistance(): Int {
+        return distance
+    }
+
+    /**
+     * Récupérer le type d'activité
+     */
+    fun getType(): Type {
+        return type
+    }
+
+    /**
+     * Récupérer la localisation
+     */
+    fun getLocalisation(): Location {
+        return localisation
+    }
+
+    /**
+     * Récupérer les passions
+     */
+    fun getPassions(): List<String> {
+        return passions
     }
 
     /**
@@ -344,6 +450,7 @@ class ActivitiesRepository {
             val adresse = csvRecord[12]
             val nom = csvRecord[0]
             val codePostal = csvRecord[5]
+            val discipline = csvRecord[18]
             val activity = Festivals(
                 region,
                 departement,
@@ -351,6 +458,7 @@ class ActivitiesRepository {
                 nom,
                 adresse,
                 codePostal,
+                discipline,
                 true
             )
             festivalsList.add(activity)
@@ -424,6 +532,13 @@ class ActivitiesRepository {
     }
 
     /**
+     * Initialiser les villes choisies par l'utilisateur
+     */
+    private fun initVilles() {
+        villesList.add("Grenoble")
+    }
+
+    /**
      * Initialiser toutes les listes
      */
     fun initAll(app: Application) {
@@ -435,7 +550,8 @@ class ActivitiesRepository {
         initJardins(app)
         initFestivals(app)
         initEquipementsSport(app)
-//        initAsso(app)
+        initAsso(app)
+        initVilles()
     }
 
     /**
@@ -545,12 +661,30 @@ class ActivitiesRepository {
     fun <T> selectionnerParRegion(list: List<T>, region: String): List<T> {
         val clazz = list.first()!!::class
         return when (clazz) {
-            Musees::class -> list.filter { (it as Musees).region.lowercase().contains(region.lowercase()) }
-            Sites::class -> list.filter { (it as Sites).region.lowercase().contains(region.lowercase()) }
-            Expositions::class -> list.filter { (it as Expositions).region.lowercase().contains(region.lowercase()) }
-            Edifices::class -> list.filter { (it as Edifices).region.lowercase().contains(region.lowercase()) }
-            Jardins::class -> list.filter { (it as Jardins).region.lowercase().contains(region.lowercase()) }
-            Festivals::class -> list.filter { (it as Festivals).region.lowercase().contains(region.lowercase()) }
+            Musees::class -> list.filter {
+                (it as Musees).region.lowercase().contains(region.lowercase())
+            }
+
+            Sites::class -> list.filter {
+                (it as Sites).region.lowercase().contains(region.lowercase())
+            }
+
+            Expositions::class -> list.filter {
+                (it as Expositions).region.lowercase().contains(region.lowercase())
+            }
+
+            Edifices::class -> list.filter {
+                (it as Edifices).region.lowercase().contains(region.lowercase())
+            }
+
+            Jardins::class -> list.filter {
+                (it as Jardins).region.lowercase().contains(region.lowercase())
+            }
+
+            Festivals::class -> list.filter {
+                (it as Festivals).region.lowercase().contains(region.lowercase())
+            }
+
             else -> list
         }
     }
@@ -579,14 +713,38 @@ class ActivitiesRepository {
     fun <T> selectionnerParDepartement(list: List<T>, departement: String): List<T> {
         val clazz = list.first()!!::class
         return when (clazz) {
-            Musees::class -> list.filter { (it as Musees).departement.lowercase().contains(departement.lowercase()) }
-            Sites::class -> list.filter { (it as Sites).departement.lowercase().contains(departement.lowercase()) }
-            Expositions::class -> list.filter { (it as Expositions).departement.lowercase().contains(departement.lowercase()) }
-            Edifices::class -> list.filter { (it as Edifices).departement.lowercase().contains(departement.lowercase()) }
-            Jardins::class -> list.filter { (it as Jardins).departement.lowercase().contains(departement.lowercase()) }
-            Festivals::class -> list.filter { (it as Festivals).departement.lowercase().contains(departement.lowercase()) }
-            EquipementsSport::class -> list.filter { (it as EquipementsSport).departement.lowercase().contains(departement.lowercase()) }
-            Associations::class -> list.filter { (it as Associations).departement.lowercase().contains(departement.lowercase()) }
+            Musees::class -> list.filter {
+                (it as Musees).departement.lowercase().contains(departement.lowercase())
+            }
+
+            Sites::class -> list.filter {
+                (it as Sites).departement.lowercase().contains(departement.lowercase())
+            }
+
+            Expositions::class -> list.filter {
+                (it as Expositions).departement.lowercase().contains(departement.lowercase())
+            }
+
+            Edifices::class -> list.filter {
+                (it as Edifices).departement.lowercase().contains(departement.lowercase())
+            }
+
+            Jardins::class -> list.filter {
+                (it as Jardins).departement.lowercase().contains(departement.lowercase())
+            }
+
+            Festivals::class -> list.filter {
+                (it as Festivals).departement.lowercase().contains(departement.lowercase())
+            }
+
+            EquipementsSport::class -> list.filter {
+                (it as EquipementsSport).departement.lowercase().contains(departement.lowercase())
+            }
+
+            Associations::class -> list.filter {
+                (it as Associations).departement.lowercase().contains(departement.lowercase())
+            }
+
             else -> list
         }
     }
@@ -616,15 +774,42 @@ class ActivitiesRepository {
     fun <T> selectionnerParCommune(list: List<T>, commune: String): List<T> {
         val clazz = list.first()!!::class
         return when (clazz) {
-            Musees::class -> list.filter { (it as Musees).commune.lowercase().contains(commune.lowercase()) }
-            Sites::class -> list.filter { (it as Sites).commune.lowercase().contains(commune.lowercase()) }
-            Expositions::class -> list.filter { (it as Expositions).commune.lowercase().contains(commune.lowercase()) }
-            Contenus::class -> list.filter { (it as Contenus).commune.lowercase().contains(commune.lowercase()) }
-            Edifices::class -> list.filter { (it as Edifices).commune.lowercase().contains(commune.lowercase()) }
-            Jardins::class -> list.filter { (it as Jardins).commune.lowercase().contains(commune.lowercase()) }
-            Festivals::class -> list.filter { (it as Festivals).commune.lowercase().contains(commune.lowercase()) }
-            EquipementsSport::class -> list.filter { (it as EquipementsSport).commune.lowercase().contains(commune.lowercase()) }
-            Associations::class -> list.filter { (it as Associations).commune.lowercase().contains(commune.lowercase()) }
+            Musees::class -> list.filter {
+                (it as Musees).commune.lowercase().contains(commune.lowercase())
+            }
+
+            Sites::class -> list.filter {
+                (it as Sites).commune.lowercase().contains(commune.lowercase())
+            }
+
+            Expositions::class -> list.filter {
+                (it as Expositions).commune.lowercase().contains(commune.lowercase())
+            }
+
+            Contenus::class -> list.filter {
+                (it as Contenus).commune.lowercase().contains(commune.lowercase())
+            }
+
+            Edifices::class -> list.filter {
+                (it as Edifices).commune.lowercase().contains(commune.lowercase())
+            }
+
+            Jardins::class -> list.filter {
+                (it as Jardins).commune.lowercase().contains(commune.lowercase())
+            }
+
+            Festivals::class -> list.filter {
+                (it as Festivals).commune.lowercase().contains(commune.lowercase())
+            }
+
+            EquipementsSport::class -> list.filter {
+                (it as EquipementsSport).commune.lowercase().contains(commune.lowercase())
+            }
+
+            Associations::class -> list.filter {
+                (it as Associations).commune.lowercase().contains(commune.lowercase())
+            }
+
             else -> list
         }
     }
@@ -653,14 +838,38 @@ class ActivitiesRepository {
     fun <T> selectionnerParNom(list: List<T>, nom: String): List<T> {
         val clazz = list.first()!!::class
         return when (clazz) {
-            Musees::class -> list.filter { (it as Musees).nom.lowercase().contains(nom.lowercase()) }
-            Expositions::class -> list.filter { (it as Expositions).nom.lowercase().contains(nom.lowercase()) }
-            Contenus::class -> list.filter { (it as Contenus).nom.lowercase().contains(nom.lowercase()) }
-            Edifices::class -> list.filter { (it as Edifices).nom.lowercase().contains(nom.lowercase()) }
-            Jardins::class -> list.filter { (it as Jardins).nom.lowercase().contains(nom.lowercase()) }
-            Festivals::class -> list.filter { (it as Festivals).nom.lowercase().contains(nom.lowercase()) }
-            EquipementsSport::class -> list.filter { (it as EquipementsSport).nom.lowercase().contains(nom.lowercase()) }
-            Associations::class -> list.filter { (it as Associations).nom.lowercase().contains(nom.lowercase()) }
+            Musees::class -> list.filter {
+                (it as Musees).nom.lowercase().contains(nom.lowercase())
+            }
+
+            Expositions::class -> list.filter {
+                (it as Expositions).nom.lowercase().contains(nom.lowercase())
+            }
+
+            Contenus::class -> list.filter {
+                (it as Contenus).nom.lowercase().contains(nom.lowercase())
+            }
+
+            Edifices::class -> list.filter {
+                (it as Edifices).nom.lowercase().contains(nom.lowercase())
+            }
+
+            Jardins::class -> list.filter {
+                (it as Jardins).nom.lowercase().contains(nom.lowercase())
+            }
+
+            Festivals::class -> list.filter {
+                (it as Festivals).nom.lowercase().contains(nom.lowercase())
+            }
+
+            EquipementsSport::class -> list.filter {
+                (it as EquipementsSport).nom.lowercase().contains(nom.lowercase())
+            }
+
+            Associations::class -> list.filter {
+                (it as Associations).nom.lowercase().contains(nom.lowercase())
+            }
+
             else -> list
         }
     }
@@ -683,8 +892,14 @@ class ActivitiesRepository {
     fun <T> selectionnerParLieu(list: List<T>, lieu: String): List<T> {
         val clazz = list.first()!!::class
         return when (clazz) {
-            Musees::class -> list.filter { (it as Musees).lieu.lowercase().contains(lieu.lowercase()) }
-            Contenus::class -> list.filter { (it as Contenus).lieu.lowercase().contains(lieu.lowercase()) }
+            Musees::class -> list.filter {
+                (it as Musees).lieu.lowercase().contains(lieu.lowercase())
+            }
+
+            Contenus::class -> list.filter {
+                (it as Contenus).lieu.lowercase().contains(lieu.lowercase())
+            }
+
             else -> list
         }
     }
@@ -711,12 +926,30 @@ class ActivitiesRepository {
     fun <T> selectionnerParCodePostal(list: List<T>, codePostal: String): List<T> {
         val clazz = list.first()!!::class
         return when (clazz) {
-            Musees::class -> list.filter { (it as Musees).codePostal.lowercase().contains(codePostal.lowercase()) }
-            Contenus::class -> list.filter { (it as Contenus).codePostal.lowercase().contains(codePostal.lowercase()) }
-            Jardins::class -> list.filter { (it as Jardins).codePostal.lowercase().contains(codePostal.lowercase()) }
-            Festivals::class -> list.filter { (it as Festivals).codePostal.lowercase().contains(codePostal.lowercase()) }
-            EquipementsSport::class -> list.filter { (it as EquipementsSport).codePostal.lowercase().contains(codePostal.lowercase()) }
-            Associations::class -> list.filter { (it as Associations).codePostal.lowercase().contains(codePostal.lowercase()) }
+            Musees::class -> list.filter {
+                (it as Musees).codePostal.lowercase().contains(codePostal.lowercase())
+            }
+
+            Contenus::class -> list.filter {
+                (it as Contenus).codePostal.lowercase().contains(codePostal.lowercase())
+            }
+
+            Jardins::class -> list.filter {
+                (it as Jardins).codePostal.lowercase().contains(codePostal.lowercase())
+            }
+
+            Festivals::class -> list.filter {
+                (it as Festivals).codePostal.lowercase().contains(codePostal.lowercase())
+            }
+
+            EquipementsSport::class -> list.filter {
+                (it as EquipementsSport).codePostal.lowercase().contains(codePostal.lowercase())
+            }
+
+            Associations::class -> list.filter {
+                (it as Associations).codePostal.lowercase().contains(codePostal.lowercase())
+            }
+
             else -> list
         }
     }
@@ -753,5 +986,131 @@ class ActivitiesRepository {
             Associations::class -> list.sortedBy { (it as Associations).identifiant }
             else -> list
         }
+    }
+
+    /**
+     * Sélectionner par passion
+     */
+    fun selectionnerParPassion(
+        list: List<AbstractActivity>,
+        passion: String
+    ): List<AbstractActivity> {
+        // passion dans la liste des passions
+        return list.filter { it.passions.contains(passion.lowercase()) }
+    }
+
+    /**
+     * Sélectionner par distance
+     */
+    private fun selectionnerParDistance(
+        list: List<AbstractActivity>,
+        distanceMax: Int,
+        localisation: Location
+    ): List<AbstractActivity> {
+        // Si la liste n'a pas de localisation, on ne peut pas sélectionner par distance
+        if (list.isEmpty() || localisation.latitude == 0.0 || localisation.longitude == 0.0) {
+            return emptyList()
+        }
+        // TODO : distance entre la localisation et l'activité
+        /*return list.filter {
+            android.location.Location.distanceBetween(
+                localisation.latitude,
+                localisation.longitude,
+                it.localisation.latitude,
+                it.localisation.longitude,
+                FloatArray(1)
+            )[0] <= distanceMax*/
+        return list
+    }
+
+    /**
+     * Obtenir les résultats de la recherche
+     */
+    fun getResultats(): List<AbstractActivity> {
+        // Différents critères :
+        // Ville, date, distance, type, localisation, passions
+        // Récupérer les activités correspondant aux critères
+        var list: List<List<AbstractActivity>> = listOf(
+            museesList,
+            sitesList,
+            expositionsList,
+            contenusList,
+            edificesList,
+            jardinsList,
+            festivalsList,
+            equipementsSportList,
+            associationsList
+        )
+        // Tri par Type
+        when (getType()) {
+            Type.ALL -> // Ne rien faire
+                Unit
+
+            Type.SPORT -> list = listOf(
+                equipementsSportList,
+                associationsList.filter { it.nom.lowercase().contains("sport") })
+
+            Type.CULTURE -> list = listOf(
+                museesList,
+                sitesList,
+                expositionsList,
+                contenusList,
+                edificesList,
+                jardinsList,
+                festivalsList
+            )
+
+            Type.MUSIQUE -> list =
+                listOf(festivalsList.filter { it.discipline.lowercase().contains("musique") })
+
+            Type.CINEMA -> list =
+                listOf(festivalsList.filter { it.discipline.lowercase().contains("cinéma") },
+                    festivalsList.filter { it.discipline.lowercase().contains("cinema") })
+
+            Type.LITTERATURE -> list =
+                listOf(festivalsList.filter { it.discipline.lowercase().contains("littérature") },
+                    festivalsList.filter { it.discipline.lowercase().contains("litterature") },
+                    contenusList.filter { it.nom.lowercase().contains("livre") },
+                    contenusList.filter { it.nom.lowercase().contains("littérature") },
+                    contenusList.filter { it.nom.lowercase().contains("litterature") },
+                    associationsList.filter { it.nom.lowercase().contains("littérature") },
+                    associationsList.filter { it.nom.lowercase().contains("litterature") },
+                    associationsList.filter { it.nom.lowercase().contains("livre") })
+
+            Type.ASSOCIATION -> list = listOf(associationsList)
+
+            Type.AUTRE ->
+                Unit
+        }
+        // Tri par Ville
+        getVillesList().forEach { ville ->
+            list = list.map { selectionnerParCommune(it, ville) }
+        }
+        // Tri par Date
+        if (getDate() != "") {
+            // TODO : date des activités
+        }
+        // Tri par Distance
+        if (getDistance() != 0) {
+            // TODO : distance des activités à la localisation actuelle
+        }
+        // Tri par Localisation
+        if (getLocalisation().latitude != 0.0 && getLocalisation().longitude != 0.0) {
+            // TODO : activités dans un rayon de 5km par rapport à la localisation actuelle
+            list = list.map {
+                selectionnerParDistance(it, 5, getLocalisation())
+            }
+        }
+        // Tri par Passion
+        getPassions().forEach { passion ->
+            list = list.map {
+                selectionnerParPassion(it, passion)
+            }
+        }
+        list = list.map {
+            trierParNom(it)
+        }
+        // TODO : Trier la liste totale avant de retourner
+        return list.flatten()
     }
 }

@@ -4,6 +4,7 @@ import fr.c1.chatbot.composable.Message
 import fr.c1.chatbot.composable.MySearchBar
 import fr.c1.chatbot.composable.MySettings
 import fr.c1.chatbot.composable.ProposalList
+import fr.c1.chatbot.model.ActivitiesRepository
 import fr.c1.chatbot.model.Event
 import fr.c1.chatbot.model.Settings
 import fr.c1.chatbot.model.toDate
@@ -66,9 +67,14 @@ private var initNotif = false
 class MainActivity : ComponentActivity() {
 
     private lateinit var workManager: WorkManager
+    private lateinit var app: ChatBot
+    private lateinit var activitiesRepository: ActivitiesRepository
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         workManager = WorkManager.getInstance(this)
+        app = application as ChatBot
+        activitiesRepository = app.activitiesRepository
+        activitiesRepository.initAll(application)
         enableEdgeToEdge()
         setContent {
             ChatBotTheme {
@@ -224,6 +230,8 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
     val lazyListState = rememberLazyListState()
     val animated = rememberMutableStateListOf<Boolean>()
 
+    val activitiesRepository = application.activitiesRepository
+
     val tts = application.tts
 
     if (!enabled)
@@ -292,7 +300,7 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
             val i = tree.getAnswersId()
                 .first { i -> tree.getAnswerText(i) == it }
             messages += it
-            tree.selectAnswer(i)
+            tree.selectAnswer(i, activitiesRepository)
 
             crtScope.launch {
                 lazyListState.animateScrollToItem(messages.size)

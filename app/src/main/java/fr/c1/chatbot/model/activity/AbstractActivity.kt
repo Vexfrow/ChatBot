@@ -1,3 +1,5 @@
 package fr.c1.chatbot.model.activity
 
-abstract class AbstractActivity
+abstract class AbstractActivity {
+    val passions = mutableListOf<String>()
+}

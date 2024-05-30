@@ -76,6 +76,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.6.7")
 
     implementation(libs.coil)
+    implementation(libs.core.ktx)
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     androidTestImplementation("androidx.test:runner:1.5.2")

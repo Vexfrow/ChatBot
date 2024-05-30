@@ -342,7 +342,8 @@ private fun Prev() = ChatBotPrev {
                 accessible = true,
                 region = "reg",
                 adresse = "addr",
-                codePostal = "cp"
+                codePostal = "cp",
+                discipline = "disc"
             ),
 
             Jardins(

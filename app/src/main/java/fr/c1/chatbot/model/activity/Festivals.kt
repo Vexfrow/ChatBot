@@ -7,10 +7,16 @@ class Festivals(
     val nom: String,
     val adresse: String,
     val codePostal: String,
-    val accessible: Boolean
+    val discipline: String,
+    val accessible: Boolean,
+    passions: List<String> = listOf(
+        "musique", "danse", "théâtre", "cirque",
+        "cinéma", "littérature", "arts plastiques",
+        "photographie", "rire", "humour", "chant"
+    )
 ) : AbstractActivity() {
 
     override fun toString(): String {
-        return "Activities(region='$region', departement='$departement', commune='$commune', nom='$nom', adresse='$adresse', codePostal='$codePostal', accessible='$accessible')"
+        return "Festival (region='$region', departement='$departement', commune='$commune', nom='$nom', adresse='$adresse', codePostal='$codePostal', accessible='$accessible')"
     }
 }

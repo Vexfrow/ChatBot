@@ -160,7 +160,7 @@ class MainActivity : ComponentActivity() {
 
     private fun addNotifPush(events: List<Event>) {
         if (initNotif) return
-        workManager.cancelAllWork()
+        workManager.cancelAllWorkByTag("EventReminderWorker")
         Log.d(TAG, "onCreate: cancelAllWork()")
         for (event in events) {
             if (event.dtStart >= System.currentTimeMillis() + (1000 * 60 * 60)) { // Si l'event est dans le futur (dans 1h minimum)

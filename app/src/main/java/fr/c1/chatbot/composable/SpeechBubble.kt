@@ -76,9 +76,9 @@ fun SpeechBubble(
             end = tipSize + 10.dp,
             bottom = tipSize + 50.dp
         ) else PaddingValues(
-            start = tipSize + 50.dp,
+            start = tipSize + 20.dp,
             top = 10.dp,
-            end = 20.dp,
+            end = 30.dp,
             bottom = tipSize + 45.dp
         )
 
@@ -189,8 +189,8 @@ fun Message(
 @Composable
 private fun Prev() = ChatBotPrev {
     Message(
-        " J'ai envie de crevvvvvvvvvvvvvvvvvvvvveeeeeeeeeeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrrrrrrrrrrrrrrrr",
-        Modifier.align(Alignment.TopStart), isUser = true
+        " J'ai envie de another test bite the dust",
+        Modifier.align(Alignment.TopStart), isUser = false
     )
     //SpeechBubble(text = "bllllllllllllllllllllllbblblblblblblblblblblblblblblbllblblblb",modifier = Modifier.align(Alignment.TopStart),isUser = true)
 }

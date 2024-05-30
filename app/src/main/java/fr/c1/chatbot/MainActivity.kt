@@ -18,6 +18,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -68,8 +71,11 @@ class MainActivity : ComponentActivity() {
 
                         val ctx = LocalContext.current
                         IconButton(
-                            modifier = Modifier
+                            modifier = if (!settings) Modifier
                                 .align(Alignment.TopEnd)
+                                .padding(end = 10.dp, top = 10.dp)
+                            else Modifier
+                                .align(Alignment.TopStart)
                                 .padding(end = 10.dp, top = 10.dp),
                             onClick = {
                                 if (settings)
@@ -79,14 +85,17 @@ class MainActivity : ComponentActivity() {
                             }
                         ) {
                             Icon(
-                                modifier = Modifier.size(50.dp),
-                                imageVector = Icons.Default.Settings,
+                                modifier = Modifier.size(70.dp),
+                                imageVector =
+                                if (!settings) Icons.Default.Settings
+                                else Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "Settings"
                             )
                         }
 
-                        if (settings)
+                        if (settings) {
                             MySettings()
+                        }
                     }
                 }
             }

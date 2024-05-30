@@ -56,7 +56,7 @@
     },
     {
       "id": 13,
-      "text": "Bien sûr, vous pouvez accéder à votre historique en **mettre instruction**"
+      "text": "**Indication pour voir l'historique de recherche**"
     },
     {
       "id": 14,
@@ -64,12 +64,12 @@
     },
     {
       "id": 15,
-      "text": "Cette fonctionnalités n'est pas disponible pour le moment"
+      "text": "Cette action n'est pas possible pour le moment"
     },
     {
       "id": 16,
-      "text": "Voici des résultats qui correspondent à vos demandes et qui pourraient vous plaire",
-      "action": "resultat"
+      "text": "Voici des résultats qui correspondent a vos demandes et qui pourraient vous plaire",
+      "action": "AfficherResultat"
     },
     {
       "id": 17,
@@ -85,17 +85,17 @@
     {
       "id": 1001,
       "text": "Choisir une date",
-      "action": "date"
+      "action": "EntrerDate"
     },
     {
       "id": 1002,
       "text": "Choisir une ville",
-      "action": "ville"
+      "action": "EntrerVille"
     },
     {
       "id": 1003,
       "text": "Rentrer une distance (en km)",
-      "action": "distance"
+      "action": "EntrerDistance"
     },
     {
       "id": 1004,
@@ -108,7 +108,7 @@
     {
       "id": 1006,
       "text": "Utiliser la géolocalisation",
-      "action": "Géolocalisation"
+      "action": "Geolocalisation"
     },
     {
       "id": 1007,
@@ -160,6 +160,15 @@
     },
     {
       "id": 1019,
+      "text": "Choisir passions",
+      "actions": "ChoisirPassions"
+    },
+    {
+      "id": 1020,
+      "text": "Passer à la suite"
+    },
+    {
+      "id": 1021,
       "text": "Je souhaite désactiver toutes les notifications"
     }
   ],
@@ -250,6 +259,11 @@
       "answer": 1010
     },
     {
+      "from": 7,
+      "to": 16,
+      "answer": 1010
+    },
+    {
       "from": 8,
       "to": 16,
       "answer": 1006
@@ -277,7 +291,7 @@
     {
       "from": 10,
       "to": 17,
-      "answer": 1019
+      "answer": 1021
     },
     {
       "from": 9,

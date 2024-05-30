@@ -12,7 +12,7 @@ class Musees(
     val telephone: String,
     val url: String,
     val accessible: Boolean
-) {
+) : AbstractActivity() {
 
     override fun toString(): String {
         return "Activities(region='$region', departement='$departement', identifiant='$identifiant', commune='$commune', nom='$nom', adresse='$adresse', lieu='$lieu', codePostal='$codePostal', telephone='$telephone', url='$url', accessible='$accessible')"

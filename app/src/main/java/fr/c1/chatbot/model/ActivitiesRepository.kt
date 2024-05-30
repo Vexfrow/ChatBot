@@ -1,7 +1,7 @@
 package fr.c1.chatbot.model
 
-import android.app.Application
 import fr.c1.chatbot.R
+import fr.c1.chatbot.model.activity.AbstractActivity
 import fr.c1.chatbot.model.activity.Associations
 import fr.c1.chatbot.model.activity.Contenus
 import fr.c1.chatbot.model.activity.Edifices
@@ -11,6 +11,7 @@ import fr.c1.chatbot.model.activity.Festivals
 import fr.c1.chatbot.model.activity.Jardins
 import fr.c1.chatbot.model.activity.Musees
 import fr.c1.chatbot.model.activity.Sites
+import android.app.Application
 import java.io.BufferedInputStream
 import java.io.InputStream
 
@@ -60,6 +61,19 @@ class ActivitiesRepository {
      * Liste des associations
      */
     private val associationsList = mutableListOf<Associations>()
+
+    val all: List<List<AbstractActivity>>
+        get() = listOf(
+            museesList,
+            sitesList,
+            expositionsList,
+            contenusList,
+            edificesList,
+            jardinsList,
+            festivalsList,
+            equipementsSportList,
+            associationsList
+        )
 
     /**
      * Récupérer la liste des musées

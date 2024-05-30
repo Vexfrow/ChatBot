@@ -8,7 +8,8 @@ class Contenus(
     val lieu: String,
     val codePostal: String,
     val url: String,
-    val accessible: Boolean) {
+    val accessible: Boolean
+) : AbstractActivity() {
 
     override fun toString(): String {
         return "Activities(identifiant='$identifiant', commune='$commune', nom='$nom', adresse='$adresse', lieu='$lieu', codePostal='$codePostal', url='$url', accessible='$accessible')"

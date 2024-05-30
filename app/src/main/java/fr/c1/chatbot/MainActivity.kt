@@ -4,13 +4,16 @@ import fr.c1.chatbot.composable.MySearchBar
 import fr.c1.chatbot.composable.MySettings
 import fr.c1.chatbot.composable.ProposalList
 import fr.c1.chatbot.composable.SpeechBubble
+import fr.c1.chatbot.model.Event
 import fr.c1.chatbot.model.Settings
+import fr.c1.chatbot.model.toDate
 import fr.c1.chatbot.ui.theme.ChatBotTheme
 import fr.c1.chatbot.ui.theme.colorSchemeExtension
 import fr.c1.chatbot.utils.Calendar
 import fr.c1.chatbot.utils.application
 import fr.c1.chatbot.utils.rememberMutableStateListOf
 import fr.c1.chatbot.utils.rememberMutableStateOf
+import fr.c1.chatbot.utils.scheduleEventReminders
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import androidx.activity.ComponentActivity
@@ -49,6 +52,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.work.WorkManager
 import android.Manifest
 import android.os.Bundle
 import android.util.Log

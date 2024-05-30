@@ -73,6 +73,7 @@ dependencies {
     implementation("com.squareup.sdk:point-of-sale-sdk:2.1")
     implementation("com.squareup.moshi:moshi:1.15.1")
     implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
+    implementation("androidx.compose.material:material-icons-extended:1.6.7")
 
     implementation(libs.coil)
 

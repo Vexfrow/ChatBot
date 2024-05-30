@@ -7,7 +7,8 @@ class Expositions(
     val commune: String,
     val nom: String,
     val url: String,
-    val accessible: Boolean) {
+    val accessible: Boolean
+) : AbstractActivity() {
 
     override fun toString(): String {
         return "Activities(region='$region', departement='$departement', identifiant='$identifiant', commune='$commune', nom='$nom', url='$url', accessible='$accessible')"

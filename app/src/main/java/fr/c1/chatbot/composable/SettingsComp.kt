@@ -160,10 +160,14 @@ fun MySettings() {
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                         items(Settings.iconsAvaible) { icon ->
                             IconOption(imageVector = icon) {
-                                if (botDialog)
+                                if (botDialog) {
                                     Settings.botIcon = icon
-                                else
+                                    Settings.botImage = null
+                                }
+                                else {
                                     Settings.userIcon = icon
+                                    Settings.userImage = null
+                                }
 
                                 isDialogOpen = false
                             }

@@ -16,11 +16,13 @@ import fr.c1.chatbot.ui.theme.ChatBotPrev
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -55,10 +57,21 @@ object Activities {
     operator fun invoke(
         list: List<AbstractActivity>,
         modifier: Modifier = Modifier
-    ) = LazyColumn(modifier) {
+    ) = LazyColumn(
+        modifier,
+        verticalArrangement = Arrangement.spacedBy(25.dp)
+    ) {
         items(list) {
             when (it) {
                 is Associations -> Assoc(association = it)
+                is Contenus -> Content(contenu = it)
+                is Edifices -> Building(edifice = it)
+                is EquipementsSport -> SportEquipment(equipementSport = it)
+                is Expositions -> Expo(exposition = it)
+                is Festivals -> Festival(festival = it)
+                is Jardins -> Garden(jardin = it)
+                is Musees -> Museum(musee = it)
+                is Sites -> Site(site = it)
                 else -> throw NotImplementedError()
             }
         }
@@ -95,9 +108,10 @@ object Activities {
         content: @Composable ColumnScope.() -> Unit
     ) {
         var mod = modifier
-            .border(1.dp, Color.Black)
+            .border(1.dp, MaterialTheme.colorScheme.onBackground)
             .fillMaxWidth()
             .backgroundIf(Color.Red.copy(alpha = .5f), !accessible)
+            .padding(10.dp)
 
         if (url != null) {
             val uriHdl = LocalUriHandler.current
@@ -268,133 +282,100 @@ object Activities {
 @Preview(device = Devices.PIXEL_TABLET)
 @Composable
 private fun Prev() = ChatBotPrev {
-    LazyColumn {
-        item {
-            Activities.Assoc(
-                association = Associations(
-                    departement = "Dep",
-                    identifiant = UUID.randomUUID().toString(),
-                    commune = "Comm",
-                    nom = "Name",
-                    adresse = "Addr",
-                    codePostal = "38610",
-                    accessible = true
-                )
-            )
-        }
+    Activities(
+        list = listOf(
+            Associations(
+                departement = "Dep",
+                identifiant = UUID.randomUUID().toString(),
+                commune = "Comm",
+                nom = "Name",
+                adresse = "Addr",
+                codePostal = "38610",
+                accessible = true
+            ),
 
-        item {
-            Activities.Content(
-                contenu = Contenus(
-                    identifiant = UUID.randomUUID().toString(),
-                    commune = "Comm",
-                    nom = "Name",
-                    adresse = "Addr",
-                    lieu = "Lieu",
-                    codePostal = "38610",
-                    url = "www.google.fr",
-                    accessible = true
-                )
-            )
-        }
+            Contenus(
+                identifiant = UUID.randomUUID().toString(),
+                commune = "Comm",
+                nom = "Name",
+                adresse = "Addr",
+                lieu = "Lieu",
+                codePostal = "38610",
+                url = "www.google.fr",
+                accessible = true
+            ),
 
-        item {
-            Activities.Building(
-                edifice = Edifices(
-                    region = "reg",
-                    departement = "dep",
-                    commune = "comm",
-                    nom = "name",
-                    adresse = "addr",
-                    accessible = true
-                )
-            )
-        }
+            Edifices(
+                region = "reg",
+                departement = "dep",
+                commune = "comm",
+                nom = "name",
+                adresse = "addr",
+                accessible = true
+            ),
 
-        item {
-            Activities.SportEquipment(
-                EquipementsSport(
-                    identifiant = UUID.randomUUID().toString(),
-                    departement = "dep",
-                    commune = "comm",
-                    nom = "name",
-                    adresse = "addr",
-                    accessible = true,
-                    codePostal = "cp",
-                    url = "www.google.fr"
-                )
-            )
-        }
+            EquipementsSport(
+                identifiant = UUID.randomUUID().toString(),
+                departement = "dep",
+                commune = "comm",
+                nom = "name",
+                adresse = "addr",
+                accessible = true,
+                codePostal = "cp",
+                url = "www.google.fr"
+            ),
 
-        item {
-            Activities.Expo(
-                Expositions(
-                    identifiant = UUID.randomUUID().toString(),
-                    departement = "dep",
-                    commune = "comm",
-                    nom = "name",
-                    accessible = true,
-                    url = "www.google.fr",
-                    region = "reg"
-                )
-            )
-        }
+            Expositions(
+                identifiant = UUID.randomUUID().toString(),
+                departement = "dep",
+                commune = "comm",
+                nom = "name",
+                accessible = true,
+                url = "www.google.fr",
+                region = "reg"
+            ),
 
-        item {
-            Activities.Festival(
-                Festivals(
-                    departement = "dep",
-                    commune = "comm",
-                    nom = "name",
-                    accessible = true,
-                    region = "reg",
-                    adresse = "addr",
-                    codePostal = "cp"
-                )
-            )
-        }
+            Festivals(
+                departement = "dep",
+                commune = "comm",
+                nom = "name",
+                accessible = true,
+                region = "reg",
+                adresse = "addr",
+                codePostal = "cp"
+            ),
 
-        item {
-            Activities.Garden(
-                Jardins(
-                    departement = "dep",
-                    commune = "comm",
-                    nom = "name",
-                    accessible = true,
-                    region = "reg",
-                    adresse = "addr",
-                    codePostal = "cp"
-                )
-            )
-        }
+            Jardins(
+                departement = "dep",
+                commune = "comm",
+                nom = "name",
+                accessible = true,
+                region = "reg",
+                adresse = "addr",
+                codePostal = "cp"
+            ),
 
-        item {
-            Activities.Museum(
-                Musees(
-                    identifiant = UUID.randomUUID().toString(),
-                    departement = "dep",
-                    commune = "comm",
-                    nom = "name",
-                    accessible = true,
-                    region = "reg",
-                    adresse = "addr",
-                    codePostal = "cp",
-                    lieu = "lieu2",
-                    telephone = "tel",
-                    url = "www.google.fr"
-                )
-            )
-        }
 
-        item {
-            Activities.Site(
-                Sites(
-                    departement = "dep",
-                    commune = "comm",
-                    accessible = true,
-                    region = "reg",
-                )
+            Musees(
+                identifiant = UUID.randomUUID().toString(),
+                departement = "dep",
+                commune = "comm",
+                nom = "name",
+                accessible = true,
+                region = "reg",
+                adresse = "addr",
+                codePostal = "cp",
+                lieu = "lieu2",
+                telephone = "tel",
+                url = "www.google.fr"
+            ),
+
+            Sites(
+                departement = "dep",
+                commune = "comm",
+                accessible = true,
+                region = "reg",
             )
-        }
-    }
+        )
+    )
 }

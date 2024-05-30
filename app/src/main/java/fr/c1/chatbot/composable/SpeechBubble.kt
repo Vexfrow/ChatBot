@@ -71,14 +71,14 @@ fun SpeechBubble(
 
     Box(modifier = mod.widthIn(0.dp, 500.dp)) {
         val padding = if (isUser) PaddingValues(
-            start = 20.dp,
+            start = 50.dp,
             top = 10.dp,
-            end = tipSize + 5.dp,
+            end = tipSize + 10.dp,
             bottom = tipSize + 50.dp
         ) else PaddingValues(
-            start = tipSize + 10.dp,
-            top = 5.dp,
-            end = 5.dp,
+            start = tipSize + 50.dp,
+            top = 10.dp,
+            end = 20.dp,
             bottom = tipSize + 45.dp
         )
 

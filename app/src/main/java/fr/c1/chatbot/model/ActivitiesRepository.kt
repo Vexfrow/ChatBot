@@ -1000,6 +1000,30 @@ class ActivitiesRepository {
     }
 
     /**
+     * Sélectionner par distance
+     */
+    private fun selectionnerParDistance(
+        list: List<AbstractActivity>,
+        distanceMax: Int,
+        localisation: Location
+    ): List<AbstractActivity> {
+        // Si la liste n'a pas de localisation, on ne peut pas sélectionner par distance
+        if (list.isEmpty() || localisation.latitude == 0.0 || localisation.longitude == 0.0) {
+            return emptyList()
+        }
+        // TODO : distance entre la localisation et l'activité
+        /*return list.filter {
+            android.location.Location.distanceBetween(
+                localisation.latitude,
+                localisation.longitude,
+                it.localisation.latitude,
+                it.localisation.longitude,
+                FloatArray(1)
+            )[0] <= distanceMax*/
+        return list
+    }
+
+    /**
      * Obtenir les résultats de la recherche
      */
     fun getResultats(): List<AbstractActivity> {
@@ -1073,6 +1097,9 @@ class ActivitiesRepository {
         // Tri par Localisation
         if (getLocalisation().latitude != 0.0 && getLocalisation().longitude != 0.0) {
             // TODO : activités dans un rayon de 5km par rapport à la localisation actuelle
+            list = list.map {
+                selectionnerParDistance(it, 5, getLocalisation())
+            }
         }
         // Tri par Passion
         getPassions().forEach { passion ->

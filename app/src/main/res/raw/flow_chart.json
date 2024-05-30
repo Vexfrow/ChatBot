@@ -38,23 +38,25 @@
     },
     {
       "id": 9,
-      "text": "Comment puis-je vous aider ?????????"
+      "text": "Comment puis-je vous aider ?"
     },
     {
       "id": 10,
-      "text": "Quelle notification voulait-vous désactiver ?"
+      "text": "Quelle(s) notification(s) voulez-vous désactiver ?"
     },
     {
       "id": 11,
-      "text": "Les rappels ont été désactivées"
+      "text": "Les rappels ont été désactivées",
+      "action": "supprimerRappels"
     },
     {
       "id": 12,
-      "text": "Les suggestions ont été désactivées"
+      "text": "Les suggestions ont été désactivées",
+      "action": "supprimerSuggestions"
     },
     {
       "id": 13,
-      "text": "Vous pouvez le faire, mais ne le faîte pas svp, corenthin est un piètre developpeur et l'historique ne fonctionne pas"
+      "text": "Bien sûr, vous pouvez accéder à votre historique en **mettre instruction**"
     },
     {
       "id": 14,
@@ -62,12 +64,17 @@
     },
     {
       "id": 15,
-      "text": "Non, juste non"
+      "text": "Cette fonctionnalités n'est pas disponible pour le moment"
     },
     {
       "id": 16,
-      "text": "Voici des résultats qui correspondent a vos demandes et qui pourraient vous plaire",
+      "text": "Voici des résultats qui correspondent à vos demandes et qui pourraient vous plaire",
       "action": "resultat"
+    },
+    {
+      "id": 17,
+      "text": "Toutes les notifications ont été supprimées",
+      "action": "supprimerNotifs"
     }
   ],
   "humain": [
@@ -100,7 +107,8 @@
     },
     {
       "id": 1006,
-      "text": "Utiliser la géolocalisation"
+      "text": "Utiliser la géolocalisation",
+      "action": "Géolocalisation"
     },
     {
       "id": 1007,
@@ -140,7 +148,7 @@
     },
     {
       "id": 1016,
-      "text": "Comment voir mon historique de recherche"
+      "text": "Je souhaite accéder à mon historique de recherche ?"
     },
     {
       "id": 1017,
@@ -149,6 +157,10 @@
     {
       "id": 1018,
       "text": "Je souhaite proposer de nouvelles activités"
+    },
+    {
+      "id": 1019,
+      "text": "Je souhaite désactiver toutes les notifications"
     }
   ],
   "link": [
@@ -261,6 +273,11 @@
       "from": 10,
       "to": 12,
       "answer": 1015
+    },
+    {
+      "from": 10,
+      "to": 17,
+      "answer": 1019
     },
     {
       "from": 9,

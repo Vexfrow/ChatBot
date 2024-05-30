@@ -989,6 +989,17 @@ class ActivitiesRepository {
     }
 
     /**
+     * Sélectionner par passion
+     */
+    fun selectionnerParPassion(
+        list: List<AbstractActivity>,
+        passion: String
+    ): List<AbstractActivity> {
+        // passion dans la liste des passions
+        return list.filter { it.passions.contains(passion.lowercase()) }
+    }
+
+    /**
      * Obtenir les résultats de la recherche
      */
     fun getResultats(): List<AbstractActivity> {
@@ -1065,7 +1076,9 @@ class ActivitiesRepository {
         }
         // Tri par Passion
         getPassions().forEach { passion ->
-            // TODO : passion en rapport avec les activités
+            list = list.map {
+                selectionnerParPassion(it, passion)
+            }
         }
         list = list.map {
             trierParNom(it)

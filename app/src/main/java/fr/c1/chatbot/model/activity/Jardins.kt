@@ -7,10 +7,18 @@ class Jardins(
     val nom: String,
     val adresse: String,
     val codePostal: String,
-    val accessible: Boolean
+    val accessible: Boolean,
+    passions: List<String> = listOf(
+        "jardin", "fleurs", "plantes",
+        "nature", "botanique", "horticulture",
+        "paysage", "jardinage", "verger",
+        "potager", "parc", "arboretum", "roseraie",
+        "agriculture", "biologie", "écologie",
+        "flore", "faune", "biodiversité",
+    )
 ) : AbstractActivity() {
 
     override fun toString(): String {
-        return "Activities(region='$region', departement='$departement', commune='$commune', nom='$nom', adresse='$adresse', codePostal='$codePostal', accessible='$accessible')"
+        return "Jardin remarquable (region='$region', departement='$departement', commune='$commune', nom='$nom', adresse='$adresse', codePostal='$codePostal', accessible='$accessible')"
     }
 }

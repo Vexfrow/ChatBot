@@ -869,7 +869,7 @@ class ActivitiesRepository {
     /**
      * Sélectionner par passion
      */
-    fun selectionnerParPassion(
+    private fun selectionnerParPassion(
         list: List<AbstractActivity>,
         passion: String
     ): List<AbstractActivity> {
@@ -878,7 +878,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Sélectionner par distance
+     * Sélectionner par distance (km)
      */
     private fun selectionnerParDistance(
         list: List<AbstractActivity>,
@@ -919,9 +919,9 @@ class ActivitiesRepository {
             equipementsSportList,
             associationsList
         )
-        // Tri par Type TODO
+        // Tri par Type
         user.getTypes().forEach { type ->
-            list.forEach() { selectionnerParType(it, type) }
+            list.forEach { selectionnerParType(it, type) }
         }
         // Tri par Ville
         user.getVilles().forEach { ville ->
@@ -936,11 +936,11 @@ class ActivitiesRepository {
             // TODO : distance des activités à la localisation actuelle
         }
         // Tri par Localisation
-        var localisation = user.getLocalisation()
+        val localisation = user.getLocalisation()
         if (localisation.latitude != 0.0 && localisation.longitude != 0.0) {
             // TODO : activités dans un rayon de 5km par rapport à la localisation actuelle
             list = list.map {
-                selectionnerParDistance(it, 5, localisation)
+                selectionnerParDistance(it, 5, localisation) // 5km maximum
             }
         }
         // Tri par Passion

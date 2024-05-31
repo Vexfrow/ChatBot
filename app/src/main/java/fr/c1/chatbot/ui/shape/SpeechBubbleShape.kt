@@ -1,11 +1,9 @@
 package fr.c1.chatbot.ui.shape
 
-import fr.c1.chatbot.ui.theme.ChatBotPrev
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,12 +19,12 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import android.content.res.Configuration
+import fr.c1.chatbot.ui.theme.ChatBotPrev
 
 class SpeechBubbleShape(
     private val cornerRadius: Dp = 15.dp,
     private val tipSize: Dp = 15.dp,
-    private var sizeBubble : Size = Size(400f, 200f)
+    private var sizeBubble: Size = Size(400f, 200f)
 ) : Shape {
 
     override fun createOutline(

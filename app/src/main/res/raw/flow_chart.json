@@ -72,6 +72,11 @@
       "action": "AfficherResultat"
     },
     {
+      "id": 16,
+      "text": "Voici des résultats qui correspondent à vos demandes et qui pourraient vous plaire",
+      "action": "resultat"
+    },
+    {
       "id": 17,
       "text": "Toutes les notifications ont été supprimées",
       "action": "supprimerNotifs"
@@ -171,7 +176,22 @@
     },
     {
       "id": 1021,
+      "text": "Passer à la suite",
+      "action": "Skip"
+    },
+    {
+      "id": 1021,
       "text": "Je souhaite désactiver toutes les notifications"
+    },
+    {
+      "id": -1,
+      "text": "Retour",
+      "action": "Retour"
+    },
+    {
+      "id": -2,
+      "text": "Recommencer conversation",
+      "action": "Recommencer"
     }
   ],
   "link": [

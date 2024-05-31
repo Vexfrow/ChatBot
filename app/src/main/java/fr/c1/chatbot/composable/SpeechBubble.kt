@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -53,9 +55,8 @@ fun SpeechBubble(
 ) {
 
     var textSize by remember { mutableStateOf(IntSize(0, 0)) }
-    var text2 by remember { mutableStateOf(text) }
-
-    text2 = text
+    var realWidth by remember { mutableIntStateOf(0) }
+    val minimumWidth = 600
 
     var mod = modifier
 
@@ -69,9 +70,9 @@ fun SpeechBubble(
 
     mod = mod.background(color)
 
-    Box(modifier = mod.widthIn(0.dp, 500.dp)) {
+    Box(modifier = mod.fillMaxWidth()) {
         val padding = if (isUser) PaddingValues(
-            start = 50.dp,
+            start = 20.dp,
             top = 10.dp,
             end = tipSize + 10.dp,
             bottom = tipSize + 50.dp
@@ -84,16 +85,20 @@ fun SpeechBubble(
 
         Text(
             modifier = mod
+                .fillMaxWidth()
                 .padding(padding)
                 .onGloballyPositioned { layoutCoordinates ->
-                    textSize = IntSize(
+                    realWidth =
                         (layoutCoordinates.size.width + tipSize.value.toInt() + padding.calculateEndPadding(
                             LayoutDirection.Ltr
-                        ).value + padding.calculateStartPadding(LayoutDirection.Ltr).value).toInt(),
+                        ).value + padding.calculateStartPadding(LayoutDirection.Ltr).value).toInt()
+                    val heightT =
                         layoutCoordinates.size.height + padding.calculateTopPadding().value.toInt() + padding.calculateBottomPadding().value.toInt()
-                    )
+
+                    textSize = if (realWidth < minimumWidth) IntSize(minimumWidth, heightT)
+                    else IntSize(realWidth, heightT)
                 },
-            text = text2,
+            text = text,
             style = MaterialTheme.typography.bodyLarge,
             lineHeight = MaterialTheme.typography.bodyLarge.fontSize
         )
@@ -108,11 +113,9 @@ fun Message(
     color: Color = LocalColorSchemeExtension.current.bot,
     isUser: Boolean = false
 ) {
-    //var textSize by remember { mutableStateOf(IntSize(100, 100)) }
-
     Box(
         modifier = modifier
-            .widthIn(0.dp, 600.dp) // Adjusted width
+            .widthIn(600.dp, 600.dp) // Adjusted width
             .heightIn(0.dp, 600.dp) // Adjusted height
             .padding(10.dp) // General padding for the box
     ) {
@@ -136,9 +139,9 @@ fun Message(
         // Icon or Image positioned in the lower left corner
         val iconModifier = if (isUser)
             Modifier
-            .size(100.dp)
-            .align(Alignment.BottomEnd) // Aligning to the bottom start (lower left corner)
-            .padding(PaddingValues(end = 20.dp, top = 10.dp))
+                .size(100.dp)
+                .align(Alignment.BottomEnd) // Aligning to the bottom start (lower left corner)
+                .padding(PaddingValues(end = 20.dp, top = 10.dp))
         else
             Modifier
                 .size(100.dp)
@@ -189,8 +192,8 @@ fun Message(
 @Composable
 private fun Prev() = ChatBotPrev {
     Message(
-        " J'ai envie de another test bite the dust",
-        Modifier.align(Alignment.TopStart), isUser = false
+        "Oui",
+        Modifier.align(Alignment.TopStart), isUser = true
     )
     //SpeechBubble(text = "bllllllllllllllllllllllbblblblblblblblblblblblblblblbllblblblb",modifier = Modifier.align(Alignment.TopStart),isUser = true)
 }

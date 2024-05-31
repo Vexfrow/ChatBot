@@ -1,22 +1,5 @@
 package fr.c1.chatbot
 
-import fr.c1.chatbot.composable.Message
-import fr.c1.chatbot.composable.MySearchBar
-import fr.c1.chatbot.composable.MySettings
-import fr.c1.chatbot.composable.ProposalList
-import fr.c1.chatbot.model.ActivitiesRepository
-import fr.c1.chatbot.model.Event
-import fr.c1.chatbot.model.Settings
-import fr.c1.chatbot.model.toDate
-import fr.c1.chatbot.ui.theme.ChatBotTheme
-import fr.c1.chatbot.ui.theme.colorSchemeExtension
-import fr.c1.chatbot.utils.Calendar
-import fr.c1.chatbot.utils.application
-import fr.c1.chatbot.utils.rememberMutableStateListOf
-import fr.c1.chatbot.utils.rememberMutableStateOf
-import fr.c1.chatbot.utils.scheduleEventReminders
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import android.Manifest
 import android.os.Bundle
 import android.util.Log
@@ -38,6 +21,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -57,6 +41,23 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.work.WorkManager
+import fr.c1.chatbot.composable.Message
+import fr.c1.chatbot.composable.MySearchBar
+import fr.c1.chatbot.composable.MySettings
+import fr.c1.chatbot.composable.ProposalList
+import fr.c1.chatbot.model.ActivitiesRepository
+import fr.c1.chatbot.model.Event
+import fr.c1.chatbot.model.Settings
+import fr.c1.chatbot.model.toDate
+import fr.c1.chatbot.ui.theme.ChatBotTheme
+import fr.c1.chatbot.ui.theme.colorSchemeExtension
+import fr.c1.chatbot.utils.Calendar
+import fr.c1.chatbot.utils.application
+import fr.c1.chatbot.utils.rememberMutableStateListOf
+import fr.c1.chatbot.utils.rememberMutableStateOf
+import fr.c1.chatbot.utils.scheduleEventReminders
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 private const val TAG = "MainActivity"
@@ -310,8 +311,8 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
             }
         }
 
-        var searchBarEnabled by rememberMutableStateOf(value = true)
-        var searchBarText by rememberMutableStateOf(value = "Search")
+        val searchBarEnabled by rememberMutableStateOf(value = true)
+        val searchBarText by rememberMutableStateOf(value = "Search")
 
         MySearchBar(
             placeholder = searchBarText,

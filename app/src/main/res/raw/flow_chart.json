@@ -172,10 +172,6 @@
     },
     {
       "id": 1020,
-      "text": "Passer à la suite"
-    },
-    {
-      "id": 1021,
       "text": "Passer à la suite",
       "action": "Skip"
     },

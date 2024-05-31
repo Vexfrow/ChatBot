@@ -1,18 +1,9 @@
 package fr.c1.chatbot
 
-import fr.c1.chatbot.composable.MySearchBar
-import fr.c1.chatbot.composable.MySettings
-import fr.c1.chatbot.composable.ProposalList
-import fr.c1.chatbot.composable.SpeechBubble
-import fr.c1.chatbot.model.Settings
-import fr.c1.chatbot.ui.theme.ChatBotTheme
-import fr.c1.chatbot.ui.theme.colorSchemeExtension
-import fr.c1.chatbot.utils.Calendar
-import fr.c1.chatbot.utils.application
-import fr.c1.chatbot.utils.rememberMutableStateListOf
-import fr.c1.chatbot.utils.rememberMutableStateOf
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import android.Manifest
+import android.app.DatePickerDialog
+import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -49,13 +40,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import android.Manifest
-import android.os.Bundle
-import android.util.Log
 import androidx.work.WorkManager
+import fr.c1.chatbot.composable.MySearchBar
+import fr.c1.chatbot.composable.MySettings
+import fr.c1.chatbot.composable.ProposalList
+import fr.c1.chatbot.composable.SpeechBubble
 import fr.c1.chatbot.model.*
+import fr.c1.chatbot.ui.theme.ChatBotTheme
+import fr.c1.chatbot.ui.theme.colorSchemeExtension
 import fr.c1.chatbot.utils.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
+
 
 private const val TAG = "MainActivity"
 
@@ -289,6 +286,11 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
         ProposalList(proposals = answers) {
             answers = emptyList()
             Log.i(TAG, "Choose '$it'")
+            if (it == "Choisir une date") {
+                // TODO
+                // Prendre la date écrite dans la barre de recherche
+                // Et ne pas afficher la sppechbubble "Choisir une date"
+            }
             val i = tree.getAnswersId()
                 .first { i -> tree.getAnswerText(i) == it }
             messages += it

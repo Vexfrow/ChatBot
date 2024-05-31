@@ -1,10 +1,12 @@
 package fr.c1.chatbot.model
 
+import android.content.Context
 import android.location.Location
 import android.util.Log
+import com.google.gson.Gson
 import fr.c1.chatbot.model.activity.Type
-import org.json.JSONObject
 import java.io.File
+import java.util.Date
 
 private const val TAG = "ProfilUtilisateur"
 
@@ -24,7 +26,7 @@ class ProfilUtilisateur(
     /**
      * Date souhaitée par l'utilisateur
      */
-    private var date: String = "",
+    private var date: Date? = null,
     /**
      * Lise de villes de l'utilisateur
      */
@@ -48,7 +50,8 @@ class ProfilUtilisateur(
     /**
      * Liste des préférences hebdomadaires de l'utilisateur
      */
-    private var preferencesHebdomadaires: MutableList<PreferencesHebdo> = mutableListOf()) {
+    private var preferencesHebdomadaires: MutableList<PreferencesHebdo> = mutableListOf()
+) {
 
     /**
      * Ajouter une ville
@@ -60,7 +63,7 @@ class ProfilUtilisateur(
     /**
      * Ajouter une date
      */
-    fun setDate(date: String) {
+    fun setDate(date: Date) {
         this.date = date
     }
 
@@ -145,7 +148,7 @@ class ProfilUtilisateur(
      * Supprimer une date
      */
     fun removeDate() {
-        date = ""
+        date = null
     }
 
     /**
@@ -186,7 +189,7 @@ class ProfilUtilisateur(
     /**
      * Récupérer la date
      */
-    fun getDate(): String {
+    fun getDate(): Date? {
         return date
     }
 
@@ -242,84 +245,84 @@ class ProfilUtilisateur(
     /**
      * Stocker les informations de l'utilisateur dans un fichier json
      */
-    fun storeUserInformation() {
-        val fileName = nom.lowercase() + "_" + prenom.lowercase() + ".json"
-        // Vérifier si le fichier existe déjà (nom_prenom.json)
-        if (File(fileName).exists()) {
-            // Si oui, le supprimer
-            File(fileName).delete()
+    fun storeUserInformation(context: Context) {
+        val fileName = "${nom.lowercase()}_${prenom.lowercase()}.json"
+
+        // Construire le contenu JSON
+        val jsonContent = """
+        {
+            "nom": "$nom",
+            "prenom": "$prenom",
+            "age": $age,
+            "date": "$date",
+            "villes": ${villesList.joinToString(prefix = "[", postfix = "]") { "\"$it\"" }},
+            "distance": $distance,
+            "types": ${types.joinToString(prefix = "[", postfix = "]") { "\"$it\"" }},
+            "localisation": {
+                "latitude": ${localisation.latitude},
+                "longitude": ${localisation.longitude}
+            },
+            "passions": ${passions.joinToString(prefix = "[", postfix = "]") { "\"$it\"" }},
+            "preferencesHebdo": ${
+            preferencesHebdomadaires.joinToString(
+                prefix = "[",
+                postfix = "]"
+            ) { "\"$it\"" }
         }
-        // Créer un nouveau fichier
-        File(fileName).createNewFile()
-        // Ecrire les informations de l'utilisateur dans le fichier
-        File(fileName).writeText(
-            """
-            {
-                "nom": "$nom",
-                "prenom": "$prenom",
-                "age": $age,
-                "date": "$date",
-                "villes": ${villesList.joinToString(prefix = "[", postfix = "]")},
-                "distance": $distance,
-                "types": ${types.joinToString(prefix = "[", postfix = "]")},
-                "localisation": {
-                    "latitude": ${localisation.latitude},
-                    "longitude": ${localisation.longitude}
-                },
-                "passions": ${passions.joinToString(prefix = "[", postfix = "]")},
-                "preferencesHebdo": ${preferencesHebdomadaires.joinToString(prefix = "[", postfix = "]")}
-            }
-        """.trimIndent()
-        )
+        }
+    """.trimIndent()
+
+        // Ecrire le contenu JSON dans le fichier
+        context.openFileOutput(fileName, Context.MODE_PRIVATE).use { output ->
+            output.write(jsonContent.toByteArray())
+        }
     }
 
     /**
      * Charger les informations de l'utilisateur depuis un fichier json
      */
-    fun loadUserInformation() {
-        // Vérifier si le fichier existe (nom_prenom.json)
-        val fileName = nom.lowercase() + "_" + prenom.lowercase() + ".json"
-        if (File(fileName).exists()) {
-            // Lire le contenu du fichier
-            val content = File(fileName).readText()
-            // Parser le contenu du fichier
-            val json = JSONObject(content)
-            // Récupérer les informations de l'utilisateur
-            nom = json.getString("nom")
-            prenom = json.getString("prenom")
-            age = json.getInt("age")
-            date = json.getString("date")
-            // itérateur sur les villes
-            for (i in 0 until json.getJSONArray("villes").length()) {
-                villesList.add(json.getJSONArray("villes").getString(i))
+    fun loadUserInformation(context: Context, nom: String, prenom: String): ProfilUtilisateur? {
+        val fileName = "${nom.lowercase()}${prenom.lowercase()}.json"
+        val file = File(context.filesDir, fileName)
+        return if (file.exists()) {
+            val content = file.readText()
+            val gson = Gson()
+            gson.fromJson(content, ProfilUtilisateur::class.java).also {
+                Log.d(TAG, "loadUserInformation: User information loaded")
             }
-            distance = json.getInt("distance")
-            // itérateur sur les types
-            for (i in 0 until json.getJSONArray("types").length()) {
-                types.add(Type.valueOf(json.getJSONArray("types").getString(i)))
-            }
-            val localisationJson = json.getJSONObject("localisation")
-            localisation.latitude = localisationJson.getDouble("latitude")
-            localisation.longitude = localisationJson.getDouble("longitude")
-            // itérateur sur les passions
-            for (i in 0 until json.getJSONArray("passions").length()) {
-                passions.add(json.getJSONArray("passions").getString(i))
-            }
-            // itérateur sur les préférences hebdomadaires
-            for (i in 0 until json.getJSONArray("preferencesHebdo").length()) {
-                val preference = json.getJSONArray("preferencesHebdo").getJSONObject(i)
-                preferencesHebdomadaires.add(
-                    PreferencesHebdo(
-                        preference.getString("jour"),
-                        preference.getString("heure"),
-                        preference.getInt("duree")
-                    )
-                )
-            }
-            Log.d(TAG, "loadUserInformation: User information loaded")
         } else {
-            // Si le fichier n'existe pas, on ne fait rien
             Log.d(TAG, "loadUserInformation: File does not exist")
+            null
         }
     }
+}
+
+/**
+ * Charger toutes les informations des utilisateurs
+ */
+fun loadAllUsersInformation(context: Context): MutableList<ProfilUtilisateur> {
+    val gson = Gson()
+    val userList = mutableListOf<ProfilUtilisateur>()
+    val regex = Regex("""\w+_\w+.json""")
+
+    context.filesDir.listFiles()?.forEach { file ->
+        if (file.isFile && regex.matches(file.name)) {
+            val content = file.readText()
+            val user = gson.fromJson(content, ProfilUtilisateur::class.java)
+            userList.add(user)
+            Log.d(TAG, "loadAllUsersInformation: Loaded user profile from ${file.name}")
+        }
+    }
+
+    return userList
+}
+
+/**
+ * Sauvegarder toute la liste des utilisateurs
+ */
+fun storeAllUsersInformation(context: Context, userList: MutableList<ProfilUtilisateur>) {
+    userList.forEach { user ->
+        user.storeUserInformation(context)
+    }
+    Log.d(TAG, "storeAllUsersInformation: Stored all user profiles")
 }

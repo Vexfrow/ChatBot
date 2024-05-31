@@ -167,11 +167,22 @@
     },
     {
       "id": 1020,
-      "text": "Passer à la suite"
+      "text": "Passer à la suite",
+      "action": "Skip"
     },
     {
       "id": 1021,
       "text": "Je souhaite désactiver toutes les notifications"
+    },
+    {
+      "id": -1,
+      "text": "Retour",
+      "action": "Retour"
+    },
+    {
+      "id": -2,
+      "text": "Recommencer conversation",
+      "action": "Recommencer"
     }
   ],
   "link": [

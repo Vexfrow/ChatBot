@@ -11,6 +11,8 @@ object Action {
             "AfficherResultat" -> TypeAction.AfficherResultat
             "Geolocalisation" -> TypeAction.Geolocalisation
             "ChoisirPassions" -> TypeAction.ChoisirPassions
+            "Retour" -> TypeAction.Retour
+            "Recommencer" -> TypeAction.Recommencer
             else -> TypeAction.None
         }
     }
@@ -22,6 +24,8 @@ object Action {
         AfficherResultat, //à voir
         Geolocalisation, //Voir comment faire (avec demande de validation)
         ChoisirPassions, //Liste multichoix
+        Retour, //Retour en arrière dans la conversation
+        Recommencer, //Recommencer la conversation depuis le début
         None //Pas d'actions
     }
 

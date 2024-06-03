@@ -1,71 +1,44 @@
 package fr.c1.chatbot
 
 import android.Manifest
-import android.content.BroadcastReceiver
-import android.content.ComponentName
+import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.content.ServiceConnection
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.*
-import android.os.Build
 import android.os.Bundle
-import android.os.IBinder
+import android.os.Looper
+import androidx.preference.PreferenceManager
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.annotation.RequiresApi
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.AnimationVector1D
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.google.android.material.snackbar.Snackbar
-import fr.c1.chatbot.composable.MySearchBar
-import fr.c1.chatbot.composable.ProposalList
-import fr.c1.chatbot.composable.SpeechBubble
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import fr.c1.chatbot.ui.theme.ChatBotTheme
-import fr.c1.chatbot.ui.theme.colorSchemeExtension
-import fr.c1.chatbot.utils.LocationHandler
-import fr.c1.chatbot.utils.rememberMutableStateListOf
-import fr.c1.chatbot.utils.rememberMutableStateOf
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.seconds
-
-private const val REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE = 34
-private const val KEY_FOREGROUND_ENABLED = "tracking_foreground_location"
+import org.osmdroid.tileprovider.MapTileProviderBasic
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapView
+import org.osmdroid.config.Configuration.*
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 class MainActivity : ComponentActivity() {
+    private lateinit var myOpenMapView: MapView
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var locationRequest: LocationRequest
+    private lateinit var locationCallback: LocationCallback
+    private var currentLocation: Location? = null
     // Provides location updates for while-in-use feature.
-    private var locationHandler: LocationHandler? = null
+
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var startButton: Button
     private lateinit var stopButton: Button
@@ -73,6 +46,11 @@ class MainActivity : ComponentActivity() {
     private lateinit var outputTextView: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //handle permissions first, before map is created. not depicted here
+
+        //load/initialize the osmdroid configuration, this can be done
+        // This won't work unless you have imported this: org.osmdroid.config.Configuration.*
+        getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
         /*enableEdgeToEdge()
         setContent {
             ChatBotTheme {
@@ -169,6 +147,8 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }*/
+        locationRequest = createLocationRequest()
+        initLocalisation()
 
         setContentView(R.layout.activity_main)
 
@@ -178,101 +158,116 @@ class MainActivity : ComponentActivity() {
         //foregroundOnlyLocationButton = findViewById(R.id.foreground_only_location_button)
         //outputTextView = findViewById(R.id.output_text_view)
         startButton = findViewById(R.id.startButton)
-        //stopButton = findViewById(R.id.stopButton)
         startButton.setOnClickListener {
-            val enabled = sharedPreferences.getBoolean(
-                KEY_FOREGROUND_ENABLED, false)
-
-            if (enabled) {
-                locationHandler?.unsubscribeToLocationUpdates()
-            } else {
-                // TODO: Step 1.0, Review Permissions: Checks and requests if needed.
-                if (foregroundPermissionApproved()) {
-                    startForegroundService()
-                    locationHandler?.subscribeToLocationUpdates()
-                        ?: Log.d(TAG, "Service Not Bound")
-                } else {
-                    stopForegroundService()
-                    requestForegroundPermissions()
-                }
-            }
+            // TODO: Step 1.0, Review Permissions: Checks and requests if needed.
+            Log.d(TAG, "Started location updates")
+            startLocationUpdates() ?: Log.d(TAG, "Service Not Bound")
+            Log.d(TAG, ""+currentLocation)
         }
-        /*myOpenMapView = (MapView)findViewById(R.id.mapview);
+        stopButton = findViewById(R.id.stopButton)
+        stopButton.setOnClickListener {
+            Log.d(TAG, "Stopped location updates")
+            stopLocationUpdates() ?: Log.d(TAG, "Service Not Bound")
+            Log.d(TAG, ""+currentLocation)
+        }
+
+        //setContentView(R.layout.maplayout)
+        myOpenMapView = findViewById<MapView>(R.id.map);
+        myOpenMapView.setTileSource(TileSourceFactory.MAPNIK)
         myOpenMapView.setBuiltInZoomControls(true);
         myOpenMapView.setClickable(true);
-        myOpenMapView.getController().setZoom(15);*/
+        myOpenMapView.getController().setZoom(15);
     }
-    private fun startForegroundService() {
-        val serviceIntent = Intent(this, LocationHandler::class.java)
-        ContextCompat.startForegroundService(this, serviceIntent)
-    }
+    private fun initLocalisation() {
 
-    private fun stopForegroundService() {
-        val serviceIntent = Intent(this, LocationHandler::class.java)
-        stopService(serviceIntent)
-    }
-    // TODO: Step 1.0, Review Permissions: Handles permission result.
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        Log.d(TAG, "onRequestPermissionResult")
+        Log.i(ContentValues.TAG, "INIT LOCATION")
+        //var hasLocationPermission by remember { mutableStateOf(false) }
+        //var events by remember { mutableStateOf<List<Event>>(emptyList())) }
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
 
-        when (requestCode) {
-            REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE -> when {
-                grantResults.isEmpty() ->
-                    // If user interaction was interrupted, the permission request
-                    // is cancelled and you receive empty arrays.
-                    Log.d(TAG, "User interaction was cancelled.")
-                grantResults[0] == PackageManager.PERMISSION_GRANTED ->
-                    // Permission was granted.
-                    locationHandler?.subscribeToLocationUpdates()
-                else -> {
-                    // Permission denied.
-                    Log.d(TAG, "PERMISSION DENIED")
+            /*val requestPermissionLauncher = rememberLauncherForActivityResult(
+                ActivityResultContracts.RequestMultiplePermissions()) {
+                    permissions ->
+                hasLocationPermission = (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true) &&
+                        (permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true)
+                if( hasLocationPermission){
+                    //events = getLocationEvent(context)
+                }
+            }
+            LaunchedEffect(Unit) {
+                requestPermissionLauncher.launch(
+                    arrayOf(
+                        //Manifest.permission.RECEIVE_BOOT_COMPLETED,
+                        //Manifest.permission.POST_NOTIFICATIONS
+                    )
+                )
+            }*/
+            return
+        }
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        //Get localization
+        Log.d(ContentValues.TAG, "lOCATION REQUEST : ${locationRequest}")
+        Log.d(ContentValues.TAG, "LOCATION CALLBACK")
+        // TODO: Step 1.4, Initialize the LocationCallback.
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                super.onLocationResult(locationResult)
+
+                if (locationResult.lastLocation != null) {
+
+                    // Normally, you want to save a new location to a database. We are simplifying
+                    // things a bit and just saving it as a local variable, as we only need it again
+                    // if a Notification is created (when user navigates away from app).
+                    currentLocation = locationResult.lastLocation
+                    Log.d(TAG,"Latitude: "+currentLocation?.getLatitude() + ", Longitude: "+ currentLocation?.getLongitude())
+                    val gp = GeoPoint(currentLocation?.getLatitude() ?: 0.00,
+                        currentLocation?.getLongitude() ?: 0.00
+                    )
+                    myOpenMapView.getController().setCenter(gp);
+                } else {
+                    Log.d(TAG, "Location information isn't available.")
                 }
             }
         }
+        //last location
+        /*fusedLocationClient.lastLocation
+            .addOnSuccessListener { location: Location? ->
+                // Got last known location. In some rare situations this can be null.
+            }
+        */
     }
-    // TODO: Step 1.0, Review Permissions: Method checks if permissions approved.
-    private fun foregroundPermissionApproved(): Boolean {
-        return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
-            this,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
-    }
-    // TODO: Step 1.0, Review Permissions: Method requests permissions.
-    private fun requestForegroundPermissions() {
-        val provideRationale = foregroundPermissionApproved()
-
-        // If the user denied a previous request, but didn't check "Don't ask again", provide
-        // additional rationale.
-        if (provideRationale) {
-            Snackbar.make(
-
-                findViewById(0),
-                "permit",
-                Snackbar.LENGTH_LONG
-            )
-                .setAction("ok") {
-                    // Request permission
-                    ActivityCompat.requestPermissions(
-                        this@MainActivity,
-                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                        REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE
-                    )
-                }
-                .show()
-        } else {
-            Log.d(TAG, "Request foreground only permission")
-            ActivityCompat.requestPermissions(
-                this@MainActivity,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE
+    private fun startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED) {
+            Log.i(ContentValues.TAG, "PERMISSIONS GRANTED")
+            fusedLocationClient.requestLocationUpdates(
+                locationRequest,
+                locationCallback,
+                Looper.getMainLooper()
             )
         }
+    }
+    private fun stopLocationUpdates() {
+        fusedLocationClient.removeLocationUpdates(locationCallback)
+    }
+    private fun createLocationRequest() : LocationRequest {
+        return LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY,10000)
+            .setMinUpdateIntervalMillis(5000)
+            .build()
     }
     @Composable
     fun Greeting(name: String, modifier: Modifier = Modifier) {

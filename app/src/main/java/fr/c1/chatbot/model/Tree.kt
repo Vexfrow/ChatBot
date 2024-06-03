@@ -1,10 +1,13 @@
 package fr.c1.chatbot.model
 
-import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import fr.c1.chatbot.model.activity.Type.CULTURE
 import fr.c1.chatbot.model.activity.Type.SPORT
+<<<<<<< HEAD
+=======
+import android.util.Log
+>>>>>>> 0c3a669 (Implemented actions :)
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
@@ -42,8 +45,13 @@ class Data {
 
 class Tree {
 
+<<<<<<< HEAD
     var data: Data? = null
     private var historiqueQuestion: ArrayList<Int> = ArrayList()
+=======
+    private var currentQuestionId = 0
+    var data: Data? = null
+>>>>>>> 0c3a669 (Implemented actions :)
 
     //Prend un fichier JSON en paramètre
     fun initTree(fileIS: InputStream) {
@@ -83,6 +91,7 @@ class Tree {
 
     //Lorsqu'on choisie une réponse, la question est maj et le nom de l'action est renvoyé
     fun selectAnswer(idReponse: Int, activitiesRepository: ActivitiesRepository) {
+<<<<<<< HEAD
         if (idReponse == retour && historiqueQuestion.size > 1)
             historiqueQuestion.removeLast()
         else if (idReponse == recommencerConversation) { //Clear la conversation ?
@@ -111,6 +120,24 @@ class Tree {
                         }
                     }
                     Log.d(TAG, "selectAnswer: new type : ${activitiesRepository.getType()}")
+=======
+        for (r in data?.link!!) {
+            if (r.from == currentQuestionId && r.answer == idReponse) {
+                currentQuestionId = r.to
+                // Afficher le texte de la réponse
+                Log.d(TAG, "selectAnswer: ${getAnswerText(idReponse)}")
+                // Remplir les éléments de ActivitiesRepository avec les données de la réponse
+                Log.d(TAG, "selectAnswer: ${getActionUtilisateur(idReponse)}")
+                when (getActionUtilisateur(idReponse)) {
+                    TypeAction.Geolocalisation -> {
+                        // TODO : Récupérer la localisation courante de l'utilisateur
+                        //activitiesRepository.setLocalisation()
+                    }
+
+                    TypeAction.ActivitePhysique -> activitiesRepository.setType(SPORT)
+                    TypeAction.ActiviteCulturelle -> activitiesRepository.setType(CULTURE)
+                    else -> {}
+>>>>>>> 0c3a669 (Implemented actions :)
                 }
             }
         }
@@ -126,6 +153,7 @@ class Tree {
         return ""
     }
 
+<<<<<<< HEAD
     fun getActionUtilisateur(idReponse: Int): String? {
 
         for (h in data?.humain!!) {
@@ -137,4 +165,10 @@ class Tree {
         return ""
     }
 
+=======
+    fun getActionUtilisateur(idReponse: Int): TypeAction {
+        val actionStr = data?.humain!!.first { h -> h.id == idReponse }.action
+        return if (actionStr == null) TypeAction.None else enumValueOf<TypeAction>(actionStr)
+    }
+>>>>>>> 0c3a669 (Implemented actions :)
 }

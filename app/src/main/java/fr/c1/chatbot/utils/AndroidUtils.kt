@@ -1,8 +1,17 @@
 package fr.c1.chatbot.utils
 
+<<<<<<< HEAD
+import android.content.Context
+import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.net.Uri
+=======
 import fr.c1.chatbot.ChatBot
+import kotlinx.coroutines.CoroutineScope
+>>>>>>> 0c3a669 (Implemented actions :)
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SnapshotMutationPolicy
 import androidx.compose.runtime.mutableStateListOf
@@ -23,10 +32,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
-import android.content.Context
-import android.content.SharedPreferences
-import android.content.pm.PackageManager
-import android.net.Uri
+import androidx.core.net.toUri
+import fr.c1.chatbot.ChatBot
+import java.io.File
+import java.io.FileOutputStream
 import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KProperty0
 
@@ -35,10 +44,20 @@ val application: ChatBot
     get() = (LocalContext.current as ComponentActivity).application as ChatBot
 
 @Composable
+fun UnitLaunchedEffect(block: suspend CoroutineScope.() -> Unit) = LaunchedEffect(Unit, block)
+
+@Composable
 fun <T> rememberMutableStateOf(
     value: T,
     policy: SnapshotMutationPolicy<T> = structuralEqualityPolicy()
 ): MutableState<T> = remember { mutableStateOf(value, policy) }
+
+@Composable
+fun <T> rememberMutableStateOf(
+    key1: Any?,
+    value: T,
+    policy: SnapshotMutationPolicy<T> = structuralEqualityPolicy()
+): MutableState<T> = remember(key1) { mutableStateOf(value, policy) }
 
 @Composable
 fun <T> rememberMutableStateListOf(): SnapshotStateList<T> = remember { mutableStateListOf() }
@@ -86,6 +105,36 @@ fun <T> SharedPreferences.Editor.putOrRemove(ref: KProperty0<T>) = when (val val
     is Uri -> putUri(ref.name, value)
 
     else -> throw NotImplementedError("We cannot save an object of ${ref.javaClass}")
+}
+
+fun SharedPreferences.Editor.saveImage(ref: KProperty0<Uri?>, context: Context) {
+    val file = File(context.filesDir, ref.name)
+
+    when (val value = ref.get()) {
+        null -> {
+            if (file.exists())
+                file.delete()
+            remove(ref.name)
+        }
+
+        else -> {
+            if (value.lastPathSegment.equals("userImage") || value.lastPathSegment.equals("botImage"))
+                return
+
+            val inputStream = context.contentResolver.openInputStream(value)
+            inputStream?.use { inp ->
+                val out = FileOutputStream(file)
+                val buffer = ByteArray(1024)
+                var bytesRead: Int
+
+                while (inp.read(buffer).also { bytesRead = it } != -1)
+                    out.write(buffer, 0, bytesRead)
+
+                out.close()
+            }
+            putUri(ref.name, file.toUri())
+        }
+    }
 }
 
 fun SharedPreferences.getSp(

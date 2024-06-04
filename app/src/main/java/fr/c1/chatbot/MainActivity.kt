@@ -4,12 +4,10 @@ import android.Manifest
 import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Context
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.location.*
+import android.location.Location
 import android.os.Bundle
 import android.os.Looper
-import androidx.preference.PreferenceManager
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
@@ -19,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
+import androidx.preference.PreferenceManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -26,12 +25,21 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import fr.c1.chatbot.ui.theme.ChatBotTheme
-import org.osmdroid.tileprovider.MapTileProviderBasic
+import org.osmdroid.config.Configuration.getInstance
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
-import org.osmdroid.config.Configuration.*
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.views.overlay.ScaleBarOverlay
+import org.osmdroid.views.overlay.compass.CompassOverlay
+import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
+
+
+
+
 class MainActivity : ComponentActivity() {
+    private var requestingLocationUpdates: Boolean = false
     private lateinit var myOpenMapView: MapView
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
@@ -39,7 +47,6 @@ class MainActivity : ComponentActivity() {
     private var currentLocation: Location? = null
     // Provides location updates for while-in-use feature.
 
-    private lateinit var sharedPreferences: SharedPreferences
     private lateinit var startButton: Button
     private lateinit var stopButton: Button
 
@@ -147,22 +154,20 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }*/
-        locationRequest = createLocationRequest()
-        initLocalisation()
+        createLocationRequest()
+        createLocationCallback()
+        //initLocation()
 
         setContentView(R.layout.activity_main)
-
-        sharedPreferences =
-            getSharedPreferences("preference_file_key", Context.MODE_PRIVATE)
-
         //foregroundOnlyLocationButton = findViewById(R.id.foreground_only_location_button)
         //outputTextView = findViewById(R.id.output_text_view)
         startButton = findViewById(R.id.startButton)
         startButton.setOnClickListener {
             // TODO: Step 1.0, Review Permissions: Checks and requests if needed.
             Log.d(TAG, "Started location updates")
-            startLocationUpdates() ?: Log.d(TAG, "Service Not Bound")
-            Log.d(TAG, ""+currentLocation)
+            initMap()
+            //startLocationUpdates() ?: Log.d(TAG, "Service Not Bound")
+            //Log.d(TAG, ""+currentLocation)
         }
         stopButton = findViewById(R.id.stopButton)
         stopButton.setOnClickListener {
@@ -172,17 +177,53 @@ class MainActivity : ComponentActivity() {
         }
 
         //setContentView(R.layout.maplayout)
+
+    }
+    override fun onResume() {
+        super.onResume()
+        //startLocationUpdates()
+    }
+    override fun onPause() {
+        super.onPause()
+        if (requestingLocationUpdates) {
+            requestingLocationUpdates = false
+            stopLocationUpdates()
+        }
+    }
+    fun initMap() {
         myOpenMapView = findViewById<MapView>(R.id.map);
+        initLocation()
+        if (!requestingLocationUpdates) {
+            requestingLocationUpdates = true
+            startLocationUpdates()
+        }
         myOpenMapView.setTileSource(TileSourceFactory.MAPNIK)
         myOpenMapView.setBuiltInZoomControls(true);
         myOpenMapView.setClickable(true);
         myOpenMapView.getController().setZoom(15);
-    }
-    private fun initLocalisation() {
 
-        Log.i(ContentValues.TAG, "INIT LOCATION")
-        //var hasLocationPermission by remember { mutableStateOf(false) }
-        //var events by remember { mutableStateOf<List<Event>>(emptyList())) }
+        val myScaleBarOverlay = ScaleBarOverlay(myOpenMapView)
+        myOpenMapView.overlays.add(myScaleBarOverlay)
+        val mCompassOverlay = CompassOverlay(
+            applicationContext, InternalCompassOrientationProvider(
+                applicationContext
+            ), myOpenMapView
+        )
+        mCompassOverlay.enableCompass()
+        myOpenMapView.overlays.add(mCompassOverlay)
+
+        val mLocationOverlay = MyLocationNewOverlay(
+            GpsMyLocationProvider(
+                applicationContext
+            ), myOpenMapView
+        )
+        mLocationOverlay.enableMyLocation()
+        myOpenMapView.setMultiTouchControls(true)
+        myOpenMapView.overlays.add(mLocationOverlay)
+    }
+    private fun initLocation() {
+        Log.i(ContentValues.TAG, "Init Location")
+        Log.i(ContentValues.TAG, "Check Permissions")
         if (ActivityCompat.checkSelfPermission(
                 this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION
@@ -219,30 +260,6 @@ class MainActivity : ComponentActivity() {
             return
         }
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        //Get localization
-        Log.d(ContentValues.TAG, "lOCATION REQUEST : ${locationRequest}")
-        Log.d(ContentValues.TAG, "LOCATION CALLBACK")
-        // TODO: Step 1.4, Initialize the LocationCallback.
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult) {
-                super.onLocationResult(locationResult)
-
-                if (locationResult.lastLocation != null) {
-
-                    // Normally, you want to save a new location to a database. We are simplifying
-                    // things a bit and just saving it as a local variable, as we only need it again
-                    // if a Notification is created (when user navigates away from app).
-                    currentLocation = locationResult.lastLocation
-                    Log.d(TAG,"Latitude: "+currentLocation?.getLatitude() + ", Longitude: "+ currentLocation?.getLongitude())
-                    val gp = GeoPoint(currentLocation?.getLatitude() ?: 0.00,
-                        currentLocation?.getLongitude() ?: 0.00
-                    )
-                    myOpenMapView.getController().setCenter(gp);
-                } else {
-                    Log.d(TAG, "Location information isn't available.")
-                }
-            }
-        }
         //last location
         /*fusedLocationClient.lastLocation
             .addOnSuccessListener { location: Location? ->
@@ -250,6 +267,9 @@ class MainActivity : ComponentActivity() {
             }
         */
     }
+
+
+
     private fun startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED) {
@@ -264,10 +284,30 @@ class MainActivity : ComponentActivity() {
     private fun stopLocationUpdates() {
         fusedLocationClient.removeLocationUpdates(locationCallback)
     }
-    private fun createLocationRequest() : LocationRequest {
-        return LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY,10000)
+    private fun createLocationRequest(){
+        locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY,10000)
             .setMinUpdateIntervalMillis(5000)
             .build()
+    }
+    private fun createLocationCallback() {
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                super.onLocationResult(locationResult)
+                if (locationResult.lastLocation != null) {
+                    // Normally, you want to save a new location to a database. We are simplifying
+                    // things a bit and just saving it as a local variable, as we only need it again
+                    // if a Notification is created (when user navigates away from app).
+                    currentLocation = locationResult.lastLocation
+                    Log.d(TAG,"Latitude: "+currentLocation?.getLatitude() + ", Longitude: "+ currentLocation?.getLongitude())
+                    val gp = GeoPoint(currentLocation?.getLatitude() ?: 0.00,
+                        currentLocation?.getLongitude() ?: 0.00
+                    )
+                    myOpenMapView.getController().setCenter(gp);
+                } else {
+                    Log.d(TAG, "Location information isn't available.")
+                }
+            }
+        }
     }
     @Composable
     fun Greeting(name: String, modifier: Modifier = Modifier) {

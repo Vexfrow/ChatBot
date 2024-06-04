@@ -132,7 +132,8 @@ object Activities {
     ) = MyColumn(association.accessible, modifier) {
         Text(
             text = association.nom,
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
+            lineHeight = MaterialTheme.typography.bodyLarge.fontSize
         )
         TextWithIcon(
             text = "${association.adresse}, ${association.codePostal} ${association.commune}",

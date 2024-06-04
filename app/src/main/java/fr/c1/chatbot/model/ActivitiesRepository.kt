@@ -1,7 +1,5 @@
 package fr.c1.chatbot.model
 
-import android.app.Application
-import android.location.Location
 import fr.c1.chatbot.R
 import fr.c1.chatbot.model.activity.AbstractActivity
 import fr.c1.chatbot.model.activity.Associations
@@ -14,6 +12,8 @@ import fr.c1.chatbot.model.activity.Jardins
 import fr.c1.chatbot.model.activity.Musees
 import fr.c1.chatbot.model.activity.Sites
 import fr.c1.chatbot.model.activity.Type
+import android.app.Application
+import android.location.Location
 import java.io.BufferedInputStream
 import java.io.InputStream
 
@@ -1084,7 +1084,9 @@ class ActivitiesRepository {
         }
         // Tri par Ville
         getVillesList().forEach { ville ->
-            list = list.map { selectionnerParCommune(it, ville) }
+            list = list
+                .map { selectionnerParCommune(it, ville) }
+                .filter(List<AbstractActivity>::isNotEmpty)
         }
         // Tri par Date
         if (getDate() != "") {
@@ -1097,19 +1099,18 @@ class ActivitiesRepository {
         // Tri par Localisation
         if (getLocalisation().latitude != 0.0 && getLocalisation().longitude != 0.0) {
             // TODO : activités dans un rayon de 5km par rapport à la localisation actuelle
-            list = list.map {
-                selectionnerParDistance(it, 5, getLocalisation())
-            }
+            list = list
+                .map { selectionnerParDistance(it, 5, getLocalisation()) }
+                .filter(List<AbstractActivity>::isNotEmpty)
         }
         // Tri par Passion
         getPassions().forEach { passion ->
-            list = list.map {
-                selectionnerParPassion(it, passion)
-            }
+            list = list
+                .map { selectionnerParPassion(it, passion) }
+                .filter(List<AbstractActivity>::isNotEmpty)
         }
-        list = list.map {
-            trierParNom(it)
-        }
+
+        list = list.map(::trierParNom)
         // TODO : Trier la liste totale avant de retourner
         return list.flatten()
     }

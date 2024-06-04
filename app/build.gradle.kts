@@ -77,6 +77,10 @@ dependencies {
 
     implementation(libs.coil)
     implementation(libs.core.ktx)
+    implementation("org.osmdroid:osmdroid-android:6.1.18")
+    implementation(libs.play.services.location)
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation(libs.androidx.preference.ktx)
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     androidTestImplementation("androidx.test:runner:1.5.2")

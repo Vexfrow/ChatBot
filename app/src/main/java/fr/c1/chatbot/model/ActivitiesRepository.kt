@@ -16,9 +16,15 @@ import fr.c1.chatbot.model.activity.Sites
 import fr.c1.chatbot.model.activity.Type
 import java.io.BufferedInputStream
 import java.io.InputStream
+import java.util.Locale
 
 // Fichiers CSV venant du site data.gouv.fr
 class ActivitiesRepository {
+
+    private val TAG = "ActivitiesRepository"
+
+    private val listeDeroulanteVilles = sortedSetOf<String>()
+
     /**
      * Liste des musées
      */
@@ -279,6 +285,11 @@ class ActivitiesRepository {
                 true
             )
             museesList.add(activity)
+            listeDeroulanteVilles.add(commune.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(
+                    Locale.getDefault()
+                ) else it.toString()
+            })
         }
     }
 
@@ -304,6 +315,11 @@ class ActivitiesRepository {
                 true
             )
             sitesList.add(activity)
+            listeDeroulanteVilles.add(commune.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(
+                    Locale.getDefault()
+                ) else it.toString()
+            })
         }
     }
 
@@ -335,6 +351,11 @@ class ActivitiesRepository {
                 true
             )
             expositionsList.add(activity)
+            listeDeroulanteVilles.add(commune.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(
+                    Locale.getDefault()
+                ) else it.toString()
+            })
         }
     }
 
@@ -368,6 +389,11 @@ class ActivitiesRepository {
                 true
             )
             contenusList.add(activity)
+            listeDeroulanteVilles.add(commune.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(
+                    Locale.getDefault()
+                ) else it.toString()
+            })
         }
     }
 
@@ -397,6 +423,11 @@ class ActivitiesRepository {
                 true
             )
             edificesList.add(activity)
+            listeDeroulanteVilles.add(commune.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(
+                    Locale.getDefault()
+                ) else it.toString()
+            })
         }
     }
 
@@ -429,6 +460,11 @@ class ActivitiesRepository {
                 accessible
             )
             jardinsList.add(activity)
+            listeDeroulanteVilles.add(commune.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(
+                    Locale.getDefault()
+                ) else it.toString()
+            })
         }
     }
 
@@ -462,6 +498,11 @@ class ActivitiesRepository {
                 true
             )
             festivalsList.add(activity)
+            listeDeroulanteVilles.add(commune.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(
+                    Locale.getDefault()
+                ) else it.toString()
+            })
         }
     }
 
@@ -495,6 +536,13 @@ class ActivitiesRepository {
                 accessible
             )
             equipementsSportList.add(activity)
+
+            listeDeroulanteVilles.add(commune.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(
+                    Locale.getDefault()
+                ) else it.toString()
+            })
+
         }
     }
 
@@ -528,6 +576,7 @@ class ActivitiesRepository {
                 true
             )
             associationsList.add(activity)
+
         }
     }
 

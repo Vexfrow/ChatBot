@@ -2,6 +2,7 @@ package fr.c1.chatbot.model
 
 import android.app.Application
 import android.location.Location
+import androidx.recyclerview.widget.SortedList
 import fr.c1.chatbot.R
 import fr.c1.chatbot.model.activity.AbstractActivity
 import fr.c1.chatbot.model.activity.Associations
@@ -23,7 +24,7 @@ class ActivitiesRepository {
 
     private val TAG = "ActivitiesRepository"
 
-    private val listeDeroulanteVilles = sortedSetOf<String>()
+    private val listeVillesDisponible = sortedSetOf<String>()
 
     /**
      * Liste des musées
@@ -152,6 +153,10 @@ class ActivitiesRepository {
         return museesList
     }
 
+    fun getVillesDisponible(): Collection<String> {
+        return listeVillesDisponible
+    }
+
     /**
      * Récupérer la liste des sites patrimoniaux
      */
@@ -250,6 +255,25 @@ class ActivitiesRepository {
         return passions
     }
 
+    private fun addVilleDispo(str: String) {
+        if (str.isBlank())
+            return
+
+        if (str.any(Char::isDigit))
+            return
+
+        val tmp = str
+            .trim('\"')
+            .lowercase(Locale.getDefault())
+            .replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(Locale.getDefault())
+                else it.toString()
+            }
+
+        if (!listeVillesDisponible.contains(tmp))
+            listeVillesDisponible.add(tmp)
+    }
+
     /**
      * Initialiser les musées
      */
@@ -285,11 +309,7 @@ class ActivitiesRepository {
                 true
             )
             museesList.add(activity)
-            listeDeroulanteVilles.add(commune.replaceFirstChar {
-                if (it.isLowerCase()) it.titlecase(
-                    Locale.getDefault()
-                ) else it.toString()
-            })
+            addVilleDispo(commune)
         }
     }
 
@@ -315,11 +335,7 @@ class ActivitiesRepository {
                 true
             )
             sitesList.add(activity)
-            listeDeroulanteVilles.add(commune.replaceFirstChar {
-                if (it.isLowerCase()) it.titlecase(
-                    Locale.getDefault()
-                ) else it.toString()
-            })
+            addVilleDispo(commune)
         }
     }
 
@@ -351,11 +367,7 @@ class ActivitiesRepository {
                 true
             )
             expositionsList.add(activity)
-            listeDeroulanteVilles.add(commune.replaceFirstChar {
-                if (it.isLowerCase()) it.titlecase(
-                    Locale.getDefault()
-                ) else it.toString()
-            })
+            addVilleDispo(commune)
         }
     }
 
@@ -389,11 +401,7 @@ class ActivitiesRepository {
                 true
             )
             contenusList.add(activity)
-            listeDeroulanteVilles.add(commune.replaceFirstChar {
-                if (it.isLowerCase()) it.titlecase(
-                    Locale.getDefault()
-                ) else it.toString()
-            })
+            addVilleDispo(commune)
         }
     }
 
@@ -423,11 +431,7 @@ class ActivitiesRepository {
                 true
             )
             edificesList.add(activity)
-            listeDeroulanteVilles.add(commune.replaceFirstChar {
-                if (it.isLowerCase()) it.titlecase(
-                    Locale.getDefault()
-                ) else it.toString()
-            })
+            addVilleDispo(commune)
         }
     }
 
@@ -460,11 +464,7 @@ class ActivitiesRepository {
                 accessible
             )
             jardinsList.add(activity)
-            listeDeroulanteVilles.add(commune.replaceFirstChar {
-                if (it.isLowerCase()) it.titlecase(
-                    Locale.getDefault()
-                ) else it.toString()
-            })
+            addVilleDispo(commune)
         }
     }
 
@@ -498,11 +498,7 @@ class ActivitiesRepository {
                 true
             )
             festivalsList.add(activity)
-            listeDeroulanteVilles.add(commune.replaceFirstChar {
-                if (it.isLowerCase()) it.titlecase(
-                    Locale.getDefault()
-                ) else it.toString()
-            })
+            addVilleDispo(commune)
         }
     }
 
@@ -537,12 +533,7 @@ class ActivitiesRepository {
             )
             equipementsSportList.add(activity)
 
-            listeDeroulanteVilles.add(commune.replaceFirstChar {
-                if (it.isLowerCase()) it.titlecase(
-                    Locale.getDefault()
-                ) else it.toString()
-            })
-
+            addVilleDispo(commune)
         }
     }
 

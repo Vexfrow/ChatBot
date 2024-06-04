@@ -301,14 +301,14 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
             val text: String,
             val action: TypeAction,
             val answerId: Int,
-            val list: List<String>?
+            val list: Collection<String>?
         ) {
             constructor() : this(false, "Choisissez une option ci-dessus", TypeAction.None, 0, null)
         }
 
         var sbState by rememberMutableStateOf(SearchBarState())
 
-        fun enableSearchBar(text: String, act: TypeAction, id: Int, list: List<String>? = null) {
+        fun enableSearchBar(text: String, act: TypeAction, id: Int, list: Collection<String>? = null) {
             sbState = SearchBarState(true, text, act, id, list)
         }
 
@@ -353,7 +353,7 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
                         "Saisissez une ville",
                         act,
                         i,
-                        listOf("Grenoble", "Annecy", "Valence")
+                        app.activitiesRepository.getVillesDisponible()
                     )
                     return@ProposalList
                 }

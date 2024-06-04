@@ -2,7 +2,6 @@ package fr.c1.chatbot.model
 
 import android.app.Application
 import android.location.Location
-import androidx.recyclerview.widget.SortedList
 import fr.c1.chatbot.R
 import fr.c1.chatbot.model.activity.AbstractActivity
 import fr.c1.chatbot.model.activity.Associations

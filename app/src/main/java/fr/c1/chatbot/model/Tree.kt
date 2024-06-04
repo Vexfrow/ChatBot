@@ -1,10 +1,10 @@
 package fr.c1.chatbot.model
 
-import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import fr.c1.chatbot.model.activity.Type.CULTURE
 import fr.c1.chatbot.model.activity.Type.SPORT
+import android.util.Log
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
@@ -97,18 +97,14 @@ class Tree {
                     // Remplir les éléments de ActivitiesRepository avec les données de la réponse
                     Log.d(TAG, "selectAnswer: ${getActionUtilisateur(idReponse)}")
                     when (getActionUtilisateur(idReponse)) {
-                        "Geolocalisation" -> {
+                        TypeAction.Geolocalisation -> {
                             // TODO : Récupérer la localisation courante de l'utilisateur
                             //activitiesRepository.setLocalisation()
                         }
 
-                        "ActivitePhysique" -> {
-                            activitiesRepository.setType(SPORT)
-                        }
-
-                        "ActiviteCulturelle" -> {
-                            activitiesRepository.setType(CULTURE)
-                        }
+                        TypeAction.ActivitePhysique -> activitiesRepository.setType(SPORT)
+                        TypeAction.ActiviteCulturelle -> activitiesRepository.setType(CULTURE)
+                        else -> {}
                     }
                     Log.d(TAG, "selectAnswer: new type : ${activitiesRepository.getType()}")
                 }
@@ -126,15 +122,8 @@ class Tree {
         return ""
     }
 
-    fun getActionUtilisateur(idReponse: Int): String? {
-
-        for (h in data?.humain!!) {
-            if (h.id == idReponse) {
-                Log.d(TAG, "getActionUtilisateur: ${h.action}")
-                return h.action
-            }
-        }
-        return ""
+    fun getActionUtilisateur(idReponse: Int): TypeAction {
+        val actionStr = data?.humain!!.first { h -> h.id == idReponse }.action
+        return if (actionStr == null) TypeAction.None else enumValueOf<TypeAction>(actionStr)
     }
-
 }

@@ -1,8 +1,23 @@
 package fr.c1.chatbot
 
-import android.Manifest
-import android.os.Bundle
-import android.util.Log
+import fr.c1.chatbot.composable.Message
+import fr.c1.chatbot.composable.MySearchBar
+import fr.c1.chatbot.composable.MySettings
+import fr.c1.chatbot.composable.ProposalList
+import fr.c1.chatbot.model.ActivitiesRepository
+import fr.c1.chatbot.model.Event
+import fr.c1.chatbot.model.Settings
+import fr.c1.chatbot.model.TypeAction
+import fr.c1.chatbot.model.toDate
+import fr.c1.chatbot.ui.theme.ChatBotTheme
+import fr.c1.chatbot.ui.theme.colorSchemeExtension
+import fr.c1.chatbot.utils.Calendar
+import fr.c1.chatbot.utils.application
+import fr.c1.chatbot.utils.rememberMutableStateListOf
+import fr.c1.chatbot.utils.rememberMutableStateOf
+import fr.c1.chatbot.utils.scheduleEventReminders
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -41,23 +56,9 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.work.WorkManager
-import fr.c1.chatbot.composable.Message
-import fr.c1.chatbot.composable.MySearchBar
-import fr.c1.chatbot.composable.MySettings
-import fr.c1.chatbot.composable.ProposalList
-import fr.c1.chatbot.model.ActivitiesRepository
-import fr.c1.chatbot.model.Event
-import fr.c1.chatbot.model.Settings
-import fr.c1.chatbot.model.toDate
-import fr.c1.chatbot.ui.theme.ChatBotTheme
-import fr.c1.chatbot.ui.theme.colorSchemeExtension
-import fr.c1.chatbot.utils.Calendar
-import fr.c1.chatbot.utils.application
-import fr.c1.chatbot.utils.rememberMutableStateListOf
-import fr.c1.chatbot.utils.rememberMutableStateOf
-import fr.c1.chatbot.utils.scheduleEventReminders
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import android.Manifest
+import android.os.Bundle
+import android.util.Log
 import kotlin.time.Duration.Companion.seconds
 
 private const val TAG = "MainActivity"
@@ -224,7 +225,8 @@ fun PermissionNotification() {
 
 @Composable
 fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
-    val tree = application.chatbotTree
+    val app = application
+    val tree = app.chatbotTree
     val messages = rememberMutableStateListOf(tree.getQuestion())
     val crtScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
@@ -294,13 +296,30 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
         var answers by rememberMutableStateOf(value = tree.getAnswersId()
             .map { tree.getAnswerText(it) })
 
-        ProposalList(proposals = answers) {
-            answers = emptyList()
-            Log.i(TAG, "Choose '$it'")
-            val i = tree.getAnswersId()
-                .first { i -> tree.getAnswerText(i) == it }
-            messages += it
-            tree.selectAnswer(i, activitiesRepository)
+        data class SearchBarState(
+            val enabled: Boolean,
+            val text: String,
+            val action: TypeAction,
+            val answerId: Int,
+            val list: List<String>?
+        ) {
+            constructor() : this(false, "Choisissez une option ci-dessus", TypeAction.None, 0, null)
+        }
+
+        var sbState by rememberMutableStateOf(SearchBarState())
+
+        fun enableSearchBar(text: String, act: TypeAction, id: Int, list: List<String>? = null) {
+            sbState = SearchBarState(true, text, act, id, list)
+        }
+
+        fun reset() {
+            sbState = SearchBarState()
+        }
+
+        fun addAnswer(id: Int, answer: String? = null) {
+            reset()
+            messages += answer ?: tree.getAnswerText(id)
+            tree.selectAnswer(id, activitiesRepository)
 
             crtScope.launch {
                 lazyListState.animateScrollToItem(messages.size)
@@ -308,15 +327,76 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
                 messages += tree.getQuestion()
                 answers = tree.getAnswersId().map { i -> tree.getAnswerText(i) }
                 lazyListState.animateScrollToItem(messages.size)
+
+                if (answers.isEmpty())
+                    Log.i(TAG, "MyColumn: Result avaibles !")
             }
         }
 
-        val searchBarEnabled by rememberMutableStateOf(value = true)
-        val searchBarText by rememberMutableStateOf(value = "Search")
+        ProposalList(proposals = answers) {
+            answers = emptyList()
+            Log.i(TAG, "Choose '$it'")
+            val i = tree.getAnswersId().first { i -> tree.getAnswerText(i) == it }
+            when (val act = tree.getActionUtilisateur(i)) {
+                TypeAction.EntrerDate -> {
+                    enableSearchBar("Sélectionnez une date", act, i)
+                    return@ProposalList
+                }
+
+                TypeAction.EntrerDistance -> {
+                    enableSearchBar("Saisissez une distance", act, i)
+                    return@ProposalList
+                }
+
+                TypeAction.EntrerVille -> {
+                    enableSearchBar(
+                        "Saisissez une ville",
+                        act,
+                        i,
+                        listOf("Grenoble", "Annecy", "Valence")
+                    )
+                    return@ProposalList
+                }
+
+                TypeAction.AfficherResultat -> {
+                    Log.i(
+                        TAG,
+                        "MyColumn: Affichage des résultats: ${app.activitiesRepository.getResultats()}"
+                    )
+                }
+
+                TypeAction.ChoisirPassions -> TODO()
+                else -> {}
+            }
+
+            addAnswer(i)
+        }
 
         MySearchBar(
-            placeholder = searchBarText,
-            enabled = searchBarEnabled
-        ) { Log.i(TAG, "Searched $it") }
+            placeholder = sbState.text,
+            enabled = sbState.enabled,
+            action = sbState.action,
+            proposals = sbState.list
+        ) {
+            when (sbState.action) {
+                TypeAction.EntrerDate -> {
+                    app.activitiesRepository.setDate(it)
+                    addAnswer(sbState.answerId, "Je veux y aller le $it")
+                }
+
+                TypeAction.EntrerDistance -> {
+                    app.activitiesRepository.setDistance(it.toInt())
+                    addAnswer(sbState.answerId, "Je veux une distance de $it km")
+                }
+
+                TypeAction.EntrerVille -> {
+                    app.activitiesRepository.addVille(it)
+                    addAnswer(sbState.answerId, "Je veux aller dans la ville de $it")
+                }
+
+                else -> {}
+            }
+            Log.i(TAG, "Searched $it")
+        }
     }
 }

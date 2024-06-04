@@ -1,11 +1,10 @@
 package fr.c1.chatbot.utils
 
-import android.content.Context
-import android.content.SharedPreferences
-import android.content.pm.PackageManager
-import android.net.Uri
+import fr.c1.chatbot.ChatBot
+import kotlinx.coroutines.CoroutineScope
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SnapshotMutationPolicy
 import androidx.compose.runtime.mutableStateListOf
@@ -27,7 +26,10 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import fr.c1.chatbot.ChatBot
+import android.content.Context
+import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.net.Uri
 import java.io.File
 import java.io.FileOutputStream
 import kotlin.reflect.KMutableProperty0
@@ -38,10 +40,20 @@ val application: ChatBot
     get() = (LocalContext.current as ComponentActivity).application as ChatBot
 
 @Composable
+fun UnitLaunchedEffect(block: suspend CoroutineScope.() -> Unit) = LaunchedEffect(Unit, block)
+
+@Composable
 fun <T> rememberMutableStateOf(
     value: T,
     policy: SnapshotMutationPolicy<T> = structuralEqualityPolicy()
 ): MutableState<T> = remember { mutableStateOf(value, policy) }
+
+@Composable
+fun <T> rememberMutableStateOf(
+    key1: Any?,
+    value: T,
+    policy: SnapshotMutationPolicy<T> = structuralEqualityPolicy()
+): MutableState<T> = remember(key1) { mutableStateOf(value, policy) }
 
 @Composable
 fun <T> rememberMutableStateListOf(): SnapshotStateList<T> = remember { mutableStateListOf() }

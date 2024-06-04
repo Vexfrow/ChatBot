@@ -1,9 +1,12 @@
 package fr.c1.chatbot
 
+import fr.c1.chatbot.composable.Activities
 import fr.c1.chatbot.composable.Message
 import fr.c1.chatbot.composable.MySearchBar
 import fr.c1.chatbot.composable.MySettings
 import fr.c1.chatbot.composable.ProposalList
+import fr.c1.chatbot.composable.Tab
+import fr.c1.chatbot.composable.TopBar
 import fr.c1.chatbot.model.ActivitiesRepository
 import fr.c1.chatbot.model.Event
 import fr.c1.chatbot.model.Settings
@@ -31,15 +34,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -54,7 +51,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.work.WorkManager
 import android.Manifest
 import android.os.Bundle
@@ -66,10 +62,10 @@ private const val TAG = "MainActivity"
 private var initNotif = false
 
 class MainActivity : ComponentActivity() {
-
     private lateinit var workManager: WorkManager
     private lateinit var app: ChatBot
     private lateinit var activitiesRepository: ActivitiesRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         workManager = WorkManager.getInstance(this)
@@ -82,42 +78,36 @@ class MainActivity : ComponentActivity() {
                 PermissionsContent()
                 PermissionNotification()
 
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                val ctx = LocalContext.current
+
+                var tab by rememberMutableStateOf(value = Tab.ChatBotChat)
+
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    topBar = {
+                        TopBar(tab.value) {
+                            val tmp = Tab.valueOf(it)
+
+                            if (tab == Tab.Settings && tmp != Tab.Settings)
+                                Settings.save(ctx)
+
+                            tab = tmp
+                        }
+                    }
+                ) { innerPadding ->
                     Box(
                         modifier = Modifier
                             .padding(innerPadding)
                             .fillMaxSize()
                     ) {
-                        var settings by rememberMutableStateOf(value = false)
-
-                        MyColumn(modifier = Modifier, enabled = !settings)
-
-                        val ctx = LocalContext.current
-                        IconButton(
-                            modifier = if (!settings) Modifier
-                                .align(Alignment.TopEnd)
-                                .padding(end = 10.dp, top = 10.dp)
-                            else Modifier
-                                .align(Alignment.TopStart)
-                                .padding(end = 10.dp, top = 10.dp),
-                            onClick = {
-                                if (settings)
-                                    Settings.save(ctx)
-
-                                settings = !settings
-                            }
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(70.dp),
-                                imageVector =
-                                if (!settings) Icons.Default.Settings
-                                else Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Settings"
+                        MyColumn(modifier = Modifier, enabled = tab == Tab.ChatBotChat)
+                        when (tab) {
+                            Tab.Settings -> MySettings()
+                            Tab.ChatBotResults -> Activities(
+                                list = app.activitiesRepository.getResultats()
                             )
+                            else -> {}
                         }
-
-                        if (settings)
-                            MySettings()
                     }
                 }
             }

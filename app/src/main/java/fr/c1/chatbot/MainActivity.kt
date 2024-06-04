@@ -1,10 +1,5 @@
 package fr.c1.chatbot
 
-<<<<<<< HEAD
-import android.Manifest
-import android.os.Bundle
-import android.util.Log
-=======
 import fr.c1.chatbot.composable.Message
 import fr.c1.chatbot.composable.MySearchBar
 import fr.c1.chatbot.composable.MySettings
@@ -23,7 +18,6 @@ import fr.c1.chatbot.utils.rememberMutableStateOf
 import fr.c1.chatbot.utils.scheduleEventReminders
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
->>>>>>> 0c3a669 (Implemented actions :)
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -62,23 +56,9 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.work.WorkManager
-import fr.c1.chatbot.composable.Message
-import fr.c1.chatbot.composable.MySearchBar
-import fr.c1.chatbot.composable.MySettings
-import fr.c1.chatbot.composable.ProposalList
-import fr.c1.chatbot.model.ActivitiesRepository
-import fr.c1.chatbot.model.Event
-import fr.c1.chatbot.model.Settings
-import fr.c1.chatbot.model.toDate
-import fr.c1.chatbot.ui.theme.ChatBotTheme
-import fr.c1.chatbot.ui.theme.colorSchemeExtension
-import fr.c1.chatbot.utils.Calendar
-import fr.c1.chatbot.utils.application
-import fr.c1.chatbot.utils.rememberMutableStateListOf
-import fr.c1.chatbot.utils.rememberMutableStateOf
-import fr.c1.chatbot.utils.scheduleEventReminders
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import android.Manifest
+import android.os.Bundle
+import android.util.Log
 import kotlin.time.Duration.Companion.seconds
 
 private const val TAG = "MainActivity"
@@ -353,10 +333,6 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
             }
         }
 
-<<<<<<< HEAD
-        val searchBarEnabled by rememberMutableStateOf(value = true)
-        val searchBarText by rememberMutableStateOf(value = "Search")
-=======
         ProposalList(proposals = answers) {
             answers = emptyList()
             Log.i(TAG, "Choose '$it'")
@@ -395,7 +371,6 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
 
             addAnswer(i)
         }
->>>>>>> 0c3a669 (Implemented actions :)
 
         MySearchBar(
             placeholder = sbState.text,

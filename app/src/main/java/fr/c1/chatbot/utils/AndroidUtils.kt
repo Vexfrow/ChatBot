@@ -1,14 +1,7 @@
 package fr.c1.chatbot.utils
 
-<<<<<<< HEAD
-import android.content.Context
-import android.content.SharedPreferences
-import android.content.pm.PackageManager
-import android.net.Uri
-=======
 import fr.c1.chatbot.ChatBot
 import kotlinx.coroutines.CoroutineScope
->>>>>>> 0c3a669 (Implemented actions :)
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,7 +26,10 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import fr.c1.chatbot.ChatBot
+import android.content.Context
+import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.net.Uri
 import java.io.File
 import java.io.FileOutputStream
 import kotlin.reflect.KMutableProperty0

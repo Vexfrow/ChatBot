@@ -7,6 +7,7 @@ import fr.c1.chatbot.utils.TTS
 import android.app.Application
 import fr.c1.chatbot.model.ProfilUtilisateur
 import fr.c1.chatbot.model.loadAllUsersInformation
+import fr.c1.chatbot.model.storeAllUsersInformation
 
 class ChatBot : Application() {
     val activitiesRepository: ActivitiesRepository = ActivitiesRepository()
@@ -31,6 +32,10 @@ class ChatBot : Application() {
 
         // Load user list
         userList = loadAllUsersInformation(this)
+        if (userList.isEmpty()) {
+            userList.add(ProfilUtilisateur("1", "User", 20))
+            storeAllUsersInformation(this, userList)
+        }
         currentUser = userList[0]
     }
 }

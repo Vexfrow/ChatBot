@@ -14,8 +14,12 @@ import fr.c1.chatbot.model.activity.Sites
 import fr.c1.chatbot.model.activity.Type
 import android.app.Application
 import android.location.Location
+import androidx.compose.runtime.Composable
+import fr.c1.chatbot.ChatBot
+import fr.c1.chatbot.utils.application
 import java.io.BufferedInputStream
 import java.io.InputStream
+import java.util.Date
 import java.util.Locale
 
 // Fichiers CSV venant du site data.gouv.fr
@@ -23,7 +27,19 @@ class ActivitiesRepository {
 
     private val TAG = "ActivitiesRepository"
 
+    companion object {
+        val passionList: Set<String>
+            get() = Associations.passions union Contenus.passions union Sites.passions union Musees.passions union Jardins.passions union Festivals.passions union Expositions.passions union EquipementsSport.passions union Edifices.passions
+    }
+
     private val listeVillesDisponible = sortedSetOf<String>()
+
+
+    private lateinit var date: String
+
+    private var distance = 10 // 10 km par défaut
+
+    private lateinit var location: Location
 
     /**
      * Liste des musées
@@ -72,78 +88,6 @@ class ActivitiesRepository {
 
     val all: List<AbstractActivity>
         get() = museesList + sitesList + expositionsList + contenusList + edificesList + jardinsList + festivalsList + equipementsSportList + associationsList
-
-    /**
-     * Lise de villes de l'utilisateur
-     */
-    private val villesList = mutableListOf<String>()
-
-    /**
-     * Date souhaitée par l'utilisateur
-     */
-    private var date: String = ""
-
-    /**
-     * Distance souhaitée par l'utilisateur
-     */
-    private var distance: Int = 0
-
-    /**
-     * Type d'activité souhaitée par l'utilisateur
-     */
-    private var type: Type = Type.ALL
-
-    /**
-     * Localisation de l'utilisateur
-     */
-    private var localisation: Location = Location("")
-
-    /**
-     * Passions de l'utilisateur
-     */
-    private val passions = mutableListOf<String>()
-
-    /**
-     * Ajouter une ville
-     */
-    fun addVille(ville: String) {
-        villesList.add(ville)
-    }
-
-    /**
-     * Ajouter une date
-     */
-    fun setDate(date: String) {
-        this.date = date
-    }
-
-    /**
-     * Ajouter une distance
-     */
-    fun setDistance(distance: Int) {
-        this.distance = distance
-    }
-
-    /**
-     * Ajouter un type d'activité
-     */
-    fun setType(type: Type) {
-        this.type = type
-    }
-
-    /**
-     * Ajouter une localisation
-     */
-    fun setLocalisation(localisation: Location) {
-        this.localisation = localisation
-    }
-
-    /**
-     * Ajouter une passion
-     */
-    fun addPassion(passion: String) {
-        passions.add(passion)
-    }
 
     /**
      * Récupérer la liste des musées
@@ -213,13 +157,6 @@ class ActivitiesRepository {
     }
 
     /**
-     * Récupérer la liste des villes
-     */
-    fun getVillesList(): List<String> {
-        return villesList
-    }
-
-    /**
      * Récupérer la date
      */
     fun getDate(): String {
@@ -234,26 +171,15 @@ class ActivitiesRepository {
     }
 
     /**
-     * Récupérer le type d'activité
-     */
-    fun getType(): Type {
-        return type
-    }
-
-    /**
      * Récupérer la localisation
      */
-    fun getLocalisation(): Location {
-        return localisation
+    fun getLocation(): Location {
+        return location
     }
 
     /**
-     * Récupérer les passions
+     * Ajouter une ville à la liste des villes disponibles
      */
-    fun getPassions(): List<String> {
-        return passions
-    }
-
     private fun addVilleDispo(str: String) {
         if (str.isBlank())
             return
@@ -271,6 +197,27 @@ class ActivitiesRepository {
 
         if (!listeVillesDisponible.contains(tmp))
             listeVillesDisponible.add(tmp)
+    }
+
+    /**
+     * CHoisir la date
+     */
+    fun setDate(date: String) {
+        this.date = date
+    }
+
+    /**
+     * Choisir la distance
+     */
+    fun setDistance(distance: Int) {
+        this.distance = distance
+    }
+
+    /**
+     * Choisir la location
+     */
+    fun setLocation(location: Location) {
+        this.location = location
     }
 
     /**
@@ -531,7 +478,6 @@ class ActivitiesRepository {
                 accessible
             )
             equipementsSportList.add(activity)
-
             addVilleDispo(commune)
         }
     }
@@ -571,13 +517,6 @@ class ActivitiesRepository {
     }
 
     /**
-     * Initialiser les villes choisies par l'utilisateur
-     */
-    private fun initVilles() {
-        villesList.add("Grenoble")
-    }
-
-    /**
      * Initialiser toutes les listes
      */
     fun initAll(app: Application) {
@@ -590,7 +529,6 @@ class ActivitiesRepository {
         initFestivals(app)
         initEquipementsSport(app)
         initAsso(app)
-        initVilles()
     }
 
     /**
@@ -1030,7 +968,7 @@ class ActivitiesRepository {
     /**
      * Sélectionner par passion
      */
-    fun selectionnerParPassion(
+    private fun selectionnerParPassion(
         list: List<AbstractActivity>,
         passion: String
     ): List<AbstractActivity> {
@@ -1039,7 +977,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Sélectionner par distance
+     * Sélectionner par distance (km)
      */
     private fun selectionnerParDistance(
         list: List<AbstractActivity>,
@@ -1065,7 +1003,8 @@ class ActivitiesRepository {
     /**
      * Obtenir les résultats de la recherche
      */
-    fun getResultats(): List<AbstractActivity> {
+    fun getResultats(app: ChatBot): List<AbstractActivity> {
+        val user = app.currentUser
         // Différents critères :
         // Ville, date, distance, type, localisation, passions
         // Récupérer les activités correspondant aux critères
@@ -1081,69 +1020,33 @@ class ActivitiesRepository {
             associationsList
         )
         // Tri par Type
-        when (getType()) {
-            Type.ALL -> // Ne rien faire
-                Unit
-
-            Type.SPORT -> list = listOf(
-                equipementsSportList,
-                associationsList.filter { it.nom.lowercase().contains("sport") })
-
-            Type.CULTURE -> list = listOf(
-                museesList,
-                sitesList,
-                expositionsList,
-                contenusList,
-                edificesList,
-                jardinsList,
-                festivalsList
-            )
-
-            Type.MUSIQUE -> list =
-                listOf(festivalsList.filter { it.discipline.lowercase().contains("musique") })
-
-            Type.CINEMA -> list =
-                listOf(festivalsList.filter { it.discipline.lowercase().contains("cinéma") },
-                    festivalsList.filter { it.discipline.lowercase().contains("cinema") })
-
-            Type.LITTERATURE -> list =
-                listOf(festivalsList.filter { it.discipline.lowercase().contains("littérature") },
-                    festivalsList.filter { it.discipline.lowercase().contains("litterature") },
-                    contenusList.filter { it.nom.lowercase().contains("livre") },
-                    contenusList.filter { it.nom.lowercase().contains("littérature") },
-                    contenusList.filter { it.nom.lowercase().contains("litterature") },
-                    associationsList.filter { it.nom.lowercase().contains("littérature") },
-                    associationsList.filter { it.nom.lowercase().contains("litterature") },
-                    associationsList.filter { it.nom.lowercase().contains("livre") })
-
-            Type.ASSOCIATION -> list = listOf(associationsList)
-
-            Type.AUTRE ->
-                Unit
+        user.getTypes().forEach { type ->
+            list.forEach { selectionnerParType(it, type) }
         }
         // Tri par Ville
-        getVillesList().forEach { ville ->
+        user.getVilles().forEach { ville ->
             list = list
                 .map { selectionnerParCommune(it, ville) }
                 .filter(List<AbstractActivity>::isNotEmpty)
         }
         // Tri par Date
-        if (getDate() != "") {
+        if (date != null) {
             // TODO : date des activités
         }
         // Tri par Distance
-        if (getDistance() != 0) {
+        if (distance != 0) {
             // TODO : distance des activités à la localisation actuelle
         }
         // Tri par Localisation
-        if (getLocalisation().latitude != 0.0 && getLocalisation().longitude != 0.0) {
+        //val localisation =
+        //if (localisation.latitude != 0.0 && localisation.longitude != 0.0) {
             // TODO : activités dans un rayon de 5km par rapport à la localisation actuelle
             list = list
-                .map { selectionnerParDistance(it, 5, getLocalisation()) }
+                //.map { selectionnerParDistance(it, 5, getLocalisation()) }
                 .filter(List<AbstractActivity>::isNotEmpty)
-        }
+        //}
         // Tri par Passion
-        getPassions().forEach { passion ->
+        user.getPassions().forEach { passion ->
             list = list
                 .map { selectionnerParPassion(it, passion) }
                 .filter(List<AbstractActivity>::isNotEmpty)
@@ -1152,5 +1055,46 @@ class ActivitiesRepository {
         list = list.map(::trierParNom)
         // TODO : Trier la liste totale avant de retourner
         return list.flatten()
+    }
+
+    private fun selectionnerParType(
+        it: List<AbstractActivity>,
+        type: Type
+    ): List<AbstractActivity> {
+        when (type) {
+            Type.SPORT -> it.filter {
+                it is EquipementsSport || (it is Associations && it.nom.lowercase()
+                    .contains("sport"))
+            }
+
+            Type.CULTURE -> it.filter { it is Musees || it is Sites || it is Expositions || it is Contenus || it is Edifices || it is Jardins || it is Festivals }
+            Type.MUSIQUE -> it.filter {
+                it is Festivals && it.discipline.lowercase().contains("musique")
+            }
+
+            Type.CINEMA -> it.filter {
+                it is Festivals && (it.discipline.lowercase()
+                    .contains("cinéma") || it.discipline.lowercase().contains("cinema"))
+            }
+
+            Type.LITTERATURE -> it.filter {
+                (it is Festivals && (it.discipline.lowercase()
+                    .contains("littérature") || it.discipline.lowercase()
+                    .contains("litterature") || it.nom.lowercase()
+                    .contains("livre") || it.nom.lowercase()
+                    .contains("livre")) || (it is Contenus && (it.nom.lowercase()
+                    .contains("livre") || it.nom.lowercase()
+                    .contains("littérature") || it.nom.lowercase()
+                    .contains("litterature")))) || (it is Associations && (it.nom.lowercase()
+                    .contains("littérature") || it.nom.lowercase()
+                    .contains("litterature") || it.nom.lowercase()
+                    .contains("livre")))
+            }
+
+            Type.ASSOCIATION -> it.filterIsInstance<Associations>()
+            Type.ALL -> it
+            Type.AUTRE -> it
+        }
+        return it
     }
 }

@@ -47,12 +47,12 @@
     {
       "id": 11,
       "text": "Les rappels ont été désactivées",
-      "action": "supprimerRappels"
+      "action": "SupprimerRappels"
     },
     {
       "id": 12,
       "text": "Les suggestions ont été désactivées",
-      "action": "supprimerSuggestions"
+      "action": "SupprimerSuggestions"
     },
     {
       "id": 13,
@@ -68,13 +68,8 @@
     },
     {
       "id": 16,
-      "text": "Voici des résultats qui correspondent a vos demandes et qui pourraient vous plaire",
+      "text": "Très bien, les activités que je vous propose sont disponibles dans l'onglet 'Résultats'",
       "action": "AfficherResultat"
-    },
-    {
-      "id": 16,
-      "text": "Voici des résultats qui correspondent à vos demandes et qui pourraient vous plaire",
-      "action": "resultat"
     },
     {
       "id": 17,
@@ -259,12 +254,7 @@
     {
       "from": 7,
       "to": 6,
-      "answer": 1008
-    },
-    {
-      "from": 7,
-      "to": 6,
-      "answer": 1009
+      "answer": 1019
     },
     {
       "from": 6,
@@ -278,11 +268,6 @@
     },
     {
       "from": 6,
-      "to": 16,
-      "answer": 1010
-    },
-    {
-      "from": 7,
       "to": 16,
       "answer": 1010
     },

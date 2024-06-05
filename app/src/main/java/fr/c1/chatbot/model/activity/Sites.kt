@@ -5,13 +5,16 @@ class Sites(
     val departement: String,
     val commune: String,
     val accessible: Boolean,
-    passions: List<String> = listOf(
-        "site", "monument", "patrimoine",
-        "histoire", "culture", "architecture",
-        "archéologie", "art", "religion",
-        "civilisation", "urbanisme", "paysage"
-    )
-) : AbstractActivity() {
+
+    ) : AbstractActivity() {
+    companion object {
+        val passions: List<String> = listOf(
+            "site", "monument", "patrimoine",
+            "histoire", "culture", "architecture",
+            "archéologie", "art", "religion",
+            "civilisation", "urbanisme", "paysage"
+        )
+    }
 
     override fun toString(): String {
         return "Site patrimonial (region='$region', departement='$departement', commune='$commune', accessible='$accessible')"

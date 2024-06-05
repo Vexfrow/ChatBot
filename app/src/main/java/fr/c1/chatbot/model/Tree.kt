@@ -84,13 +84,13 @@ class Tree {
 
 
     //Lorsqu'on choisie une réponse, la question est maj et le nom de l'action est renvoyé
-    fun selectAnswer(idReponse: Int, activitiesRepository: ActivitiesRepository) {
+    fun selectAnswer(idReponse: Int, user: ProfilUtilisateur) {
         if (idReponse == retour && historiqueQuestion.size > 1)
             historiqueQuestion.removeLast()
         else if (idReponse == recommencerConversation) { //Clear la conversation ?
             historiqueQuestion.removeAll(historiqueQuestion.toSet())
             historiqueQuestion.add(0)
-        }else if(idReponse == afficherFiltre){
+        } else if (idReponse == afficherFiltre) {
             Log.d(TAG, "selectAnswer: afficherFiltre")
         } else {
             for (r in data?.link!!) {
@@ -100,19 +100,9 @@ class Tree {
                     Log.d(TAG, "selectAnswer: ${getAnswerText(idReponse)}")
                     // Remplir les éléments de ActivitiesRepository avec les données de la réponse
                     Log.d(TAG, "selectAnswer: ${getActionUtilisateur(idReponse)}")
-                    when (getActionUtilisateur(idReponse)) {
-                        TypeAction.Geolocalisation -> {
-                            // TODO : Récupérer la localisation courante de l'utilisateur
-                            //activitiesRepository.setLocalisation()
-                        }
-
-                        TypeAction.ActivitePhysique -> activitiesRepository.setType(SPORT)
-                        TypeAction.ActiviteCulturelle -> activitiesRepository.setType(CULTURE)
-                        else -> {}
-                    }
                 }
-                Log.d(TAG, "selectAnswer: new type : ${activitiesRepository.getType()}")
             }
+            Log.d(TAG, "selectAnswer: new type : ${user.getTypes()}")
         }
     }
 

@@ -222,7 +222,7 @@ fun MySearchBar(
             },
             onProposalSelected = { query = it },
             onSearch = ::search,
-            modifier = mod,
+            modifier = mod
         )
 
         return

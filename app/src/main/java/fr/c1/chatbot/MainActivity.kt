@@ -539,6 +539,8 @@ fun MyColumn(
                     return@ProposalList
                 }
 
+//                TypeAction.ChoisirPassions -> TODO()
+
                 TypeAction.ActivitePhysique -> user.addType(SPORT)
 
                 TypeAction.ActiviteCulturelle -> user.addType(CULTURE)
@@ -548,8 +550,7 @@ fun MyColumn(
                     enableSearchBar("Choisissez une passion", act, i, passions)
                     return@ProposalList
                 }
-//                TypeAction.ChoisirPassions -> TODO()
-                else -> Log.e(TAG, "MyColumn: Action $act not implemented")
+                else -> {}
             }
 
             addAnswer(i)
@@ -574,7 +575,8 @@ fun MyColumn(
 
                 TypeAction.EntrerVille -> {
                     user.addVille(it)
-                    addAnswer(sbState.answerId, "Je veux aller dans la ville de $it")
+                    val text = if ("AEIOUaeiou".indexOf(it.first()) != -1) "d'$it" else "de $it"
+                    addAnswer(sbState.answerId, "Je souhaite faire mon activité dans les alentours de la ville $text")
                 }
 
                 else -> {}

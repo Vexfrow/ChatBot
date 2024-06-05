@@ -34,6 +34,7 @@ class ActivitiesRepository {
 
     private val listeVillesDisponible = sortedSetOf<String>()
 
+
     private lateinit var date: String
 
     private var distance = 10 // 10 km par défaut
@@ -87,11 +88,6 @@ class ActivitiesRepository {
 
     val all: List<AbstractActivity>
         get() = museesList + sitesList + expositionsList + contenusList + edificesList + jardinsList + festivalsList + equipementsSportList + associationsList
-
-    /**
-     * Lise de villes de l'utilisateur
-     */
-    private val villesList = mutableListOf<String>()
 
     /**
      * Récupérer la liste des musées
@@ -161,13 +157,6 @@ class ActivitiesRepository {
     }
 
     /**
-     * Récupérer la liste des villes
-     */
-    fun getVillesList(): List<String> {
-        return villesList
-    }
-
-    /**
      * Récupérer la date
      */
     fun getDate(): String {
@@ -184,7 +173,7 @@ class ActivitiesRepository {
     /**
      * Récupérer la localisation
      */
-    fun getLocalisation(): Location {
+    fun getLocation(): Location {
         return location
     }
 
@@ -526,7 +515,6 @@ class ActivitiesRepository {
 
         }
     }
-
 
     /**
      * Initialiser toutes les listes

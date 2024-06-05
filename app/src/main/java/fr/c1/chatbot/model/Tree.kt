@@ -1,10 +1,8 @@
 package fr.c1.chatbot.model
 
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import fr.c1.chatbot.model.activity.Type.CULTURE
-import fr.c1.chatbot.model.activity.Type.SPORT
-import android.util.Log
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
@@ -90,6 +88,9 @@ class Tree {
             questionsHistory.removeAll(questionsHistory.toSet())
             questionsHistory.add(0)
         } else if (idAnswer == afficherFiltre) {
+            //val text = "Voici les filtres utilisés pour le moment : \nVilles : ${user.getVilles()}\nTypes d'activités : ${user.getTypes()}\n Distance préféré : ${getDistance()}\n Date voulue : ${app.getDate()}"
+           //val saveText = getQuestion()
+
             Log.d(TAG, "selectAnswer: afficherFiltre")
         } else {
             for (r in data?.link!!) {
@@ -99,19 +100,10 @@ class Tree {
                     Log.d(TAG, "selectAnswer: ${getAnswerText(idAnswer)}")
                     // Fill the ActivitiesRepository according to the answer selected
                     Log.d(TAG, "selectAnswer: ${getUserAction(idAnswer)}")
-                    when (getUserAction(idAnswer)) {
-                        TypeAction.Geolocalisation -> {
-                            // TODO : Take the current user's location
-                            //activitiesRepository.setLocalisation()
-                        }
 
-                        TypeAction.ActivitePhysique -> user.addType(SPORT)
-                        TypeAction.ActiviteCulturelle -> user.addType(CULTURE)
-                        else -> {}
-                    }
-                    Log.d(TAG, "selectAnswer: new type : ${user.getTypes()}")
                 }
             }
+            Log.d(TAG, "selectAnswer: new type : ${user.getTypes()}")
         }
     }
 

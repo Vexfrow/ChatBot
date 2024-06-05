@@ -28,6 +28,12 @@ enum class TypeAction {
     /** Just a suggestion */
     ActiviteCulturelle,
 
+    SupprimerRappels,
+
+    SupprimerSuggestions,
+
+    SupprimerNotifs,
+
     /** Just a suggestion */
     Retour,
     Recommencer,

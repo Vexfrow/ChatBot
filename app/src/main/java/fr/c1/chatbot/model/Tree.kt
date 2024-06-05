@@ -14,6 +14,7 @@ import java.lang.reflect.Type
 private const val TAG = "Tree"
 const val retour = -1
 const val recommencerConversation = -2
+const val afficherFiltre = -3
 
 class Robot {
     var id: Int = 0
@@ -61,7 +62,7 @@ class Tree {
 
     //Renvoie le texte de la question posé par le bot
     fun getQuestion(): String {
-        return data?.robot?.get(historiqueQuestion[historiqueQuestion.size - 1])?.text ?: ""
+        return data?.robot?.get(historiqueQuestion.last())?.text ?: ""
     }
 
     //Renvoie la liste des id des réponses possibles lié à la question actuelle
@@ -70,10 +71,11 @@ class Tree {
         if (historiqueQuestion.size != 1) {
             currentAnswers.add(recommencerConversation)
             currentAnswers.add(retour)
+            currentAnswers.add(afficherFiltre)
         }
 
         for (r in data?.link!!) {
-            if (r.from == historiqueQuestion[historiqueQuestion.size - 1]) {
+            if (r.from == historiqueQuestion.last()) {
                 currentAnswers.add(r.answer)
             }
         }
@@ -88,9 +90,11 @@ class Tree {
         else if (idReponse == recommencerConversation) { //Clear la conversation ?
             historiqueQuestion.removeAll(historiqueQuestion.toSet())
             historiqueQuestion.add(0)
+        }else if(idReponse == afficherFiltre){
+            Log.d(TAG, "selectAnswer: afficherFiltre")
         } else {
             for (r in data?.link!!) {
-                if (r.from == historiqueQuestion[historiqueQuestion.size - 1] && r.answer == idReponse) {
+                if (r.from == historiqueQuestion.last() && r.answer == idReponse) {
                     historiqueQuestion.add(r.to)
                     // Afficher le texte de la réponse
                     Log.d(TAG, "selectAnswer: ${getAnswerText(idReponse)}")

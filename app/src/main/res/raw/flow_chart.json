@@ -188,6 +188,11 @@
       "id": -2,
       "text": "Recommencer conversation",
       "action": "Recommencer"
+    },
+    {
+      "id": -3,
+      "text": "Afficher les filtres",
+      "action": "AfficherFiltres"
     }
   ],
   "link": [

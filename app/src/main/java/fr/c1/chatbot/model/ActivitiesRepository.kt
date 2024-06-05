@@ -16,9 +16,15 @@ import android.app.Application
 import android.location.Location
 import java.io.BufferedInputStream
 import java.io.InputStream
+import java.util.Locale
 
 // Fichiers CSV venant du site data.gouv.fr
 class ActivitiesRepository {
+
+    private val TAG = "ActivitiesRepository"
+
+    private val listeVillesDisponible = sortedSetOf<String>()
+
     /**
      * Liste des musées
      */
@@ -146,6 +152,10 @@ class ActivitiesRepository {
         return museesList
     }
 
+    fun getVillesDisponible(): Collection<String> {
+        return listeVillesDisponible
+    }
+
     /**
      * Récupérer la liste des sites patrimoniaux
      */
@@ -244,6 +254,25 @@ class ActivitiesRepository {
         return passions
     }
 
+    private fun addVilleDispo(str: String) {
+        if (str.isBlank())
+            return
+
+        if (str.any(Char::isDigit))
+            return
+
+        val tmp = str
+            .trim('\"')
+            .lowercase(Locale.getDefault())
+            .replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(Locale.getDefault())
+                else it.toString()
+            }
+
+        if (!listeVillesDisponible.contains(tmp))
+            listeVillesDisponible.add(tmp)
+    }
+
     /**
      * Initialiser les musées
      */
@@ -279,6 +308,7 @@ class ActivitiesRepository {
                 true
             )
             museesList.add(activity)
+            addVilleDispo(commune)
         }
     }
 
@@ -304,6 +334,7 @@ class ActivitiesRepository {
                 true
             )
             sitesList.add(activity)
+            addVilleDispo(commune)
         }
     }
 
@@ -335,6 +366,7 @@ class ActivitiesRepository {
                 true
             )
             expositionsList.add(activity)
+            addVilleDispo(commune)
         }
     }
 
@@ -368,6 +400,7 @@ class ActivitiesRepository {
                 true
             )
             contenusList.add(activity)
+            addVilleDispo(commune)
         }
     }
 
@@ -397,6 +430,7 @@ class ActivitiesRepository {
                 true
             )
             edificesList.add(activity)
+            addVilleDispo(commune)
         }
     }
 
@@ -429,6 +463,7 @@ class ActivitiesRepository {
                 accessible
             )
             jardinsList.add(activity)
+            addVilleDispo(commune)
         }
     }
 
@@ -462,6 +497,7 @@ class ActivitiesRepository {
                 true
             )
             festivalsList.add(activity)
+            addVilleDispo(commune)
         }
     }
 
@@ -495,6 +531,8 @@ class ActivitiesRepository {
                 accessible
             )
             equipementsSportList.add(activity)
+
+            addVilleDispo(commune)
         }
     }
 
@@ -528,6 +566,7 @@ class ActivitiesRepository {
                 true
             )
             associationsList.add(activity)
+
         }
     }
 

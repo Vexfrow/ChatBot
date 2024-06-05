@@ -164,7 +164,7 @@ fun MySearchBar(
     placeholder: String = "Search",
     enabled: Boolean = true,
     action: TypeAction = TypeAction.None,
-    proposals: List<String>? = null,
+    proposals: Collection<String>? = null,
     onSearch: (String) -> Unit
 ) {
     var query by remember(placeholder) { mutableStateOf("") }
@@ -209,14 +209,13 @@ fun MySearchBar(
     }
 
     if (proposals != null) {
-        var props by rememberMutableStateOf(proposals.toList())
-
+        var props by rememberMutableStateOf(proposals)
+        props = proposals.filter {it.startsWith(query, true)}.take(50)
         DropDown(
             query = query,
             proposals = props,
             onValueChanged = {
                 query = it
-                props = proposals.filter { p -> p.startsWith(it, true) }
             },
             onProposalSelected = { query = it },
             onSearch = ::search,
@@ -313,7 +312,7 @@ private fun Prev() = ChatBotPrev {
 @Composable
 fun DropDown(
     query: String,
-    proposals: List<String>,
+    proposals: Collection<String>,
     onValueChanged: (String) -> Unit,
     onProposalSelected: (String) -> Unit,
     onSearch: (String) -> Unit,

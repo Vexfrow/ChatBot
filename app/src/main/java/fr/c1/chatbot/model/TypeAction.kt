@@ -16,5 +16,8 @@ enum class TypeAction {
     /** Dropdown with multiple choices */
     ChoisirPassions,
     ActivitePhysique,
-    ActiviteCulturelle
+    ActiviteCulturelle,
+    Retour,
+    Recommencer,
+    AfficherFiltres
 }

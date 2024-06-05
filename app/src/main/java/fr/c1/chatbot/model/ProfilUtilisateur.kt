@@ -282,16 +282,19 @@ class ProfilUtilisateur(
      * Charger les informations de l'utilisateur depuis un fichier json
      */
     fun loadUserInformation(context: Context, nom: String, prenom: String): ProfilUtilisateur? {
-        val fileName = "${nom.lowercase()}${prenom.lowercase()}.json"
+        val gson = Gson()
+        lateinit var user: ProfilUtilisateur
+        val fileName = "${nom.lowercase()}_${prenom.lowercase()}.json"
         val file = File(context.filesDir, fileName)
-        return if (file.exists()) {
+
+        return if (file.exists() && file.isFile) {
             val content = file.readText()
-            val gson = Gson()
-            gson.fromJson(content, ProfilUtilisateur::class.java).also {
-                Log.d(TAG, "loadUserInformation: User information loaded")
+            user = gson.fromJson(content, ProfilUtilisateur::class.java).also {
+                Log.d(TAG, "loadAllUsersInformation: Loaded user profile from ${file.name}")
             }
+            user
         } else {
-            Log.d(TAG, "loadUserInformation: File does not exist")
+            Log.d(TAG, "loadUserInformation: User $nom $prenom does not exist")
             null
         }
     }
@@ -310,7 +313,12 @@ fun loadAllUsersInformation(context: Context): MutableList<ProfilUtilisateur> {
             val content = file.readText()
             val user = gson.fromJson(content, ProfilUtilisateur::class.java)
             userList.add(user)
-            Log.d(TAG, "loadAllUsersInformation: Loaded user profile from ${file.name}")
+            Log.d(
+                TAG,
+                "loadAllUsersInformation: Loaded user profile from ${file.name} ${user.nom} ${user.getPrenom()}"
+            )
+        } else {
+            Log.d(TAG, "loadAllUsersInformation: File does not exist")
         }
     }
 

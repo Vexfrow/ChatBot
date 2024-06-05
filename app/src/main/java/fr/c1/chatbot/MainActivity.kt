@@ -1,6 +1,5 @@
 package fr.c1.chatbot
 
-
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -140,7 +139,10 @@ class MainActivity : ComponentActivity() {
                             .padding(innerPadding)
                             .fillMaxSize()
                     ) {
-                        MyColumn(modifier = Modifier, enabled = tab == Tab.ChatBotChat)
+                        MyColumn(modifier = Modifier, enabled = tab == Tab.ChatBotChat) {
+                            tab = Tab.ChatBotResults
+                        }
+
                         when (tab) {
                             Tab.Settings -> MySettings()
                             Tab.ChatBotResults -> Activities(
@@ -370,7 +372,11 @@ fun PermissionNotification() {
 }
 
 @Composable
-fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
+fun MyColumn(
+    modifier: Modifier = Modifier,
+    enabled: Boolean,
+    onResult: () -> Unit
+) {
     val ctx = LocalContext.current
     val app = application
     val tree = app.chatbotTree
@@ -481,8 +487,10 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
                 answers = tree.getAnswersId().map { i -> tree.getAnswerText(i) }
                 lazyListState.animateScrollToItem(messages.size)
 
-                if (answers.isEmpty())
-                    Log.i(TAG, "MyColumn: Result avaibles !")
+                if (tree.getBotAction() == TypeAction.AfficherResultat) {
+                    delay(5.seconds)
+                    onResult()
+                }
             }
         }
 
@@ -490,7 +498,7 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
             answers = emptyList()
             Log.i(TAG, "Choose '$it'")
             val i = tree.getAnswersId().first { i -> tree.getAnswerText(i) == it }
-            when (val act = tree.getActionUtilisateur(i)) {
+            when (val act = tree.getUserAction(i)) {
                 TypeAction.EntrerDate -> {
                     enableSearchBar("Sélectionnez une date", act, i)
                     return@ProposalList
@@ -523,6 +531,7 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
                 }
 
                 TypeAction.Geolocalisation -> {
+                    app.activitiesRepository.setLocalisation(currentLocation ?: Location(""))
                     addAnswer(
                         i,
                         "Je suis ici : ${currentLocation?.longitude}, ${currentLocation?.latitude}"
@@ -539,7 +548,8 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
                     enableSearchBar("Choisissez une passion", act, i, passions)
                     return@ProposalList
                 }
-                else -> {}
+//                TypeAction.ChoisirPassions -> TODO()
+                else -> Log.e(TAG, "MyColumn: Action $act not implemented")
             }
 
             addAnswer(i)
@@ -553,7 +563,6 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
         ) {
             when (sbState.action) {
                 TypeAction.EntrerDate -> {
-                    //user.setDate(it.toDate())
                     addAnswer(sbState.answerId, "Je veux y aller le $it")
                     activitiesRepository.setDate(it)
                 }

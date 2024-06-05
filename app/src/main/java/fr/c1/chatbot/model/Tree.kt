@@ -22,7 +22,7 @@ class Robot {
     var action: String? = null // Optional field
 }
 
-class Humain {
+class Human {
     var id: Int = 0
     var text: String = ""
     var action: String? = null // Optional field
@@ -37,16 +37,16 @@ class Link {
 
 class Data {
     var robot: List<Robot> = ArrayList()
-    var humain: List<Humain> = ArrayList()
+    var humain: List<Human> = ArrayList()
     var link: List<Link> = ArrayList()
 }
 
 class Tree {
 
     var data: Data? = null
-    private var historiqueQuestion: ArrayList<Int> = ArrayList()
+    private var questionsHistory: ArrayList<Int> = ArrayList()
 
-    //Prend un fichier JSON en paramètre
+    //Take a json file in parameter
     fun initTree(fileIS: InputStream) {
         val gson = Gson()
         try {
@@ -54,70 +54,79 @@ class Tree {
                 val dataType: Type = object : TypeToken<Data?>() {}.type
                 data = gson.fromJson(bufferedReader, dataType)
             }
-            historiqueQuestion.add(0)
+            questionsHistory.add(0)
         } catch (e: IOException) {
             e.printStackTrace()
         }
     }
 
-    //Renvoie le texte de la question posé par le bot
+    //Return the question ask by the bot
     fun getQuestion(): String {
-        return data?.robot?.get(historiqueQuestion.last())?.text ?: ""
+        return data?.robot?.get(questionsHistory.last())?.text ?: ""
     }
 
-    //Renvoie la liste des id des réponses possibles lié à la question actuelle
+    //Return the list of all the answers possible
     fun getAnswersId(): ArrayList<Int> {
         val currentAnswers = ArrayList<Int>()
-        if (historiqueQuestion.size != 1) {
+        if (questionsHistory.size != 1) {
             currentAnswers.add(recommencerConversation)
             currentAnswers.add(retour)
-            currentAnswers.add(afficherFiltre)
         }
 
         for (r in data?.link!!) {
-            if (r.from == historiqueQuestion.last()) {
+            if (r.from == questionsHistory.last()) {
                 currentAnswers.add(r.answer)
             }
         }
+        currentAnswers.add(afficherFiltre)
         return currentAnswers
     }
 
 
-    //Lorsqu'on choisie une réponse, la question est maj et le nom de l'action est renvoyé
-    fun selectAnswer(idReponse: Int, user: ProfilUtilisateur) {
-        if (idReponse == retour && historiqueQuestion.size > 1)
-            historiqueQuestion.removeLast()
-        else if (idReponse == recommencerConversation) { //Clear la conversation ?
-            historiqueQuestion.removeAll(historiqueQuestion.toSet())
-            historiqueQuestion.add(0)
-        } else if (idReponse == afficherFiltre) {
+    //Update the current question and execute the action link to the answer chosen
+    fun selectAnswer(idAnswer: Int, activitiesRepository: ActivitiesRepository) {
+        if (idAnswer == retour && questionsHistory.size > 1) questionsHistory.removeLast()
+        else if (idAnswer == recommencerConversation) { //Clear previous messages ?
+            questionsHistory.removeAll(questionsHistory.toSet())
+            questionsHistory.add(0)
+        } else if (idAnswer == afficherFiltre) {
             Log.d(TAG, "selectAnswer: afficherFiltre")
         } else {
             for (r in data?.link!!) {
-                if (r.from == historiqueQuestion.last() && r.answer == idReponse) {
-                    historiqueQuestion.add(r.to)
-                    // Afficher le texte de la réponse
-                    Log.d(TAG, "selectAnswer: ${getAnswerText(idReponse)}")
-                    // Remplir les éléments de ActivitiesRepository avec les données de la réponse
-                    Log.d(TAG, "selectAnswer: ${getActionUtilisateur(idReponse)}")
+                if (r.from == questionsHistory.last() && r.answer == idAnswer) {
+                    questionsHistory.add(r.to)
+                    // Print the answer's text
+                    Log.d(TAG, "selectAnswer: ${getAnswerText(idAnswer)}")
+                    // Fill the ActivitiesRepository according to the answer selected
+                    Log.d(TAG, "selectAnswer: ${getUserAction(idAnswer)}")
+                    when (getUserAction(idAnswer)) {
+                        TypeAction.Geolocalisation -> {
+                            // TODO : Take the current user's location
+                            //activitiesRepository.setLocalisation()
+                        }
+
+                        TypeAction.ActivitePhysique -> activitiesRepository.setType(SPORT)
+                        TypeAction.ActiviteCulturelle -> activitiesRepository.setType(CULTURE)
+                        else -> {}
+                    }
+                    Log.d(TAG, "selectAnswer: new type : ${activitiesRepository.getType()}")
                 }
             }
-            Log.d(TAG, "selectAnswer: new type : ${user.getTypes()}")
         }
     }
 
 
-    fun getAnswerText(idReponse: Int): String {
-        for (h in data?.humain!!) {
-            if (h.id == idReponse) {
-                return h.text
-            }
-        }
-        return ""
+    fun getAnswerText(idAnswer: Int): String {
+        return data?.humain!!.first { h -> h.id == idAnswer }.text
     }
 
-    fun getActionUtilisateur(idReponse: Int): TypeAction {
-        val actionStr = data?.humain!!.first { h -> h.id == idReponse }.action
+    fun getUserAction(idAnswer: Int): TypeAction {
+        val actionStr = data?.humain!!.first { h -> h.id == idAnswer }.action
+        return if (actionStr == null) TypeAction.None else enumValueOf<TypeAction>(actionStr)
+    }
+
+    fun getBotAction(): TypeAction {
+        val actionStr = data?.robot!!.first { h -> h.id == questionsHistory.last() }.action
         return if (actionStr == null) TypeAction.None else enumValueOf<TypeAction>(actionStr)
     }
 }

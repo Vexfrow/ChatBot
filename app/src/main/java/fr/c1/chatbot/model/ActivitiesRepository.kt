@@ -14,6 +14,9 @@ import fr.c1.chatbot.model.activity.Sites
 import fr.c1.chatbot.model.activity.Type
 import android.app.Application
 import android.location.Location
+import androidx.compose.runtime.Composable
+import fr.c1.chatbot.ChatBot
+import fr.c1.chatbot.utils.application
 import java.io.BufferedInputStream
 import java.io.InputStream
 import java.util.Locale
@@ -138,6 +141,25 @@ class ActivitiesRepository {
      */
     fun getAssociationsList(): List<Associations> {
         return associationsList
+    }
+
+    private fun addVilleDispo(str: String) {
+        if (str.isBlank())
+            return
+
+        if (str.any(Char::isDigit))
+            return
+
+        val tmp = str
+            .trim('\"')
+            .lowercase(Locale.getDefault())
+            .replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(Locale.getDefault())
+                else it.toString()
+            }
+
+        if (!listeVillesDisponible.contains(tmp))
+            listeVillesDisponible.add(tmp)
     }
 
     /**
@@ -922,7 +944,8 @@ class ActivitiesRepository {
     /**
      * Obtenir les résultats de la recherche
      */
-    fun getResultats(user: ProfilUtilisateur): List<AbstractActivity> {
+    fun getResultats(app: ChatBot): List<AbstractActivity> {
+        val user = app.currentUser
         // Différents critères :
         // Ville, date, distance, type, localisation, passions
         // Récupérer les activités correspondant aux critères
@@ -960,7 +983,7 @@ class ActivitiesRepository {
         if (localisation.latitude != 0.0 && localisation.longitude != 0.0) {
             // TODO : activités dans un rayon de 5km par rapport à la localisation actuelle
             list = list
-                .map { selectionnerParDistance(it, 5, getLocalisation()) }
+                //.map { selectionnerParDistance(it, 5, getLocalisation()) }
                 .filter(List<AbstractActivity>::isNotEmpty)
         }
         // Tri par Passion

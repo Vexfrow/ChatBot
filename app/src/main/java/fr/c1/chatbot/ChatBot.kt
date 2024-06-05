@@ -31,5 +31,6 @@ class ChatBot : Application() {
 
         // Load user list
         userList = loadAllUsersInformation(this)
+        currentUser = userList[0]
     }
 }

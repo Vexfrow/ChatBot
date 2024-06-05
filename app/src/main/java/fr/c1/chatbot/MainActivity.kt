@@ -1,10 +1,6 @@
 package fr.c1.chatbot
 
-import android.Manifest
-import android.app.DatePickerDialog
-import android.os.Build
-import android.os.Bundle
-import android.util.Log
+
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -39,7 +35,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.tween
@@ -67,7 +62,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.preference.PreferenceManager
-import androidx.work.WorkManager
 import android.Manifest
 import android.content.ContentValues
 import android.content.Context
@@ -78,18 +72,8 @@ import android.os.Looper
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
-import androidx.compose.ui.unit.dp
 import androidx.work.WorkManager
-import fr.c1.chatbot.composable.MySearchBar
-import fr.c1.chatbot.composable.MySettings
-import fr.c1.chatbot.composable.ProposalList
-import fr.c1.chatbot.composable.SpeechBubble
-import fr.c1.chatbot.model.*
-import fr.c1.chatbot.ui.theme.ChatBotTheme
-import fr.c1.chatbot.ui.theme.colorSchemeExtension
 import fr.c1.chatbot.utils.*
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 private const val TAG = "MainActivity"
@@ -164,7 +148,7 @@ class MainActivity : ComponentActivity() {
                         when (tab) {
                             Tab.Settings -> MySettings()
                             Tab.ChatBotResults -> Activities(
-                                list = app.activitiesRepository.getResultats()
+                                list = app.activitiesRepository.getResultats(app)
                             )
 
                             else -> {}
@@ -403,6 +387,7 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
     val crtScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
     val animated = rememberMutableStateListOf<Boolean>()
+    val user = app.currentUser
 
     val activitiesRepository = application.activitiesRepository
 
@@ -538,7 +523,7 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
                 TypeAction.AfficherResultat -> {
                     Log.i(
                         TAG,
-                        "MyColumn: Affichage des résultats: ${app.activitiesRepository.getResultats()}"
+                        "MyColumn: Affichage des résultats: ${app.activitiesRepository.getResultats(app)}"
                     )
                 }
 
@@ -547,6 +532,7 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
                         i,
                         "Je suis ici : ${currentLocation?.longitude}, ${currentLocation?.latitude}"
                     )
+                    currentLocation?.let { it1 -> user.setLocalisation(it1) }
                     return@ProposalList
                 }
 
@@ -565,17 +551,17 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
         ) {
             when (sbState.action) {
                 TypeAction.EntrerDate -> {
-                    app.activitiesRepository.setDate(it)
+                    //user.setDate(it.toDate())
                     addAnswer(sbState.answerId, "Je veux y aller le $it")
                 }
 
                 TypeAction.EntrerDistance -> {
-                    app.activitiesRepository.setDistance(it.toInt())
+                    user.setDistance(it.toInt())
                     addAnswer(sbState.answerId, "Je veux une distance de $it km")
                 }
 
                 TypeAction.EntrerVille -> {
-                    app.activitiesRepository.addVille(it)
+                    user.addVille(it)
                     addAnswer(sbState.answerId, "Je veux aller dans la ville de $it")
                 }
 

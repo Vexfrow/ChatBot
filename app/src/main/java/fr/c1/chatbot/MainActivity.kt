@@ -68,34 +68,26 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
+import fr.c1.chatbot.utils.LocationHandler
 import kotlin.time.Duration.Companion.seconds
 
 private const val TAG = "MainActivity"
 
 private var initNotif = false
 
-private lateinit var fusedLocationClient: FusedLocationProviderClient
-private lateinit var locationRequest: LocationRequest
-private lateinit var locationCallback: LocationCallback
 private var currentLocation: Location? = null
-
 class MainActivity : ComponentActivity() {
     private lateinit var workManager: WorkManager
     private lateinit var app: ChatBot
     private lateinit var activitiesRepository: ActivitiesRepository
-
+    private lateinit var locationHandler: LocationHandler
     private var requestingLocationUpdates: Boolean = false
     private lateinit var myOpenMapView: MapView
-    // Provides location updates for while-in-use feature.
-
-    private lateinit var startButton: Button
-    private lateinit var stopButton: Button
-
-    private lateinit var outputTextView: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         workManager = WorkManager.getInstance(this)
@@ -109,10 +101,8 @@ class MainActivity : ComponentActivity() {
         // This won't work unless you have imported this: org.osmdroid.config.Configuration.*
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
 
-        createLocationRequest()
-        createLocationCallback()
-        initLocation(this)
-        startLocationUpdates(this)
+        locationHandler.initLocation(this)
+        locationHandler.startLocationUpdates(this)
 
         enableEdgeToEdge()
         setContent {
@@ -229,98 +219,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         initNotif = true
-    }
-}
-
-private fun initLocation(ctx: Context) {
-    Log.i(ContentValues.TAG, "Init Location")
-    Log.i(ContentValues.TAG, "Check Permissions")
-    if (ActivityCompat.checkSelfPermission(
-            ctx,
-            android.Manifest.permission.ACCESS_FINE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-            ctx,
-            android.Manifest.permission.ACCESS_COARSE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED
-    ) {
-        // TODO: Consider calling
-        //    ActivityCompat#requestPermissions
-        // here to request the missing permissions, and then overriding
-        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-        //                                          int[] grantResults)
-        // to handle the case where the user grants the permission. See the documentation
-        // for ActivityCompat#requestPermissions for more details.
-
-        /*val requestPermissionLauncher = rememberLauncherForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions()) {
-                permissions ->
-            hasLocationPermission = (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true) &&
-                    (permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true)
-            if( hasLocationPermission){
-                //events = getLocationEvent(context)
-            }
-        }
-        LaunchedEffect(Unit) {
-            requestPermissionLauncher.launch(
-                arrayOf(
-                    //Manifest.permission.RECEIVE_BOOT_COMPLETED,
-                    //Manifest.permission.POST_NOTIFICATIONS
-                )
-            )
-        }*/
-        return
-    }
-    fusedLocationClient = LocationServices.getFusedLocationProviderClient(ctx)
-    //last location
-    /*fusedLocationClient.lastLocation
-        .addOnSuccessListener { location: Location? ->
-            // Got last known location. In some rare situations this can be null.
-        }
-    */
-}
-
-
-private fun startLocationUpdates(ctx: Context) {
-    if (ActivityCompat.checkSelfPermission(ctx, Manifest.permission.ACCESS_FINE_LOCATION)
-        == PackageManager.PERMISSION_GRANTED
-    ) {
-        Log.i(ContentValues.TAG, "PERMISSIONS GRANTED")
-        fusedLocationClient.requestLocationUpdates(
-            locationRequest,
-            locationCallback,
-            Looper.getMainLooper()
-        )
-    }
-}
-
-private fun stopLocationUpdates() {
-    fusedLocationClient.removeLocationUpdates(locationCallback)
-}
-
-private fun createLocationRequest() {
-    locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000)
-        .setMinUpdateIntervalMillis(5000)
-        .build()
-}
-
-private fun createLocationCallback() {
-    locationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-            super.onLocationResult(locationResult)
-            if (locationResult.lastLocation != null) {
-                // Normally, you want to save a new location to a database. We are simplifying
-                // things a bit and just saving it as a local variable, as we only need it again
-                // if a Notification is created (when user navigates away from app).
-                currentLocation = locationResult.lastLocation
-                Log.d(
-                    ContentValues.TAG,
-                    "Latitude: " + currentLocation?.getLatitude() + ", Longitude: " + currentLocation?.getLongitude()
-                )
-                stopLocationUpdates()
-            } else {
-                Log.d(ContentValues.TAG, "Location information isn't available.")
-            }
-        }
     }
 }
 

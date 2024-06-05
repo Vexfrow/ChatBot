@@ -1,10 +1,6 @@
 package fr.c1.chatbot.composable
 
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
-import fr.c1.chatbot.model.Settings
-import fr.c1.chatbot.ui.theme.ChatBotPrev
-import fr.c1.chatbot.utils.rememberMutableStateOf
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -46,7 +42,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import android.net.Uri
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import fr.c1.chatbot.model.Settings
+import fr.c1.chatbot.ui.theme.ChatBotPrev
+import fr.c1.chatbot.utils.rememberMutableStateOf
 
 @Composable
 fun MySettings() {
@@ -158,12 +158,15 @@ fun MySettings() {
                         style = MaterialTheme.typography.titleLarge
                     )
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                        items(Settings.iconsAvaible) { icon ->
+                        items(Settings.iconsAvailable) { icon ->
                             IconOption(imageVector = icon) {
-                                if (botDialog)
+                                if (botDialog) {
                                     Settings.botIcon = icon
-                                else
+                                    Settings.botImage = null
+                                } else {
                                     Settings.userIcon = icon
+                                    Settings.userImage = null
+                                }
 
                                 isDialogOpen = false
                             }

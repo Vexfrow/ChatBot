@@ -70,6 +70,7 @@ fun ProposalList(
             enabled = state.canScrollForward
         ) {
             Icon(
+                modifier = Modifier.fillMaxSize(),
                 imageVector = Icons.AutoMirrored.Default.KeyboardArrowRight,
                 contentDescription = "Right"
             )

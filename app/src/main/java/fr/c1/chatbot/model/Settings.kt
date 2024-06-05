@@ -1,15 +1,9 @@
 package fr.c1.chatbot.model
 
-import fr.c1.chatbot.ui.icons.Bot
-import fr.c1.chatbot.ui.icons.Robot
-import fr.c1.chatbot.ui.icons.RobotFace
-import fr.c1.chatbot.utils.getBool
-import fr.c1.chatbot.utils.getNullable
-import fr.c1.chatbot.utils.getSp
-import fr.c1.chatbot.utils.getUri
-import fr.c1.chatbot.utils.putBool
-import fr.c1.chatbot.utils.putOrRemove
-import fr.c1.chatbot.utils.putSp
+import android.content.Context
+import android.content.SharedPreferences
+import android.net.Uri
+import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.AccountCircle
@@ -21,10 +15,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import androidx.core.content.edit
-import android.content.Context
-import android.content.SharedPreferences
-import android.net.Uri
-import android.util.Log
+import fr.c1.chatbot.ui.icons.Bot
+import fr.c1.chatbot.ui.icons.Robot
+import fr.c1.chatbot.ui.icons.RobotFace
+import fr.c1.chatbot.utils.getBool
+import fr.c1.chatbot.utils.getNullable
+import fr.c1.chatbot.utils.getSp
+import fr.c1.chatbot.utils.getUri
+import fr.c1.chatbot.utils.putBool
+import fr.c1.chatbot.utils.putSp
+import fr.c1.chatbot.utils.saveImage
 
 private const val TAG = "Settings"
 
@@ -36,7 +36,7 @@ object Settings {
     var userIcon: ImageVector by mutableStateOf(Icons.Default.Person)
     var userImage: Uri? by mutableStateOf(null)
 
-    val iconsAvaible = with(Icons.Default) {
+    val iconsAvailable = with(Icons.Default) {
         listOf(
             Bot,
             Robot,
@@ -48,11 +48,10 @@ object Settings {
     }
 
 
-    fun iconFromName(name: String) = iconsAvaible.first { it.name == name }
+    fun iconFromName(name: String) = iconsAvailable.first { it.name == name }
 
     fun init(ctx: Context) {
         val pref = ctx.getSharedPreferences("Settings", Context.MODE_PRIVATE)
-
         if (pref.contains("init"))
             from(pref)
         else
@@ -79,7 +78,7 @@ object Settings {
         )
         userIcon = iconFromName(getString(::userIcon.name, "Filled.Person")!!)
         getNullable(
-            ::botImage,
+            ::userImage,
             ::getUri,
             "https://upload.wikimedia.org/wikipedia/commons/4/41/Noimage.svg"
         )
@@ -95,11 +94,11 @@ object Settings {
             putSp(::textSize)
             putBool(::tts)
             putString(::botIcon.name, botIcon.name)
-            putOrRemove(::botImage)
+            saveImage(::botImage, context)
             putString(::userIcon.name, userIcon.name)
-            putOrRemove(::userImage)
+            saveImage(::userImage, context)
 
-            Log.i(TAG, "Settings saved !")
+            Log.i(TAG, "Settings saved : ${this@Settings}")
         }
 
     override fun toString(): String {

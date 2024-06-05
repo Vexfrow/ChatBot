@@ -1,11 +1,9 @@
 package fr.c1.chatbot.ui.shape
 
-import fr.c1.chatbot.ui.theme.ChatBotPrev
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,11 +19,12 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import android.content.res.Configuration
+import fr.c1.chatbot.ui.theme.ChatBotPrev
 
 class SpeechBubbleShape(
     private val cornerRadius: Dp = 15.dp,
-    private val tipSize: Dp = 15.dp
+    private val tipSize: Dp = 15.dp,
+    private var sizeBubble: Size = Size(400f, 200f)
 ) : Shape {
 
     override fun createOutline(
@@ -40,8 +39,8 @@ class SpeechBubbleShape(
                 RoundRect(
                     left = tipSize,
                     top = 0f,
-                    right = size.width,
-                    bottom = size.height - tipSize,
+                    right = sizeBubble.width,
+                    bottom = sizeBubble.height - tipSize,
                     radiusX = cornerRadius,
                     radiusY = cornerRadius
                 )
@@ -49,17 +48,17 @@ class SpeechBubbleShape(
 
             moveTo(
                 x = tipSize,
-                y = size.height - tipSize - cornerRadius
+                y = sizeBubble.height - tipSize - cornerRadius
             )
 
             lineTo(
                 x = 0f,
-                y = size.height
+                y = sizeBubble.height
             )
 
             lineTo(
                 x = tipSize + cornerRadius,
-                y = size.height - tipSize
+                y = sizeBubble.height - tipSize
             )
 
             close()

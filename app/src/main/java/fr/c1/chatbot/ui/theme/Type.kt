@@ -1,6 +1,7 @@
 package fr.c1.chatbot.ui.theme
 
 import fr.c1.chatbot.model.Settings
+import fr.c1.chatbot.utils.minus
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -16,8 +17,11 @@ fun Typography() = Typography(
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
     ),
+    bodyMedium = TextStyle(
+        fontSize = Settings.textSize - 10f
+    ),
     titleMedium = TextStyle(
-        fontSize = 40.sp
+        fontSize = Settings.textSize
     )
     /* Other default text styles to override
     titleLarge = TextStyle(

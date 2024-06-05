@@ -1,7 +1,5 @@
 package fr.c1.chatbot.model
 
-import android.app.Application
-import android.location.Location
 import fr.c1.chatbot.R
 import fr.c1.chatbot.model.activity.AbstractActivity
 import fr.c1.chatbot.model.activity.Associations
@@ -14,11 +12,19 @@ import fr.c1.chatbot.model.activity.Jardins
 import fr.c1.chatbot.model.activity.Musees
 import fr.c1.chatbot.model.activity.Sites
 import fr.c1.chatbot.model.activity.Type
+import android.app.Application
+import android.location.Location
 import java.io.BufferedInputStream
 import java.io.InputStream
+import java.util.Locale
 
 // Fichiers CSV venant du site data.gouv.fr
 class ActivitiesRepository {
+
+    private val TAG = "ActivitiesRepository"
+
+    private val listeVillesDisponible = sortedSetOf<String>()
+
     /**
      * Liste des musées
      */
@@ -72,6 +78,10 @@ class ActivitiesRepository {
      */
     fun getMuseesList(): List<Musees> {
         return museesList
+    }
+
+    fun getVillesDisponible(): Collection<String> {
+        return listeVillesDisponible
     }
 
     /**
@@ -165,6 +175,7 @@ class ActivitiesRepository {
                 true
             )
             museesList.add(activity)
+            addVilleDispo(commune)
         }
     }
 
@@ -190,6 +201,7 @@ class ActivitiesRepository {
                 true
             )
             sitesList.add(activity)
+            addVilleDispo(commune)
         }
     }
 
@@ -221,6 +233,7 @@ class ActivitiesRepository {
                 true
             )
             expositionsList.add(activity)
+            addVilleDispo(commune)
         }
     }
 
@@ -254,6 +267,7 @@ class ActivitiesRepository {
                 true
             )
             contenusList.add(activity)
+            addVilleDispo(commune)
         }
     }
 
@@ -283,6 +297,7 @@ class ActivitiesRepository {
                 true
             )
             edificesList.add(activity)
+            addVilleDispo(commune)
         }
     }
 
@@ -315,6 +330,7 @@ class ActivitiesRepository {
                 accessible
             )
             jardinsList.add(activity)
+            addVilleDispo(commune)
         }
     }
 
@@ -348,6 +364,7 @@ class ActivitiesRepository {
                 true
             )
             festivalsList.add(activity)
+            addVilleDispo(commune)
         }
     }
 
@@ -381,6 +398,7 @@ class ActivitiesRepository {
                 accessible
             )
             equipementsSportList.add(activity)
+            addVilleDispo(commune)
         }
     }
 
@@ -925,7 +943,9 @@ class ActivitiesRepository {
         }
         // Tri par Ville
         user.getVilles().forEach { ville ->
-            list = list.map { selectionnerParCommune(it, ville) }
+            list = list
+                .map { selectionnerParCommune(it, ville) }
+                .filter(List<AbstractActivity>::isNotEmpty)
         }
         // Tri par Date
         if (user.getDate() != null) {
@@ -939,19 +959,18 @@ class ActivitiesRepository {
         val localisation = user.getLocalisation()
         if (localisation.latitude != 0.0 && localisation.longitude != 0.0) {
             // TODO : activités dans un rayon de 5km par rapport à la localisation actuelle
-            list = list.map {
-                selectionnerParDistance(it, 5, localisation) // 5km maximum
-            }
+            list = list
+                .map { selectionnerParDistance(it, 5, getLocalisation()) }
+                .filter(List<AbstractActivity>::isNotEmpty)
         }
         // Tri par Passion
         user.getPassions().forEach { passion ->
-            list = list.map {
-                selectionnerParPassion(it, passion)
-            }
+            list = list
+                .map { selectionnerParPassion(it, passion) }
+                .filter(List<AbstractActivity>::isNotEmpty)
         }
-        list = list.map {
-            trierParNom(it)
-        }
+
+        list = list.map(::trierParNom)
         // TODO : Trier la liste totale avant de retourner
         return list.flatten()
     }

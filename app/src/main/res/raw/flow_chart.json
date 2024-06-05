@@ -42,15 +42,17 @@
     },
     {
       "id": 10,
-      "text": "Quelle notification voulez-vous désactiver ?"
+      "text": "Quelle(s) notification(s) voulez-vous désactiver ?"
     },
     {
       "id": 11,
-      "text": "Les rappels ont été désactivées"
+      "text": "Les rappels ont été désactivées",
+      "action": "supprimerRappels"
     },
     {
       "id": 12,
-      "text": "Les suggestions ont été désactivées"
+      "text": "Les suggestions ont été désactivées",
+      "action": "supprimerSuggestions"
     },
     {
       "id": 13,
@@ -68,6 +70,16 @@
       "id": 16,
       "text": "Voici des résultats qui correspondent a vos demandes et qui pourraient vous plaire",
       "action": "AfficherResultat"
+    },
+    {
+      "id": 16,
+      "text": "Voici des résultats qui correspondent à vos demandes et qui pourraient vous plaire",
+      "action": "resultat"
+    },
+    {
+      "id": 17,
+      "text": "Toutes les notifications ont été supprimées",
+      "action": "supprimerNotifs"
     }
   ],
   "humain": [
@@ -143,7 +155,7 @@
     },
     {
       "id": 1016,
-      "text": "Comment voir mon historique de recherche"
+      "text": "Je souhaite accéder à mon historique de recherche ?"
     },
     {
       "id": 1017,
@@ -160,7 +172,27 @@
     },
     {
       "id": 1020,
-      "text": "Passer à la suite"
+      "text": "Passer à la suite",
+      "action": "Skip"
+    },
+    {
+      "id": 1021,
+      "text": "Je souhaite désactiver toutes les notifications"
+    },
+    {
+      "id": -1,
+      "text": "Retour",
+      "action": "Retour"
+    },
+    {
+      "id": -2,
+      "text": "Recommencer conversation",
+      "action": "Recommencer"
+    },
+    {
+      "id": -3,
+      "text": "Afficher les filtres",
+      "action": "AfficherFiltres"
     }
   ],
   "link": [
@@ -278,6 +310,11 @@
       "from": 10,
       "to": 12,
       "answer": 1015
+    },
+    {
+      "from": 10,
+      "to": 17,
+      "answer": 1021
     },
     {
       "from": 9,

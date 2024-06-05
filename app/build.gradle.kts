@@ -73,9 +73,14 @@ dependencies {
     implementation("com.squareup.sdk:point-of-sale-sdk:2.1")
     implementation("com.squareup.moshi:moshi:1.15.1")
     implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
+    implementation("androidx.compose.material:material-icons-extended:1.6.7")
 
     implementation(libs.coil)
     implementation(libs.core.ktx)
+    implementation("org.osmdroid:osmdroid-android:6.1.18")
+    implementation(libs.play.services.location)
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation(libs.androidx.preference.ktx)
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     androidTestImplementation("androidx.test:runner:1.5.2")

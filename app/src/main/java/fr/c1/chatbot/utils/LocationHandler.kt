@@ -31,36 +31,38 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import fr.c1.chatbot.MainActivity
 import fr.c1.chatbot.R
+
 object LocationHandler {
 
     private var configurationChange = false
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
-    private var currentLocation: Location? = null
-    fun initLocation(cxt : Context) {
-        Log.i(ContentValues.TAG, "Init Location")
+    var currentLocation: Location? = null
+        private set
+    fun initLocation(cxt: Context) {
+        Log.d(ContentValues.TAG, "Init Location")
         createLocationRequest()
         createLocationCallback()
-        Log.i(ContentValues.TAG, "Check Permissions")
+        Log.d(ContentValues.TAG, "Check Permissions")
         if (ActivityCompat.checkSelfPermission(cxt, Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED){
+            == PackageManager.PERMISSION_GRANTED
+        ) {
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(cxt)
             //last location
-            fusedLocationClient.lastLocation.addOnSuccessListener {
-                location: Location? ->
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
                 // Got last known location. In some rare situations this can be null.
-                if(location != null){
+                if (location != null) {
                     currentLocation = location
-                    Log.d(ContentValues.TAG,"Latitude: "+currentLocation?.getLatitude() +
-                            ", Longitude: "+ currentLocation?.getLongitude())
+                    Log.d(ContentValues.TAG,"Longitude: "+currentLocation?.longitude +
+                            ", Latitude: "+ currentLocation?.latitude)
                 }
             }
-        }else{
+        } else {
             Log.i(ContentValues.TAG, "Permissions not available")
         }
-
     }
+
     fun startLocationUpdates(cxt: Context) {
         if (ActivityCompat.checkSelfPermission(cxt, Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED
@@ -73,19 +75,20 @@ object LocationHandler {
             )
         }
     }
+
     fun stopLocationUpdates() {
         fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
     private fun createLocationRequest() {
-        Log.i(ContentValues.TAG, "Building Location Request")
+        Log.d(ContentValues.TAG, "Building Location Request")
         locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000)
             .setMinUpdateIntervalMillis(5000)
             .build()
     }
 
     private fun createLocationCallback() {
-        Log.i(ContentValues.TAG, "Building Location Callback")
+        Log.d(ContentValues.TAG, "Building Location Callback")
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)
@@ -98,6 +101,7 @@ object LocationHandler {
                         ContentValues.TAG,
                         "Latitude: " + currentLocation?.getLatitude() + ", Longitude: " + currentLocation?.getLongitude()
                     )
+                    stopLocationUpdates()
                 } else {
                     Log.d(ContentValues.TAG, "Location information isn't available.")
                 }

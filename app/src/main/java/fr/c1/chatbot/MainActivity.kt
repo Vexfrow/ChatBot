@@ -71,9 +71,15 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.Surface
 import android.widget.Button
 import android.widget.TextView
+import androidx.compose.ui.viewinterop.AndroidView
 import fr.c1.chatbot.utils.LocationHandler
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.overlay.compass.CompassOverlay
+import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider
 import kotlin.time.Duration.Companion.seconds
 
 private const val TAG = "MainActivity"
@@ -81,11 +87,12 @@ private const val TAG = "MainActivity"
 private var initNotif = false
 
 private var currentLocation: Location? = null
+private var locationHandler: LocationHandler = LocationHandler
+
 class MainActivity : ComponentActivity() {
     private lateinit var workManager: WorkManager
     private lateinit var app: ChatBot
     private lateinit var activitiesRepository: ActivitiesRepository
-    private lateinit var locationHandler: LocationHandler
     private var requestingLocationUpdates: Boolean = false
     private lateinit var myOpenMapView: MapView
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,9 +107,9 @@ class MainActivity : ComponentActivity() {
         //load/initialize the osmdroid configuration, this can be done
         // This won't work unless you have imported this: org.osmdroid.config.Configuration.*
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
-
         locationHandler.initLocation(this)
-        locationHandler.startLocationUpdates(this)
+
+        //locationHandler.startLocationUpdates(this)
 
         enableEdgeToEdge()
         setContent {
@@ -143,7 +150,9 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 }
+                // A surface container using the 'background' color from the theme
             }
+
         }
     }
 
@@ -221,7 +230,28 @@ class MainActivity : ComponentActivity() {
         initNotif = true
     }
 }
-
+@Composable
+fun OsmdroidMapView() {
+    val context = LocalContext.current
+    AndroidView(
+        modifier = Modifier.fillMaxSize(),
+        factory = { context ->
+            val mapView = MapView(context)
+            mapView.setTileSource(TileSourceFactory.MAPNIK)
+            mapView.setBuiltInZoomControls(true)
+            mapView.setMultiTouchControls(true)
+            val mapController = mapView.controller
+            mapController.setZoom(15)
+            val startPoint = GeoPoint(locationHandler.currentLocation!!.latitude,
+                locationHandler.currentLocation!!.longitude)
+            mapController.setCenter(startPoint);
+            val compassOverlay = CompassOverlay(context, InternalCompassOrientationProvider(context), mapView)
+            compassOverlay.enableCompass()
+            mapView.overlays.add(compassOverlay)
+            mapView
+        }
+    )
+}
 @Composable
 fun PermissionNotification() {
     val requestPermissionLauncher = rememberLauncherForActivityResult(
@@ -392,7 +422,7 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
                 TypeAction.Geolocalisation -> {
                     addAnswer(
                         i,
-                        "Je suis ici : ${currentLocation?.longitude}, ${currentLocation?.latitude}"
+                        "Je suis ici : ${locationHandler.currentLocation!!.longitude}, ${locationHandler.currentLocation?.latitude}"
                     )
                     return@ProposalList
                 }

@@ -24,25 +24,13 @@ class ProfilUtilisateur(
      */
     private var age: Int = -1,
     /**
-     * Date souhaitée par l'utilisateur
-     */
-    private var date: Date? = null,
-    /**
      * Lise de villes de l'utilisateur
      */
     private val villesList: MutableList<String> = mutableListOf("Grenoble"),
     /**
-     * Distance souhaitée par l'utilisateur
-     */
-    private var distance: Int = 0,
-    /**
      * Type d'activité souhaitée par l'utilisateur
      */
     private var types: MutableList<Type> = mutableListOf(),
-    /**
-     * Localisation de l'utilisateur
-     */
-    private var localisation: Location = Location(""),
     /**
      * Passions de l'utilisateur
      */
@@ -54,6 +42,15 @@ class ProfilUtilisateur(
 ) {
 
     /**
+     * Constructeur secondaire
+     */
+    constructor(nom: String, prenom: String, age: Int) : this() {
+        this.nom = nom
+        this.prenom = prenom
+        this.age = age
+    }
+
+    /**
      * Ajouter une ville
      */
     fun addVille(ville: String) {
@@ -61,31 +58,10 @@ class ProfilUtilisateur(
     }
 
     /**
-     * Ajouter une date
-     */
-    fun setDate(date: Date) {
-        this.date = date
-    }
-
-    /**
-     * Ajouter une distance
-     */
-    fun setDistance(distance: Int) {
-        this.distance = distance
-    }
-
-    /**
      * Ajouter un type d'activité
      */
     fun addType(type: Type) {
         types.add(type)
-    }
-
-    /**
-     * Ajouter une localisation
-     */
-    fun setLocalisation(localisation: Location) {
-        this.localisation = localisation
     }
 
     /**
@@ -145,20 +121,6 @@ class ProfilUtilisateur(
     }
 
     /**
-     * Supprimer une date
-     */
-    fun removeDate() {
-        date = null
-    }
-
-    /**
-     * Supprimer une distance
-     */
-    fun removeDistance() {
-        distance = 0
-    }
-
-    /**
      * Supprimer un type d'activité
      */
     fun removeType(type: Type) {
@@ -173,13 +135,6 @@ class ProfilUtilisateur(
     }
 
     /**
-     * Supprimer une localisation
-     */
-    fun removeLocalisation() {
-        localisation = Location("")
-    }
-
-    /**
      * Récupérer les villes
      */
     fun getVilles(): MutableList<String> {
@@ -187,31 +142,10 @@ class ProfilUtilisateur(
     }
 
     /**
-     * Récupérer la date
-     */
-    fun getDate(): Date? {
-        return date
-    }
-
-    /**
-     * Récupérer la distance
-     */
-    fun getDistance(): Int {
-        return distance
-    }
-
-    /**
      * Récupérer les types d'activité
      */
     fun getTypes(): MutableList<Type> {
         return types
-    }
-
-    /**
-     * Récupérer la localisation
-     */
-    fun getLocalisation(): Location {
-        return localisation
     }
 
     /**
@@ -254,21 +188,15 @@ class ProfilUtilisateur(
             "nom": "$nom",
             "prenom": "$prenom",
             "age": $age,
-            "date": "$date",
             "villes": ${villesList.joinToString(prefix = "[", postfix = "]") { "\"$it\"" }},
-            "distance": $distance,
             "types": ${types.joinToString(prefix = "[", postfix = "]") { "\"$it\"" }},
-            "localisation": {
-                "latitude": ${localisation.latitude},
-                "longitude": ${localisation.longitude}
-            },
             "passions": ${passions.joinToString(prefix = "[", postfix = "]") { "\"$it\"" }},
             "preferencesHebdo": ${
             preferencesHebdomadaires.joinToString(
                 prefix = "[",
                 postfix = "]"
             ) { "\"$it\"" }
-        }
+            }
         }
     """.trimIndent()
 

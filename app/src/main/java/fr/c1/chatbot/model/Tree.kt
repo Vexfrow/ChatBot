@@ -1,10 +1,8 @@
 package fr.c1.chatbot.model
 
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import fr.c1.chatbot.model.activity.Type.CULTURE
-import fr.c1.chatbot.model.activity.Type.SPORT
-import android.util.Log
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
@@ -84,7 +82,7 @@ class Tree {
 
 
     //Update the current question and execute the action link to the answer chosen
-    fun selectAnswer(idAnswer: Int, activitiesRepository: ActivitiesRepository) {
+    fun selectAnswer(idAnswer: Int, user: ProfilUtilisateur) {
         if (idAnswer == retour && questionsHistory.size > 1) questionsHistory.removeLast()
         else if (idAnswer == recommencerConversation) { //Clear previous messages ?
             questionsHistory.removeAll(questionsHistory.toSet())
@@ -99,19 +97,10 @@ class Tree {
                     Log.d(TAG, "selectAnswer: ${getAnswerText(idAnswer)}")
                     // Fill the ActivitiesRepository according to the answer selected
                     Log.d(TAG, "selectAnswer: ${getUserAction(idAnswer)}")
-                    when (getUserAction(idAnswer)) {
-                        TypeAction.Geolocalisation -> {
-                            // TODO : Take the current user's location
-                            //activitiesRepository.setLocalisation()
-                        }
 
-                        TypeAction.ActivitePhysique -> activitiesRepository.setType(SPORT)
-                        TypeAction.ActiviteCulturelle -> activitiesRepository.setType(CULTURE)
-                        else -> {}
-                    }
-                    Log.d(TAG, "selectAnswer: new type : ${activitiesRepository.getType()}")
                 }
             }
+            Log.d(TAG, "selectAnswer: new type : ${user.getTypes()}")
         }
     }
 

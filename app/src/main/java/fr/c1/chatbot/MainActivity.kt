@@ -47,7 +47,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -61,7 +60,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.preference.PreferenceManager
-import androidx.work.WorkManager
 import android.Manifest
 import android.content.ContentValues
 import android.content.Context
@@ -72,6 +70,10 @@ import android.os.Looper
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
+import androidx.work.WorkManager
+import fr.c1.chatbot.model.activity.Type.*
+import fr.c1.chatbot.utils.*
+import java.util.Date
 import kotlin.time.Duration.Companion.seconds
 
 private const val TAG = "MainActivity"
@@ -109,11 +111,6 @@ class MainActivity : ComponentActivity() {
         // This won't work unless you have imported this: org.osmdroid.config.Configuration.*
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
 
-        createLocationRequest()
-        createLocationCallback()
-        initLocation(this)
-        startLocationUpdates(this)
-
         enableEdgeToEdge()
         setContent {
             ChatBotTheme {
@@ -149,7 +146,7 @@ class MainActivity : ComponentActivity() {
                         when (tab) {
                             Tab.Settings -> MySettings()
                             Tab.ChatBotResults -> Activities(
-                                list = app.activitiesRepository.getResultats()
+                                list = app.activitiesRepository.getResultats(app)
                             )
 
                             else -> {}
@@ -168,11 +165,18 @@ class MainActivity : ComponentActivity() {
         var hasWritePermission by remember { mutableStateOf(false) }
         var events by remember { mutableStateOf<List<Event>>(emptyList()) }
 
+        var hasFineLocation by remember { mutableStateOf(false) }
+        var hasCoarseLocation by remember { mutableStateOf(false) }
+
+        var permissionsArray: Array<String> = arrayOf()
+
         val requestPermissionLauncher = rememberLauncherForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions ->
             hasReadPermission = permissions[Manifest.permission.READ_CALENDAR] == true
             hasWritePermission = permissions[Manifest.permission.WRITE_CALENDAR] == true
+            hasFineLocation = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true
+            hasCoarseLocation = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
         }
 
         LaunchedEffect(Unit) {
@@ -180,32 +184,48 @@ class MainActivity : ComponentActivity() {
                     context
                 )
             ) {
-                requestPermissionLauncher.launch(
-                    arrayOf(
-                        Manifest.permission.READ_CALENDAR,
-                        Manifest.permission.WRITE_CALENDAR
-                    )
-                )
+                // Array of permissions to request
+                permissionsArray = permissionsArray.plus(Manifest.permission.READ_CALENDAR)
+                permissionsArray = permissionsArray.plus(Manifest.permission.WRITE_CALENDAR)
             } else {
                 hasReadPermission = true
                 hasWritePermission = true
             }
+            if (!context.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION) || !context.hasPermission(
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            ) {
+                permissionsArray = permissionsArray.plus(Manifest.permission.ACCESS_FINE_LOCATION)
+                permissionsArray = permissionsArray.plus(Manifest.permission.ACCESS_COARSE_LOCATION)
+            } else {
+                hasFineLocation = true
+                hasCoarseLocation = true
+            }
+            if (permissionsArray.isNotEmpty()) {
+                requestPermissionLauncher.launch(permissionsArray)
+            }
         }
 
-        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-            if (hasReadPermission && hasWritePermission) {
-                events = Calendar.fetchCalendarEvents(context)
-                addNotifPush(events)
-                //EventList(events, Modifier.padding(innerPadding))
-            } else {
-                Text("Requesting permissions...", modifier = Modifier.padding(innerPadding))
-            }
+        if (hasReadPermission && hasWritePermission) {
+            events = Calendar.fetchCalendarEvents(context)
+            addNotifPush(events)
+            //EventList(events, Modifier.padding(innerPadding))
+        } else {
+            Log.d(TAG, "PermissionsContent: Calendar permissions not granted")
+        }
+        if (hasFineLocation && hasCoarseLocation) {
+            createLocationRequest()
+            createLocationCallback()
+            initLocation(this)
+            startLocationUpdates(this)
+        } else {
+            Log.d(TAG, "PermissionsContent: Location permissions not granted")
         }
     }
 
     private fun addNotifPush(events: List<Event>) {
         if (initNotif) return
-        workManager.cancelAllWork()
+        workManager.cancelAllWorkByTag("EventReminderWorker")
         Log.d(TAG, "onCreate: cancelAllWork()")
         for (event in events) {
             if (event.dtStart >= System.currentTimeMillis() + (1000 * 60 * 60)) { // Si l'event est dans le futur (dans 1h minimum)
@@ -317,7 +337,7 @@ private fun createLocationCallback() {
                 currentLocation = locationResult.lastLocation
                 Log.d(
                     ContentValues.TAG,
-                    "Latitude: " + currentLocation?.getLatitude() + ", Longitude: " + currentLocation?.getLongitude()
+                    "Latitude: " + currentLocation?.latitude + ", Longitude: " + currentLocation?.longitude
                 )
                 stopLocationUpdates()
             } else {
@@ -364,6 +384,7 @@ fun MyColumn(
     val crtScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
     val animated = rememberMutableStateListOf<Boolean>()
+    val user = app.currentUser
 
     val activitiesRepository = application.activitiesRepository
 
@@ -457,7 +478,7 @@ fun MyColumn(
         fun addAnswer(id: Int, answer: String? = null) {
             reset()
             messages += answer ?: tree.getAnswerText(id)
-            tree.selectAnswer(id, activitiesRepository)
+            tree.selectAnswer(id, user)
 
             crtScope.launch {
                 lazyListState.animateScrollToItem(messages.size)
@@ -498,6 +519,17 @@ fun MyColumn(
                     return@ProposalList
                 }
 
+                TypeAction.AfficherResultat -> {
+                    Log.i(
+                        TAG,
+                        "MyColumn: Affichage des résultats: ${
+                            app.activitiesRepository.getResultats(
+                                app
+                            )
+                        }"
+                    )
+                }
+
                 TypeAction.Geolocalisation -> {
                     app.activitiesRepository.setLocalisation(currentLocation ?: Location(""))
                     addAnswer(
@@ -508,7 +540,17 @@ fun MyColumn(
                 }
 
 //                TypeAction.ChoisirPassions -> TODO()
-                else -> Log.e(TAG, "MyColumn: Action $act not implemented")
+
+                TypeAction.ActivitePhysique -> user.addType(SPORT)
+
+                TypeAction.ActiviteCulturelle -> user.addType(CULTURE)
+
+                TypeAction.ChoisirPassions -> {
+                    val passions = app.activitiesRepository.getPassions()
+                    enableSearchBar("Choisissez une passion", act, i, passions)
+                    return@ProposalList
+                }
+                else -> {}
             }
 
             addAnswer(i)
@@ -522,17 +564,18 @@ fun MyColumn(
         ) {
             when (sbState.action) {
                 TypeAction.EntrerDate -> {
-                    app.activitiesRepository.setDate(it)
+                    //user.setDate(it.toDate())
                     addAnswer(sbState.answerId, "Je veux y aller le $it")
+                    activitiesRepository.setDate(it)
                 }
 
                 TypeAction.EntrerDistance -> {
-                    app.activitiesRepository.setDistance(it.toInt())
                     addAnswer(sbState.answerId, "Je veux une distance de $it km")
+                    activitiesRepository.setDistance(it.toInt())
                 }
 
                 TypeAction.EntrerVille -> {
-                    app.activitiesRepository.addVille(it)
+                    user.addVille(it)
                     val text = if ("AEIOUaeiou".indexOf(it.first()) != -1) "d'$it" else "de $it"
                     addAnswer(sbState.answerId, "Je souhaite faire mon activité dans les alentours de la ville $text")
                 }

@@ -463,7 +463,7 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
             answers = emptyList()
             Log.i(TAG, "Choose '$it'")
             val i = tree.getAnswersId().first { i -> tree.getAnswerText(i) == it }
-            when (val act = tree.getActionUtilisateur(i)) {
+            when (val act = tree.getUserAction(i)) {
                 TypeAction.EntrerDate -> {
                     enableSearchBar("Sélectionnez une date", act, i)
                     return@ProposalList

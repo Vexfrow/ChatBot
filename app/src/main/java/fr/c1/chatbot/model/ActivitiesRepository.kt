@@ -1,5 +1,7 @@
 package fr.c1.chatbot.model
 
+import android.app.Application
+import android.location.Location
 import fr.c1.chatbot.R
 import fr.c1.chatbot.model.activity.AbstractActivity
 import fr.c1.chatbot.model.activity.Associations
@@ -12,8 +14,6 @@ import fr.c1.chatbot.model.activity.Jardins
 import fr.c1.chatbot.model.activity.Musees
 import fr.c1.chatbot.model.activity.Sites
 import fr.c1.chatbot.model.activity.Type
-import android.app.Application
-import android.location.Location
 import java.io.BufferedInputStream
 import java.io.InputStream
 import java.util.Locale
@@ -22,6 +22,11 @@ import java.util.Locale
 class ActivitiesRepository {
 
     private val TAG = "ActivitiesRepository"
+
+    companion object {
+        val passionList: Set<String>
+            get() = Associations.passions union Contenus.passions union Sites.passions union Musees.passions union Jardins.passions union Festivals.passions union Expositions.passions union EquipementsSport.passions union Edifices.passions
+    }
 
     private val listeVillesDisponible = sortedSetOf<String>()
 
@@ -570,12 +575,6 @@ class ActivitiesRepository {
         }
     }
 
-    /**
-     * Initialiser les villes choisies par l'utilisateur
-     */
-    private fun initVilles() {
-        villesList.add("Grenoble")
-    }
 
     /**
      * Initialiser toutes les listes
@@ -590,7 +589,6 @@ class ActivitiesRepository {
         initFestivals(app)
         initEquipementsSport(app)
         initAsso(app)
-        initVilles()
     }
 
     /**

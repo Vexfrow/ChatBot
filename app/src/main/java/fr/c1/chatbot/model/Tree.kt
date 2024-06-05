@@ -88,13 +88,13 @@ class Tree {
                         //activitiesRepository.setLocalisation()
                     }
                     "ActivitePhysique" -> {
-                        activitiesRepository.setType(SPORT)
+                        //activitiesRepository.setType(SPORT)
                     }
                     "ActiviteCulturelle" -> {
-                        activitiesRepository.setType(CULTURE)
+                        //activitiesRepository.setType(CULTURE)
                     }
                 }
-                Log.d(TAG, "selectAnswer: new type : ${activitiesRepository.getType()}")
+                //Log.d(TAG, "selectAnswer: new type : ${activitiesRepository.getType()}")
             }
         }
     }

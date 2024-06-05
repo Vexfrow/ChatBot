@@ -2,6 +2,7 @@ package fr.c1.chatbot
 
 import android.Manifest
 import android.app.DatePickerDialog
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -9,6 +10,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.tween
@@ -120,11 +122,18 @@ class MainActivity : ComponentActivity() {
         var hasWritePermission by remember { mutableStateOf(false) }
         var events by remember { mutableStateOf<List<Event>>(emptyList()) }
 
+        var hasFineLocation by remember { mutableStateOf(false) }
+        var hasCoarseLocation by remember { mutableStateOf(false) }
+
+        var permissionsArray: Array<String> = arrayOf()
+
         val requestPermissionLauncher = rememberLauncherForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions ->
             hasReadPermission = permissions[Manifest.permission.READ_CALENDAR] == true
             hasWritePermission = permissions[Manifest.permission.WRITE_CALENDAR] == true
+            hasFineLocation = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true
+            hasCoarseLocation = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
         }
 
         LaunchedEffect(Unit) {
@@ -132,15 +141,25 @@ class MainActivity : ComponentActivity() {
                     context
                 )
             ) {
-                requestPermissionLauncher.launch(
-                    arrayOf(
-                        Manifest.permission.READ_CALENDAR,
-                        Manifest.permission.WRITE_CALENDAR
-                    )
-                )
+                // Array of permissions to request
+                permissionsArray = permissionsArray.plus(Manifest.permission.READ_CALENDAR)
+                permissionsArray = permissionsArray.plus(Manifest.permission.WRITE_CALENDAR)
             } else {
                 hasReadPermission = true
                 hasWritePermission = true
+            }
+            if (!context.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION) || !context.hasPermission(
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            ) {
+                permissionsArray = permissionsArray.plus(Manifest.permission.ACCESS_FINE_LOCATION)
+                permissionsArray = permissionsArray.plus(Manifest.permission.ACCESS_COARSE_LOCATION)
+            } else {
+                hasFineLocation = true
+                hasCoarseLocation = true
+            }
+            if (permissionsArray.isNotEmpty()) {
+                requestPermissionLauncher.launch(permissionsArray)
             }
         }
 
@@ -150,7 +169,18 @@ class MainActivity : ComponentActivity() {
                 addNotifPush(events)
                 //EventList(events, Modifier.padding(innerPadding))
             } else {
-                Text("Requesting permissions...", modifier = Modifier.padding(innerPadding))
+                Text(
+                    "Requesting calendar permissions...",
+                    modifier = Modifier.padding(innerPadding)
+                )
+            }
+            if (hasFineLocation && hasCoarseLocation) {
+                //LocationContent(Modifier.padding(innerPadding))
+            } else {
+                Text(
+                    "Requesting location permissions...",
+                    modifier = Modifier.padding(innerPadding)
+                )
             }
         }
     }

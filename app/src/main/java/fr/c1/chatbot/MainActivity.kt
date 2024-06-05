@@ -525,7 +525,8 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
 
                 TypeAction.EntrerVille -> {
                     app.activitiesRepository.addVille(it)
-                    addAnswer(sbState.answerId, "Je veux aller dans la ville de $it")
+                    val text = if ("AEIOUaeiou".indexOf(it.first()) != -1) "d'$it" else "de $it"
+                    addAnswer(sbState.answerId, "Je souhaite faire mon activité dans les alentours de la ville $text")
                 }
 
                 else -> {}

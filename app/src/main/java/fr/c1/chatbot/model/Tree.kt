@@ -84,7 +84,7 @@ class Tree {
 
 
     //Update the current question and execute the action link to the answer chosen
-    fun selectAnswer(idAnswer: Int, activitiesRepository: ActivitiesRepository) {
+    fun selectAnswer(idAnswer: Int, user: ProfilUtilisateur) {
         if (idAnswer == retour && questionsHistory.size > 1) questionsHistory.removeLast()
         else if (idAnswer == recommencerConversation) { //Clear previous messages ?
             questionsHistory.removeAll(questionsHistory.toSet())
@@ -105,11 +105,11 @@ class Tree {
                             //activitiesRepository.setLocalisation()
                         }
 
-                        TypeAction.ActivitePhysique -> activitiesRepository.setType(SPORT)
-                        TypeAction.ActiviteCulturelle -> activitiesRepository.setType(CULTURE)
+                        TypeAction.ActivitePhysique -> user.addType(SPORT)
+                        TypeAction.ActiviteCulturelle -> user.addType(CULTURE)
                         else -> {}
                     }
-                    Log.d(TAG, "selectAnswer: new type : ${activitiesRepository.getType()}")
+                    Log.d(TAG, "selectAnswer: new type : ${user.getTypes()}")
                 }
             }
         }

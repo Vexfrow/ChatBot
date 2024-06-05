@@ -1,10 +1,10 @@
 package fr.c1.chatbot.model
 
-import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import fr.c1.chatbot.model.activity.Type.CULTURE
 import fr.c1.chatbot.model.activity.Type.SPORT
+import android.util.Log
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
@@ -122,6 +122,11 @@ class Tree {
 
     fun getUserAction(idAnswer: Int): TypeAction {
         val actionStr = data?.humain!!.first { h -> h.id == idAnswer }.action
+        return if (actionStr == null) TypeAction.None else enumValueOf<TypeAction>(actionStr)
+    }
+
+    fun getBotAction(): TypeAction {
+        val actionStr = data?.robot!!.first { h -> h.id == questionsHistory.last() }.action
         return if (actionStr == null) TypeAction.None else enumValueOf<TypeAction>(actionStr)
     }
 }

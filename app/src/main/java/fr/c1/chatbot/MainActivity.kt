@@ -142,7 +142,10 @@ class MainActivity : ComponentActivity() {
                             .padding(innerPadding)
                             .fillMaxSize()
                     ) {
-                        MyColumn(modifier = Modifier, enabled = tab == Tab.ChatBotChat)
+                        MyColumn(modifier = Modifier, enabled = tab == Tab.ChatBotChat) {
+                            tab = Tab.ChatBotResults
+                        }
+
                         when (tab) {
                             Tab.Settings -> MySettings()
                             Tab.ChatBotResults -> Activities(
@@ -349,7 +352,11 @@ fun PermissionNotification() {
 }
 
 @Composable
-fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
+fun MyColumn(
+    modifier: Modifier = Modifier,
+    enabled: Boolean,
+    onResult: () -> Unit
+) {
     val ctx = LocalContext.current
     val app = application
     val tree = app.chatbotTree
@@ -434,7 +441,12 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
 
         var sbState by rememberMutableStateOf(SearchBarState())
 
-        fun enableSearchBar(text: String, act: TypeAction, id: Int, list: Collection<String>? = null) {
+        fun enableSearchBar(
+            text: String,
+            act: TypeAction,
+            id: Int,
+            list: Collection<String>? = null
+        ) {
             sbState = SearchBarState(true, text, act, id, list)
         }
 
@@ -454,8 +466,10 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
                 answers = tree.getAnswersId().map { i -> tree.getAnswerText(i) }
                 lazyListState.animateScrollToItem(messages.size)
 
-                if (answers.isEmpty())
-                    Log.i(TAG, "MyColumn: Result avaibles !")
+                if (tree.getBotAction() == TypeAction.AfficherResultat) {
+                    delay(5.seconds)
+                    onResult()
+                }
             }
         }
 
@@ -484,14 +498,8 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
                     return@ProposalList
                 }
 
-                TypeAction.AfficherResultat -> {
-                    Log.i(
-                        TAG,
-                        "MyColumn: Affichage des résultats: ${app.activitiesRepository.getResultats()}"
-                    )
-                }
-
                 TypeAction.Geolocalisation -> {
+                    app.activitiesRepository.setLocalisation(currentLocation ?: Location(""))
                     addAnswer(
                         i,
                         "Je suis ici : ${currentLocation?.longitude}, ${currentLocation?.latitude}"
@@ -500,7 +508,7 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
                 }
 
 //                TypeAction.ChoisirPassions -> TODO()
-                else -> {}
+                else -> Log.e(TAG, "MyColumn: Action $act not implemented")
             }
 
             addAnswer(i)

@@ -68,13 +68,8 @@
     },
     {
       "id": 16,
-      "text": "Voici des résultats qui correspondent a vos demandes et qui pourraient vous plaire",
+      "text": "Très bien, les activités que je vous propose sont disponibles dans l'onglet 'Résultats'",
       "action": "AfficherResultat"
-    },
-    {
-      "id": 16,
-      "text": "Voici des résultats qui correspondent à vos demandes et qui pourraient vous plaire",
-      "action": "resultat"
     },
     {
       "id": 17,

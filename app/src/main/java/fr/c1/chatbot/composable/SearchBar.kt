@@ -4,6 +4,7 @@ import fr.c1.chatbot.model.TypeAction
 import fr.c1.chatbot.ui.theme.ChatBotPrev
 import fr.c1.chatbot.ui.theme.colorSchemeExtension
 import fr.c1.chatbot.utils.rememberMutableStateOf
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
@@ -67,6 +68,7 @@ import android.util.Log
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.random.Random
 
 private const val TAG = "SearchBar"
 
@@ -210,9 +212,10 @@ fun MySearchBar(
 
     if (proposals != null) {
         var props by rememberMutableStateOf(proposals)
-        props = proposals.filter {it.startsWith(query, true)}.take(50)
+        props = proposals.filter { it.startsWith(query, true) }.take(50)
         DropDown(
             query = query,
+            placeholder = placeholder,
             proposals = props,
             onValueChanged = {
                 query = it
@@ -250,18 +253,19 @@ fun MySearchBar(
         onSearch = ::search,
         enabled = enabled && action != TypeAction.EntrerDate,
         colors = SearchBarDefaults.colors(inputFieldColors = ifColors),
-        placeholder = {
-            Text(
-                text = placeholder,
-                fontSize = MaterialTheme.typography.titleMedium.fontSize
-            )
-        },
+        placeholder = { Placeholder(text = placeholder) },
         trailingIcon = if (enabled) {
             { TrailingIcon { search(query) } }
         } else null,
         keyboardType = if (action == TypeAction.EntrerDistance) KeyboardType.NumberPassword else KeyboardType.Text
     )
 }
+
+@Composable
+fun Placeholder(text: String) = Text(
+    text = text,
+    fontSize = MaterialTheme.typography.titleMedium.fontSize
+)
 
 @Composable
 fun TrailingIcon(onSearch: () -> Unit) = IconButton(
@@ -312,6 +316,7 @@ private fun Prev() = ChatBotPrev {
 @Composable
 fun DropDown(
     query: String,
+    placeholder: String,
     proposals: Collection<String>,
     onValueChanged: (String) -> Unit,
     onProposalSelected: (String) -> Unit,
@@ -328,9 +333,12 @@ fun DropDown(
         TextField(
             value = query,
             onValueChange = onValueChanged,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(onSearch = { onSearch(query) }),
             shape = RoundedCornerShape(10.dp),
-            readOnly = false,
+            placeholder = { Placeholder(text = placeholder) },
             trailingIcon = { TrailingIcon { onSearch(query) } },
+
             modifier = Modifier
                 .fillMaxSize()
                 .menuAnchor()

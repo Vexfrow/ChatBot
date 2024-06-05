@@ -57,8 +57,8 @@ fun TopBar(
     tabSelected: Float,
     onTabSelected: (Float) -> Unit
 ) {
-    var state by remember { mutableFloatStateOf(tabSelected) }
-    val subState by remember { derivedStateOf { ((state * 10) % 10).toInt() } }
+    var state by remember(tabSelected) { mutableFloatStateOf(tabSelected) }
+    val subState by remember(tabSelected) { derivedStateOf { ((state * 10) % 10).toInt() } }
 
     fun setState(value: Float) {
         state = value

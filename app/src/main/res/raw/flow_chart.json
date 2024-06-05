@@ -47,12 +47,12 @@
     {
       "id": 11,
       "text": "Les rappels ont été désactivées",
-      "action": "supprimerRappels"
+      "action": "SupprimerRappels"
     },
     {
       "id": 12,
       "text": "Les suggestions ont été désactivées",
-      "action": "supprimerSuggestions"
+      "action": "SupprimerSuggestions"
     },
     {
       "id": 13,
@@ -259,7 +259,7 @@
     {
       "from": 6,
       "to": 16,
-      "answer": 1009
+      "answer": 1008
     },
     {
       "from": 6,

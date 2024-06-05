@@ -531,7 +531,7 @@ fun MyColumn(
                 }
 
                 TypeAction.Geolocalisation -> {
-                    app.activitiesRepository.setLocalisation(currentLocation ?: Location(""))
+                    app.activitiesRepository.setLocation(currentLocation ?: Location(""))
                     addAnswer(
                         i,
                         "Je suis ici : ${currentLocation?.longitude}, ${currentLocation?.latitude}"
@@ -546,7 +546,7 @@ fun MyColumn(
                 TypeAction.ActiviteCulturelle -> user.addType(CULTURE)
 
                 TypeAction.ChoisirPassions -> {
-                    val passions = app.activitiesRepository.getPassions()
+                    val passions = ActivitiesRepository.passionList
                     enableSearchBar("Choisissez une passion", act, i, passions)
                     return@ProposalList
                 }

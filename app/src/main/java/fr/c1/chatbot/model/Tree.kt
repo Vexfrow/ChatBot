@@ -88,6 +88,9 @@ class Tree {
             questionsHistory.removeAll(questionsHistory.toSet())
             questionsHistory.add(0)
         } else if (idAnswer == afficherFiltre) {
+            //val text = "Voici les filtres utilisés pour le moment : \nVilles : ${user.getVilles()}\nTypes d'activités : ${user.getTypes()}\n Distance préféré : ${getDistance()}\n Date voulue : ${app.getDate()}"
+           //val saveText = getQuestion()
+
             Log.d(TAG, "selectAnswer: afficherFiltre")
         } else {
             for (r in data?.link!!) {

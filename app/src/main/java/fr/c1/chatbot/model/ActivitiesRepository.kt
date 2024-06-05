@@ -19,6 +19,7 @@ import fr.c1.chatbot.ChatBot
 import fr.c1.chatbot.utils.application
 import java.io.BufferedInputStream
 import java.io.InputStream
+import java.util.Date
 import java.util.Locale
 
 // Fichiers CSV venant du site data.gouv.fr
@@ -27,6 +28,14 @@ class ActivitiesRepository {
     private val TAG = "ActivitiesRepository"
 
     private val listeVillesDisponible = sortedSetOf<String>()
+
+    private val listeOfPassions = mutableListOf<String>()
+
+    private lateinit var date: String
+
+    private var distance = 10 // 10 km par défaut
+
+    private lateinit var location: Location
 
     /**
      * Liste des musées
@@ -143,6 +152,58 @@ class ActivitiesRepository {
         return associationsList
     }
 
+    /**
+     * Récupérer la liste des passions
+     */
+    fun getPassions(): List<String> {
+        return listeOfPassions
+    }
+
+    /**
+     * Récupérer la date
+     */
+    fun getDate(): String {
+        return date
+    }
+
+    /**
+     * Récupérer la distance
+     */
+    fun getDistance(): Int {
+        return distance
+    }
+
+    /**
+     * Récupérer la location
+     */
+    fun getLocation(): Location {
+        return location
+    }
+
+    /**
+     * Ajouter une passion si elle n'est pas déjà présente
+     */
+    fun addPassion(str: String) {
+        if (str.isBlank())
+            return
+
+        if (str.any(Char::isDigit))
+            return
+
+        val tmp = str
+            .lowercase(Locale.getDefault())
+            .replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(Locale.getDefault())
+                else it.toString()
+            }
+
+        if (!listeOfPassions.contains(tmp))
+            listeOfPassions.add(tmp)
+    }
+
+    /**
+     * Ajouter une ville à la liste des villes disponibles
+     */
     private fun addVilleDispo(str: String) {
         if (str.isBlank())
             return
@@ -160,6 +221,27 @@ class ActivitiesRepository {
 
         if (!listeVillesDisponible.contains(tmp))
             listeVillesDisponible.add(tmp)
+    }
+
+    /**
+     * CHoisir la date
+     */
+    fun setDate(date: String) {
+        this.date = date
+    }
+
+    /**
+     * Choisir la distance
+     */
+    fun setDistance(distance: Int) {
+        this.distance = distance
+    }
+
+    /**
+     * Choisir la location
+     */
+    fun setLocation(location: Location) {
+        this.location = location
     }
 
     /**
@@ -198,6 +280,7 @@ class ActivitiesRepository {
             )
             museesList.add(activity)
             addVilleDispo(commune)
+            activity.passions.forEach { addPassion(it) }
         }
     }
 
@@ -224,6 +307,7 @@ class ActivitiesRepository {
             )
             sitesList.add(activity)
             addVilleDispo(commune)
+            activity.passions.forEach { addPassion(it) }
         }
     }
 
@@ -256,6 +340,7 @@ class ActivitiesRepository {
             )
             expositionsList.add(activity)
             addVilleDispo(commune)
+            activity.passions.forEach { addPassion(it) }
         }
     }
 
@@ -290,6 +375,7 @@ class ActivitiesRepository {
             )
             contenusList.add(activity)
             addVilleDispo(commune)
+            activity.passions.forEach { addPassion(it) }
         }
     }
 
@@ -320,6 +406,7 @@ class ActivitiesRepository {
             )
             edificesList.add(activity)
             addVilleDispo(commune)
+            activity.passions.forEach { addPassion(it) }
         }
     }
 
@@ -353,6 +440,7 @@ class ActivitiesRepository {
             )
             jardinsList.add(activity)
             addVilleDispo(commune)
+            activity.passions.forEach { addPassion(it) }
         }
     }
 
@@ -387,6 +475,7 @@ class ActivitiesRepository {
             )
             festivalsList.add(activity)
             addVilleDispo(commune)
+            activity.passions.forEach { addPassion(it) }
         }
     }
 
@@ -421,6 +510,7 @@ class ActivitiesRepository {
             )
             equipementsSportList.add(activity)
             addVilleDispo(commune)
+            activity.passions.forEach { addPassion(it) }
         }
     }
 
@@ -454,6 +544,7 @@ class ActivitiesRepository {
                 true
             )
             associationsList.add(activity)
+            activity.passions.forEach { addPassion(it) }
         }
     }
 
@@ -971,21 +1062,21 @@ class ActivitiesRepository {
                 .filter(List<AbstractActivity>::isNotEmpty)
         }
         // Tri par Date
-        if (user.getDate() != null) {
+        if (date != null) {
             // TODO : date des activités
         }
         // Tri par Distance
-        if (user.getDistance() != 0) {
+        if (distance != 0) {
             // TODO : distance des activités à la localisation actuelle
         }
         // Tri par Localisation
-        val localisation = user.getLocalisation()
-        if (localisation.latitude != 0.0 && localisation.longitude != 0.0) {
+        //val localisation =
+        //if (localisation.latitude != 0.0 && localisation.longitude != 0.0) {
             // TODO : activités dans un rayon de 5km par rapport à la localisation actuelle
             list = list
                 //.map { selectionnerParDistance(it, 5, getLocalisation()) }
                 .filter(List<AbstractActivity>::isNotEmpty)
-        }
+        //}
         // Tri par Passion
         user.getPassions().forEach { passion ->
             list = list

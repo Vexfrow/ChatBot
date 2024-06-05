@@ -48,7 +48,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -73,7 +72,9 @@ import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.work.WorkManager
+import fr.c1.chatbot.model.activity.Type.*
 import fr.c1.chatbot.utils.*
+import java.util.Date
 import kotlin.time.Duration.Companion.seconds
 
 private const val TAG = "MainActivity"
@@ -110,11 +111,6 @@ class MainActivity : ComponentActivity() {
         //load/initialize the osmdroid configuration, this can be done
         // This won't work unless you have imported this: org.osmdroid.config.Configuration.*
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
-
-        createLocationRequest()
-        createLocationCallback()
-        initLocation(this)
-        startLocationUpdates(this)
 
         enableEdgeToEdge()
         setContent {
@@ -208,25 +204,20 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-            if (hasReadPermission && hasWritePermission) {
-                events = Calendar.fetchCalendarEvents(context)
-                addNotifPush(events)
-                //EventList(events, Modifier.padding(innerPadding))
-            } else {
-                Text(
-                    "Requesting calendar permissions...",
-                    modifier = Modifier.padding(innerPadding)
-                )
-            }
-            if (hasFineLocation && hasCoarseLocation) {
-                //LocationContent(Modifier.padding(innerPadding))
-            } else {
-                Text(
-                    "Requesting location permissions...",
-                    modifier = Modifier.padding(innerPadding)
-                )
-            }
+        if (hasReadPermission && hasWritePermission) {
+            events = Calendar.fetchCalendarEvents(context)
+            addNotifPush(events)
+            //EventList(events, Modifier.padding(innerPadding))
+        } else {
+            Log.d(TAG, "PermissionsContent: Calendar permissions not granted")
+        }
+        if (hasFineLocation && hasCoarseLocation) {
+            createLocationRequest()
+            createLocationCallback()
+            initLocation(this)
+            startLocationUpdates(this)
+        } else {
+            Log.d(TAG, "PermissionsContent: Location permissions not granted")
         }
     }
 
@@ -344,7 +335,7 @@ private fun createLocationCallback() {
                 currentLocation = locationResult.lastLocation
                 Log.d(
                     ContentValues.TAG,
-                    "Latitude: " + currentLocation?.getLatitude() + ", Longitude: " + currentLocation?.getLongitude()
+                    "Latitude: " + currentLocation?.latitude + ", Longitude: " + currentLocation?.longitude
                 )
                 stopLocationUpdates()
             } else {
@@ -481,7 +472,7 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
         fun addAnswer(id: Int, answer: String? = null) {
             reset()
             messages += answer ?: tree.getAnswerText(id)
-            tree.selectAnswer(id, activitiesRepository)
+            tree.selectAnswer(id, user)
 
             crtScope.launch {
                 lazyListState.animateScrollToItem(messages.size)
@@ -523,7 +514,11 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
                 TypeAction.AfficherResultat -> {
                     Log.i(
                         TAG,
-                        "MyColumn: Affichage des résultats: ${app.activitiesRepository.getResultats(app)}"
+                        "MyColumn: Affichage des résultats: ${
+                            app.activitiesRepository.getResultats(
+                                app
+                            )
+                        }"
                     )
                 }
 
@@ -532,11 +527,18 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
                         i,
                         "Je suis ici : ${currentLocation?.longitude}, ${currentLocation?.latitude}"
                     )
-                    currentLocation?.let { it1 -> user.setLocalisation(it1) }
                     return@ProposalList
                 }
 
-//                TypeAction.ChoisirPassions -> TODO()
+                TypeAction.ActivitePhysique -> user.addType(SPORT)
+
+                TypeAction.ActiviteCulturelle -> user.addType(CULTURE)
+
+                TypeAction.ChoisirPassions -> {
+                    val passions = app.activitiesRepository.getPassions()
+                    enableSearchBar("Choisissez une passion", act, i, passions)
+                    return@ProposalList
+                }
                 else -> {}
             }
 
@@ -553,11 +555,12 @@ fun MyColumn(modifier: Modifier = Modifier, enabled: Boolean) {
                 TypeAction.EntrerDate -> {
                     //user.setDate(it.toDate())
                     addAnswer(sbState.answerId, "Je veux y aller le $it")
+                    activitiesRepository.setDate(it)
                 }
 
                 TypeAction.EntrerDistance -> {
-                    user.setDistance(it.toInt())
                     addAnswer(sbState.answerId, "Je veux une distance de $it km")
+                    activitiesRepository.setDistance(it.toInt())
                 }
 
                 TypeAction.EntrerVille -> {

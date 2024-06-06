@@ -17,6 +17,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridItemScope
+import androidx.compose.foundation.lazy.grid.LazyGridItemSpanScope
+import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -357,6 +361,76 @@ fun DropDown(
                     }
                 )
             }
+        }
+    }
+}
+
+@Preview
+@ExperimentalMaterial3Api
+@Composable
+fun Foo(
+    proposals: Collection<String> = (0..50).map { "$it" },
+    modifier: Modifier = Modifier,
+) {
+    var query by rememberMutableStateOf(value = "")
+    var exp by rememberMutableStateOf(value = false)
+
+    ExposedDropdownMenuBox(
+        modifier = modifier,
+        expanded = exp,
+        onExpandedChange = { exp = it }
+    ) {
+        TextField(
+            value = query,
+            onValueChange = {
+                query = it
+            },
+            shape = RoundedCornerShape(10.dp),
+            readOnly = true,
+            trailingIcon = { TrailingIcon { } },
+            modifier = Modifier
+                .menuAnchor()
+        )
+
+        ExposedDropdownMenu(
+            expanded = exp,
+            onDismissRequest = { exp = false }
+        ) {
+            proposals.forEachIndexed { index, it ->
+                DropdownMenuItem(
+                    text = { Text(text = it) },
+                    modifier = Modifier.background(
+                        Color(
+                            Random.nextInt(
+                                0,
+                                0xFFFFFF
+                            )
+                        ).copy(alpha = 1f)
+                    ),
+                    onClick = {
+                        exp = false
+                        query += ";$it"
+                    }
+                )
+            }
+        }
+    }
+}
+
+inline fun <T> LazyGridScope.items(
+    items: Collection<T>,
+    noinline key: ((item: T) -> Any)? = null,
+    noinline span: (LazyGridItemSpanScope.(item: T) -> GridItemSpan)? = null,
+    noinline contentType: (item: T) -> Any? = { null },
+    crossinline itemContent: @Composable LazyGridItemScope.(item: T) -> Unit
+) {
+    items.forEach {
+        item(
+            key = key?.invoke(it),
+            span = span?.run { { span(it) } },
+            contentType = contentType(it)
+        ) {
+            itemContent(it)
         }
     }
 }

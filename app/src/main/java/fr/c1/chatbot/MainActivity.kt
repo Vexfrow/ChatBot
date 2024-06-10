@@ -76,6 +76,10 @@ import android.os.Looper
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
+import fr.c1.chatbot.utils.Calendar.createCalendar
+import fr.c1.chatbot.utils.Calendar.deleteAllDayEvents
+import fr.c1.chatbot.utils.Calendar.writeEvent
+import fr.c1.chatbot.utils.Calendar.deleteCalendar
 import kotlin.time.Duration.Companion.seconds
 
 private const val TAG = "MainActivity"
@@ -132,7 +136,8 @@ class MainActivity : ComponentActivity() {
                             if (tab == Tab.Settings && newTab != Tab.Settings)
                                 Settings.save(ctx)
 
-                            val accountTabs = listOf(Tab.AccountPassions, Tab.AccountData, Tab.AccountPref)
+                            val accountTabs =
+                                listOf(Tab.AccountPassions, Tab.AccountData, Tab.AccountPref)
                             if (tab in accountTabs && newTab !in accountTabs)
                                 storeAllUsersInformation(ctx, app.userList)
 
@@ -151,7 +156,12 @@ class MainActivity : ComponentActivity() {
 
                         when (tab) {
                             Tab.Settings -> MySettings()
-                            Tab.ChatBotResults -> Activities(list = app.activitiesRepository.getResultats(app))
+                            Tab.ChatBotResults -> Activities(
+                                list = app.activitiesRepository.getResultats(
+                                    app
+                                )
+                            )
+
                             Tab.AccountPassions -> PassionsList(
                                 selected = app.currentUser::hasPassion,
                                 onSelectionChanged = { passion, state ->
@@ -180,6 +190,9 @@ class MainActivity : ComponentActivity() {
 
         var hasFineLocation by remember { mutableStateOf(false) }
         var hasCoarseLocation by remember { mutableStateOf(false) }
+
+        var added by remember { mutableStateOf(false) }
+        var locationRequesting by remember { mutableStateOf(false) }
 
         var permissionsArray: Array<String> = arrayOf()
 
@@ -219,20 +232,41 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        if (hasReadPermission && hasWritePermission) {
-            events = Calendar.fetchCalendarEvents(context)
-            addNotifPush(events)
-            //EventList(events, Modifier.padding(innerPadding))
-        } else {
-            Log.d(TAG, "PermissionsContent: Calendar permissions not granted")
+        LaunchedEffect(hasReadPermission && hasWritePermission) {
+            if (hasReadPermission && hasWritePermission) {
+                events = Calendar.fetchCalendarEvents(context)
+                addNotifPush(events)
+                // 1 ajout unique d'un événement
+                if (!added) {
+                    createCalendar(context)
+                    //deleteCalendar(context, 28) // -> Pour la tablette de Raph
+                    writeEvent(
+                        context,
+                        "Test nouveau calendrier",
+                        System.currentTimeMillis(),
+                        System.currentTimeMillis() + 1000 * 60 * 60,
+                        events
+                    )
+                    added = true
+                }
+                //EventList(events, Modifier.padding(innerPadding))
+            } else {
+                Log.d(TAG, "PermissionsContent: Calendar permissions not granted")
+            }
         }
-        if (hasFineLocation && hasCoarseLocation) {
-            createLocationRequest()
-            createLocationCallback()
-            initLocation(this)
-            startLocationUpdates(this)
-        } else {
-            Log.d(TAG, "PermissionsContent: Location permissions not granted")
+
+        LaunchedEffect(hasFineLocation && hasCoarseLocation) {
+            if (hasFineLocation && hasCoarseLocation) {
+                if (!locationRequesting) {
+                    createLocationRequest()
+                    createLocationCallback()
+                    initLocation(context)
+                    startLocationUpdates(context)
+                    locationRequesting = true
+                }
+            } else {
+                Log.d(TAG, "PermissionsContent: Location permissions not granted")
+            }
         }
     }
 

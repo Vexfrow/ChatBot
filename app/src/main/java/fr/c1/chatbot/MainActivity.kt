@@ -10,7 +10,6 @@ import fr.c1.chatbot.composable.Activities
 import fr.c1.chatbot.composable.Message
 import fr.c1.chatbot.composable.MySearchBar
 import fr.c1.chatbot.composable.MySettings
-import fr.c1.chatbot.composable.PassionsList
 import fr.c1.chatbot.composable.ProposalList
 import fr.c1.chatbot.composable.Tab
 import fr.c1.chatbot.composable.TopBar
@@ -18,15 +17,11 @@ import fr.c1.chatbot.model.ActivitiesRepository
 import fr.c1.chatbot.model.Event
 import fr.c1.chatbot.model.Settings
 import fr.c1.chatbot.model.TypeAction
-import fr.c1.chatbot.model.activity.Type.CULTURE
-import fr.c1.chatbot.model.activity.Type.SPORT
-import fr.c1.chatbot.model.storeAllUsersInformation
 import fr.c1.chatbot.model.toDate
 import fr.c1.chatbot.ui.theme.ChatBotTheme
 import fr.c1.chatbot.ui.theme.colorSchemeExtension
 import fr.c1.chatbot.utils.Calendar
 import fr.c1.chatbot.utils.application
-import fr.c1.chatbot.utils.hasPermission
 import fr.c1.chatbot.utils.rememberMutableStateListOf
 import fr.c1.chatbot.utils.rememberMutableStateOf
 import fr.c1.chatbot.utils.scheduleEventReminders
@@ -65,7 +60,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.preference.PreferenceManager
-import androidx.work.WorkManager
 import android.Manifest
 import android.content.ContentValues
 import android.content.Context
@@ -76,30 +70,25 @@ import android.os.Looper
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
+import androidx.work.WorkManager
+import fr.c1.chatbot.model.activity.Type.*
+import fr.c1.chatbot.utils.*
+import java.util.Date
 import kotlin.time.Duration.Companion.seconds
 
 private const val TAG = "MainActivity"
 
 private var initNotif = false
 
-private lateinit var fusedLocationClient: FusedLocationProviderClient
-private lateinit var locationRequest: LocationRequest
-private lateinit var locationCallback: LocationCallback
 private var currentLocation: Location? = null
+private var locationHandler: LocationHandler = LocationHandler
 
 class MainActivity : ComponentActivity() {
     private lateinit var workManager: WorkManager
     private lateinit var app: ChatBot
     private lateinit var activitiesRepository: ActivitiesRepository
-
     private var requestingLocationUpdates: Boolean = false
     private lateinit var myOpenMapView: MapView
-    // Provides location updates for while-in-use feature.
-
-    private lateinit var startButton: Button
-    private lateinit var stopButton: Button
-
-    private lateinit var outputTextView: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         workManager = WorkManager.getInstance(this)
@@ -112,6 +101,9 @@ class MainActivity : ComponentActivity() {
         //load/initialize the osmdroid configuration, this can be done
         // This won't work unless you have imported this: org.osmdroid.config.Configuration.*
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
+        locationHandler.initLocation(this)
+
+        //locationHandler.startLocationUpdates(this)
 
         enableEdgeToEdge()
         setContent {
@@ -227,10 +219,8 @@ class MainActivity : ComponentActivity() {
             Log.d(TAG, "PermissionsContent: Calendar permissions not granted")
         }
         if (hasFineLocation && hasCoarseLocation) {
-            createLocationRequest()
-            createLocationCallback()
-            initLocation(this)
-            startLocationUpdates(this)
+            locationHandler.initLocation(this)
+            //locationHandler.startLocationUpdates(this)
         } else {
             Log.d(TAG, "PermissionsContent: Location permissions not granted")
         }
@@ -267,97 +257,27 @@ class MainActivity : ComponentActivity() {
         initNotif = true
     }
 }
-
-private fun initLocation(ctx: Context) {
-    Log.i(ContentValues.TAG, "Init Location")
-    Log.i(ContentValues.TAG, "Check Permissions")
-    if (ActivityCompat.checkSelfPermission(
-            ctx,
-            android.Manifest.permission.ACCESS_FINE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-            ctx,
-            android.Manifest.permission.ACCESS_COARSE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED
-    ) {
-        // TODO: Consider calling
-        //    ActivityCompat#requestPermissions
-        // here to request the missing permissions, and then overriding
-        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-        //                                          int[] grantResults)
-        // to handle the case where the user grants the permission. See the documentation
-        // for ActivityCompat#requestPermissions for more details.
-
-        /*val requestPermissionLauncher = rememberLauncherForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions()) {
-                permissions ->
-            hasLocationPermission = (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true) &&
-                    (permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true)
-            if( hasLocationPermission){
-                //events = getLocationEvent(context)
-            }
+@Composable
+fun OsmdroidMapView() {
+    val context = LocalContext.current
+    AndroidView(
+        modifier = Modifier.fillMaxSize(),
+        factory = { context ->
+            val mapView = MapView(context)
+            mapView.setTileSource(TileSourceFactory.MAPNIK)
+            mapView.setBuiltInZoomControls(true)
+            mapView.setMultiTouchControls(true)
+            val mapController = mapView.controller
+            mapController.setZoom(15)
+            val startPoint = GeoPoint(locationHandler.currentLocation!!.latitude,
+                locationHandler.currentLocation!!.longitude)
+            mapController.setCenter(startPoint);
+            val compassOverlay = CompassOverlay(context, InternalCompassOrientationProvider(context), mapView)
+            compassOverlay.enableCompass()
+            mapView.overlays.add(compassOverlay)
+            mapView
         }
-        LaunchedEffect(Unit) {
-            requestPermissionLauncher.launch(
-                arrayOf(
-                    //Manifest.permission.RECEIVE_BOOT_COMPLETED,
-                    //Manifest.permission.POST_NOTIFICATIONS
-                )
-            )
-        }*/
-        return
-    }
-    fusedLocationClient = LocationServices.getFusedLocationProviderClient(ctx)
-    //last location
-    /*fusedLocationClient.lastLocation
-        .addOnSuccessListener { location: Location? ->
-            // Got last known location. In some rare situations this can be null.
-        }
-    */
-}
-
-
-private fun startLocationUpdates(ctx: Context) {
-    if (ActivityCompat.checkSelfPermission(ctx, Manifest.permission.ACCESS_FINE_LOCATION)
-        == PackageManager.PERMISSION_GRANTED
-    ) {
-        Log.i(ContentValues.TAG, "PERMISSIONS GRANTED")
-        fusedLocationClient.requestLocationUpdates(
-            locationRequest,
-            locationCallback,
-            Looper.getMainLooper()
-        )
-    }
-}
-
-private fun stopLocationUpdates() {
-    fusedLocationClient.removeLocationUpdates(locationCallback)
-}
-
-private fun createLocationRequest() {
-    locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000)
-        .setMinUpdateIntervalMillis(5000)
-        .build()
-}
-
-private fun createLocationCallback() {
-    locationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-            super.onLocationResult(locationResult)
-            if (locationResult.lastLocation != null) {
-                // Normally, you want to save a new location to a database. We are simplifying
-                // things a bit and just saving it as a local variable, as we only need it again
-                // if a Notification is created (when user navigates away from app).
-                currentLocation = locationResult.lastLocation
-                Log.d(
-                    ContentValues.TAG,
-                    "Latitude: " + currentLocation?.latitude + ", Longitude: " + currentLocation?.longitude
-                )
-                stopLocationUpdates()
-            } else {
-                Log.d(ContentValues.TAG, "Location information isn't available.")
-            }
-        }
-    }
+    )
 }
 
 @Composable
@@ -547,7 +467,7 @@ fun MyColumn(
                     app.activitiesRepository.setLocation(currentLocation ?: Location(""))
                     addAnswer(
                         i,
-                        "Je suis ici : ${currentLocation?.longitude}, ${currentLocation?.latitude}"
+                        "Je suis ici : ${locationHandler.currentLocation!!.longitude}, ${locationHandler.currentLocation?.latitude}"
                     )
                     return@ProposalList
                 }
@@ -578,7 +498,6 @@ fun MyColumn(
         ) {
             when (sbState.action) {
                 TypeAction.EntrerDate -> {
-                    //user.setDate(it.toDate())
                     addAnswer(sbState.answerId, "Je veux y aller le $it")
                     activitiesRepository.setDate(it)
                 }

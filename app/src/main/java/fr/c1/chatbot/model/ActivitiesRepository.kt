@@ -171,7 +171,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Récupérer la location
+     * Récupérer la localisation
      */
     fun getLocation(): Location {
         return location
@@ -515,7 +515,6 @@ class ActivitiesRepository {
 
         }
     }
-
 
     /**
      * Initialiser toutes les listes

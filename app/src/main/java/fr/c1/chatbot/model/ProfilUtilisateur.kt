@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import fr.c1.chatbot.model.activity.Type
 import android.content.Context
 import android.util.Log
+import androidx.compose.ui.platform.LocalContext
 import java.io.File
 import java.io.FileFilter
 
@@ -13,7 +14,7 @@ class ProfilUtilisateur(
     /**
      * Nom de l'utilisateur (utilisé, en plus du prénom, pour différencier les utilisateurs)
      */
-    var nom: String = "",
+    private var nom: String = "",
     /**
      * Prénom de l'utilisateur (utilisé pour l'affichage)
      */
@@ -46,6 +47,27 @@ class ProfilUtilisateur(
     constructor(nom: String, prenom: String, age: Int) : this() {
         this.nom = nom
         this.prenom = prenom
+        this.age = age
+    }
+
+    /**
+     * Set prenom
+     */
+    fun setPrenom(prenom: String) {
+        this.prenom = prenom
+    }
+
+    /**
+     * Set nom
+     */
+    fun setNom(nom: String) {
+        this.nom = nom
+    }
+
+    /**
+     * Set age
+     */
+    fun setAge(age: Int) {
         this.age = age
     }
 
@@ -164,6 +186,13 @@ class ProfilUtilisateur(
     }
 
     /**
+     * Récupérer le nom
+     */
+    fun getNom(): String {
+        return nom
+    }
+
+    /**
      * Récupérer le prénom
      */
     fun getPrenom(): String {
@@ -247,7 +276,7 @@ fun loadAllUsersInformation(context: Context): MutableList<ProfilUtilisateur> {
             userList.add(user)
             Log.d(
                 TAG,
-                "loadAllUsersInformation: Loaded user profile from ${file.name} ${user.nom} ${user.getPrenom()}"
+                "loadAllUsersInformation: Loaded user profile from ${file.name}\nUtilisateur : ${user.getPrenom()} ${user.getNom()}, ${user.getAge()} ans"
             )
         }
 

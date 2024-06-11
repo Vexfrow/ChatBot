@@ -183,7 +183,7 @@ fun MySearchBar(
         .fillMaxWidth()
         .padding(horizontal = 10.dp)
 
-    var showDp by rememberMutableStateOf(false)
+    var showDp by rememberMutableStateOf(key1 = action, action == TypeAction.EntrerDate)
 
     mod = when (action) {
         TypeAction.EntrerDate -> mod.clickable { showDp = true }

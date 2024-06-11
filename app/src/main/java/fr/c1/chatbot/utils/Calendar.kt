@@ -58,7 +58,13 @@ object Calendar {
             CalendarContract.Events.DTEND,
             CalendarContract.Events.DELETED
         )
-        val selection = "${CalendarContract.Events.DELETED} = ?, ${CalendarContract.Events.CALENDAR_ID} = ?"
+        val selection = "${CalendarContract.Events.DELETED} = ? AND ${CalendarContract.Events.CALENDAR_ID} = ?"
+        // Vérifier que le calendrier d'id 99 existe
+        val calendarId = getCalendarId(context)
+        if (calendarId == -1L) {
+            Log.e(TAG, "fetchCalendarEvents: No ChatBot calendar !")
+            createCalendar(context)
+        }
         // Récupérer uniquement les événements non supprimés du calendrier ChatBot
         val selectionArgs = arrayOf("0", "99")
         val sortOrder = "${CalendarContract.Events.DTSTART} ASC"
@@ -196,7 +202,7 @@ object Calendar {
             CalendarContract.Events.DTEND,
             CalendarContract.Events.DELETED
         )
-        val selection = "${CalendarContract.Events.DELETED} = ?, ${CalendarContract.Events.CALENDAR_ID} = ?"
+        val selection = "${CalendarContract.Events.DELETED} = ? AND ${CalendarContract.Events.CALENDAR_ID} = ?"
         val selectionArgs = arrayOf("0", "99") // Récupérer uniquement les événements non supprimés
         val sortOrder = "${CalendarContract.Events.DTSTART} ASC"
         val uri: Uri = CalendarContract.Events.CONTENT_URI

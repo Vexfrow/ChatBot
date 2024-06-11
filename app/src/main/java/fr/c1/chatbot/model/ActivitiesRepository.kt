@@ -14,6 +14,7 @@ import fr.c1.chatbot.model.activity.Sites
 import fr.c1.chatbot.model.activity.Type
 import android.app.Application
 import android.location.Location
+import android.util.Log
 import androidx.compose.runtime.Composable
 import fr.c1.chatbot.ChatBot
 import fr.c1.chatbot.utils.application
@@ -35,7 +36,7 @@ class ActivitiesRepository {
     private val listeVillesDisponible = sortedSetOf<String>()
 
 
-    private lateinit var date: String
+    private var date: String = null.toString()
 
     private var distance = 10 // 10 km par défaut
 
@@ -1019,18 +1020,25 @@ class ActivitiesRepository {
             equipementsSportList,
             associationsList
         )
+        list.forEach { Log.d(TAG, "getResultats: list = ${it.size}") }
         // Tri par Type
         user.getTypes().forEach { type ->
-            list.forEach { selectionnerParType(it, type) }
+            list = list.map {
+                Log.d(TAG, "getResultats: list = ${it.subList(0, 1)}")
+                selectionnerParType(it, type)
+            }
         }
+        // Afficher le nombre d'éléments de chaque liste
+        list.forEach { Log.d(TAG, "getResultats: list = ${it.size}") }
         // Tri par Ville
         user.getVilles().forEach { ville ->
-            list = list
-                .map { selectionnerParCommune(it, ville) }
+            list = list.map {
+                selectionnerParCommune(it, ville)
+            }
                 .filter(List<AbstractActivity>::isNotEmpty)
         }
         // Tri par Date
-        if (date != null) {
+        if (date != "null") {
             // TODO : date des activités
         }
         // Tri par Distance
@@ -1040,10 +1048,10 @@ class ActivitiesRepository {
         // Tri par Localisation
         //val localisation =
         //if (localisation.latitude != 0.0 && localisation.longitude != 0.0) {
-            // TODO : activités dans un rayon de 5km par rapport à la localisation actuelle
-            list = list
-                //.map { selectionnerParDistance(it, 5, getLocalisation()) }
-                .filter(List<AbstractActivity>::isNotEmpty)
+        // TODO : activités dans un rayon de 5km par rapport à la localisation actuelle
+        list = list
+            //.map { selectionnerParDistance(it, 5, getLocalisation()) }
+            .filter(List<AbstractActivity>::isNotEmpty)
         //}
         // Tri par Passion
         user.getPassions().forEach { passion ->
@@ -1061,7 +1069,8 @@ class ActivitiesRepository {
         it: List<AbstractActivity>,
         type: Type
     ): List<AbstractActivity> {
-        when (type) {
+        Log.d(TAG, "selectionnerParType: filtre = $type")
+        return when (type) {
             Type.SPORT -> it.filter {
                 it is EquipementsSport || (it is Associations && it.nom.lowercase()
                     .contains("sport"))
@@ -1095,6 +1104,5 @@ class ActivitiesRepository {
             Type.ALL -> it
             Type.AUTRE -> it
         }
-        return it
     }
 }

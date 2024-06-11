@@ -219,7 +219,7 @@ class MainActivity : ComponentActivity() {
         }
         if (hasFineLocation && hasCoarseLocation) {
             locationHandler.initLocation(this)
-            locationHandler.startLocationUpdates(this)
+            //locationHandler.startLocationUpdates(this)
         } else {
             Log.d(TAG, "PermissionsContent: Location permissions not granted")
         }

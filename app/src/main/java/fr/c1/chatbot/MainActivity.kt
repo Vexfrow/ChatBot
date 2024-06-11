@@ -71,6 +71,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
+import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
@@ -233,7 +234,9 @@ class MainActivity : ComponentActivity() {
                 )
             ) {
                 permissionsArray = permissionsArray.plus(Manifest.permission.RECEIVE_BOOT_COMPLETED)
-                permissionsArray = permissionsArray.plus(Manifest.permission.POST_NOTIFICATIONS)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    permissionsArray = permissionsArray.plus(Manifest.permission.POST_NOTIFICATIONS)
+                }
             } else {
                 Log.i(TAG, "PermissionsContent: Notifications permissions granted")
                 initNotif = true

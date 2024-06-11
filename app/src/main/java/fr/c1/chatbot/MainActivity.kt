@@ -121,7 +121,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             ChatBotTheme {
                 PermissionsContent()
-                PermissionNotification()
 
                 val ctx = LocalContext.current
 
@@ -194,6 +193,8 @@ class MainActivity : ComponentActivity() {
         var added by remember { mutableStateOf(false) }
         var locationRequesting by remember { mutableStateOf(false) }
 
+        var initNotif by remember { mutableStateOf(false) }
+
         var permissionsArray: Array<String> = arrayOf()
 
         val requestPermissionLauncher = rememberLauncherForActivityResult(
@@ -227,6 +228,16 @@ class MainActivity : ComponentActivity() {
                 hasFineLocation = true
                 hasCoarseLocation = true
             }
+            if (!context.hasPermission(Manifest.permission.RECEIVE_BOOT_COMPLETED) || !context.hasPermission(
+                    Manifest.permission.POST_NOTIFICATIONS
+                )
+            ) {
+                permissionsArray = permissionsArray.plus(Manifest.permission.RECEIVE_BOOT_COMPLETED)
+                permissionsArray = permissionsArray.plus(Manifest.permission.POST_NOTIFICATIONS)
+            } else {
+                Log.i(TAG, "PermissionsContent: Notifications permissions granted")
+                initNotif = true
+            }
             if (permissionsArray.isNotEmpty()) {
                 requestPermissionLauncher.launch(permissionsArray)
             }
@@ -237,18 +248,14 @@ class MainActivity : ComponentActivity() {
                 events = Calendar.fetchCalendarEvents(context)
                 addNotifPush(events)
                 // 1 ajout unique d'un événement
-                if (!added) {
-                    createCalendar(context)
-                    //deleteCalendar(context, 28) // -> Pour la tablette de Raph
-                    writeEvent(
-                        context,
-                        "Test nouveau calendrier",
-                        System.currentTimeMillis(),
-                        System.currentTimeMillis() + 1000 * 60 * 60,
-                        events
-                    )
-                    added = true
-                }
+                deleteCalendar(context, 28) // -> Pour la tablette de Raph
+                writeEvent(
+                    context,
+                    "Test nouveau calendrier",
+                    System.currentTimeMillis(),
+                    System.currentTimeMillis() + 1000 * 60 * 60,
+                    events
+                )
                 //EventList(events, Modifier.padding(innerPadding))
             } else {
                 Log.d(TAG, "PermissionsContent: Calendar permissions not granted")
@@ -266,6 +273,14 @@ class MainActivity : ComponentActivity() {
                 }
             } else {
                 Log.d(TAG, "PermissionsContent: Location permissions not granted")
+            }
+        }
+
+        LaunchedEffect(initNotif) {
+            if (initNotif) {
+                addNotifPush(events)
+            } else {
+                Log.d(TAG, "PermissionsContent: Notifications permissions not granted")
             }
         }
     }
@@ -391,30 +406,6 @@ private fun createLocationCallback() {
                 Log.d(ContentValues.TAG, "Location information isn't available.")
             }
         }
-    }
-}
-
-@Composable
-fun PermissionNotification() {
-    val requestPermissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        if (permissions[Manifest.permission.RECEIVE_BOOT_COMPLETED] == true &&
-            permissions[Manifest.permission.POST_NOTIFICATIONS] == true
-        ) {
-            Log.i(TAG, "Notifications Permissions granted")
-        } else {
-            Log.i(TAG, "Notifications Permissions denied")
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        requestPermissionLauncher.launch(
-            arrayOf(
-                Manifest.permission.RECEIVE_BOOT_COMPLETED,
-                Manifest.permission.POST_NOTIFICATIONS
-            )
-        )
     }
 }
 

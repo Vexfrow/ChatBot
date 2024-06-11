@@ -3,8 +3,8 @@ package fr.c1.chatbot.composable
 import fr.c1.chatbot.model.TypeAction
 import fr.c1.chatbot.ui.theme.ChatBotPrev
 import fr.c1.chatbot.ui.theme.colorSchemeExtension
+import fr.c1.chatbot.utils.UnitLaunchedEffect
 import fr.c1.chatbot.utils.rememberMutableStateOf
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
@@ -55,6 +55,8 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.takeOrElse
@@ -72,9 +74,12 @@ import android.util.Log
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import kotlin.random.Random
 
 private const val TAG = "SearchBar"
+
+private fun Modifier.focusRequesterIfNotNull(fr: FocusRequester?) =
+    if (fr == null) this
+    else focusRequester(fr)
 
 @ExperimentalMaterial3Api
 @Composable
@@ -93,6 +98,7 @@ fun SearchBar(
     shadowElevation: Dp = SearchBarDefaults.ShadowElevation,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     keyboardType: KeyboardType = KeyboardType.Text,
+    focus: FocusRequester? = null
 ) {
     Surface(
         shape = shape,
@@ -119,7 +125,9 @@ fun SearchBar(
         BasicTextField(
             value = query,
             onValueChange = onQueryChange,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .focusRequesterIfNotNull(focus),
             enabled = enabled,
             singleLine = true,
             textStyle = LocalTextStyle.current.merge(
@@ -214,6 +222,10 @@ fun MySearchBar(
         onSearch(str)
     }
 
+    val focus =
+        if (enabled && action != TypeAction.EntrerDate) remember { FocusRequester() }
+        else null
+
     if (proposals != null) {
         var props by rememberMutableStateOf(proposals)
         props = proposals.filter { it.startsWith(query, true) }.take(50)
@@ -226,8 +238,12 @@ fun MySearchBar(
             },
             onProposalSelected = { query = it },
             onSearch = ::search,
-            modifier = mod
+            modifier = mod,
+            focus = focus
         )
+
+        if (focus != null)
+            UnitLaunchedEffect { focus.requestFocus() }
 
         return
     }
@@ -261,8 +277,12 @@ fun MySearchBar(
         trailingIcon = if (enabled) {
             { TrailingIcon { search(query) } }
         } else null,
-        keyboardType = if (action == TypeAction.EntrerDistance) KeyboardType.NumberPassword else KeyboardType.Text
+        keyboardType = if (action == TypeAction.EntrerDistance) KeyboardType.NumberPassword else KeyboardType.Text,
+        focus = focus
     )
+
+    if (focus != null)
+        UnitLaunchedEffect { focus.requestFocus() }
 }
 
 @Composable
@@ -326,8 +346,9 @@ fun DropDown(
     onProposalSelected: (String) -> Unit,
     onSearch: (String) -> Unit,
     modifier: Modifier = Modifier,
+    focus: FocusRequester? = null
 ) {
-    var exp by rememberMutableStateOf(value = false)
+    var exp by rememberMutableStateOf(value = true)
 
     ExposedDropdownMenuBox(
         modifier = modifier,
@@ -346,6 +367,7 @@ fun DropDown(
             modifier = Modifier
                 .fillMaxSize()
                 .menuAnchor()
+                .focusRequesterIfNotNull(focus)
         )
 
         ExposedDropdownMenu(
@@ -358,58 +380,6 @@ fun DropDown(
                     onClick = {
                         exp = false
                         onProposalSelected(it)
-                    }
-                )
-            }
-        }
-    }
-}
-
-@Preview
-@ExperimentalMaterial3Api
-@Composable
-fun Foo(
-    proposals: Collection<String> = (0..50).map { "$it" },
-    modifier: Modifier = Modifier,
-) {
-    var query by rememberMutableStateOf(value = "")
-    var exp by rememberMutableStateOf(value = false)
-
-    ExposedDropdownMenuBox(
-        modifier = modifier,
-        expanded = exp,
-        onExpandedChange = { exp = it }
-    ) {
-        TextField(
-            value = query,
-            onValueChange = {
-                query = it
-            },
-            shape = RoundedCornerShape(10.dp),
-            readOnly = true,
-            trailingIcon = { TrailingIcon { } },
-            modifier = Modifier
-                .menuAnchor()
-        )
-
-        ExposedDropdownMenu(
-            expanded = exp,
-            onDismissRequest = { exp = false }
-        ) {
-            proposals.forEachIndexed { index, it ->
-                DropdownMenuItem(
-                    text = { Text(text = it) },
-                    modifier = Modifier.background(
-                        Color(
-                            Random.nextInt(
-                                0,
-                                0xFFFFFF
-                            )
-                        ).copy(alpha = 1f)
-                    ),
-                    onClick = {
-                        exp = false
-                        query += ";$it"
                     }
                 )
             }

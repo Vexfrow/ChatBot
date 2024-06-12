@@ -1,13 +1,13 @@
 package model
 
-import androidx.test.core.app.ApplicationProvider
 import fr.c1.chatbot.ChatBot
-import fr.c1.chatbot.model.activity.Musees
 import fr.c1.chatbot.model.ActivitiesRepository
+import fr.c1.chatbot.model.activity.Musees
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
+import androidx.test.core.app.ApplicationProvider
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 
@@ -33,7 +33,7 @@ class ActivitiesRepositoryTest {
     @Test
     fun initMuseesTest() {
         activitiesRepository.initMusees(app)
-        val musees = activitiesRepository.getMuseesList()
+        val musees = activitiesRepository.museums
         val sizeExpected = 1222
         Assert.assertEquals(
             "Le nombre de musées attendu est $sizeExpected, la taille de la liste est ${musees.size}",
@@ -45,7 +45,7 @@ class ActivitiesRepositoryTest {
     @Test
     fun initSitesTest() {
         activitiesRepository.initSites(app)
-        val sites = activitiesRepository.getSitesList()
+        val sites = activitiesRepository.sites
         val sizeExpected = 1134
         Assert.assertEquals(
             "Le nombre de sites attendu est $sizeExpected, la taille de la liste est ${sites.size}",
@@ -57,7 +57,7 @@ class ActivitiesRepositoryTest {
     @Test
     fun initExpositionsTest() {
         activitiesRepository.initExpositions(app)
-        val expositions = activitiesRepository.getExpositionsList()
+        val expositions = activitiesRepository.expositions
         val sizeExpected = 243
         Assert.assertEquals(
             "Le nombre d'expositions attendu est $sizeExpected, la taille de la liste est ${expositions.size}",
@@ -69,7 +69,7 @@ class ActivitiesRepositoryTest {
     @Test
     fun initContenusTest() {
         activitiesRepository.initContenus(app)
-        val contenus = activitiesRepository.getContenusList()
+        val contenus = activitiesRepository.contents
         val sizeExpected = 1108
         Assert.assertEquals(
             "Le nombre de contenus culturels attendu est $sizeExpected, la taille de la liste est ${contenus.size}",
@@ -81,7 +81,7 @@ class ActivitiesRepositoryTest {
     @Test
     fun initEdificesTest() {
         activitiesRepository.initEdifices(app)
-        val edifices = activitiesRepository.getEdificesList()
+        val edifices = activitiesRepository.buildings
         val sizeExpected = 1657
         Assert.assertEquals(
             "Le nombre d'édifices attendu est $sizeExpected, la taille de la liste est ${edifices.size}",
@@ -93,7 +93,7 @@ class ActivitiesRepositoryTest {
     @Test
     fun initJardinsTest() {
         activitiesRepository.initJardins(app)
-        val jardins = activitiesRepository.getJardinsList()
+        val jardins = activitiesRepository.gardens
         val sizeExpected = 413
         Assert.assertEquals(
             "Le nombre de jardins attendu est $sizeExpected, la taille de la liste est ${jardins.size}",
@@ -105,7 +105,7 @@ class ActivitiesRepositoryTest {
     @Test
     fun initFestivalsTest() {
         activitiesRepository.initFestivals(app)
-        val festivals = activitiesRepository.getFestivalsList()
+        val festivals = activitiesRepository.festivals
         val sizeExpected = 7283
         Assert.assertEquals(
             "Le nombre de festivals attendu est $sizeExpected, la taille de la liste est ${festivals.size}",
@@ -117,7 +117,7 @@ class ActivitiesRepositoryTest {
     @Test
     fun initEquipementsSportTest() {
         activitiesRepository.initEquipementsSport(app)
-        val equipementsSport = activitiesRepository.getEquipementsSportList()
+        val equipementsSport = activitiesRepository.sportEquipments
         val sizeExpected = 159463
         Assert.assertEquals(
             "Le nombre d'équipements sportifs attendu est $sizeExpected, la taille de la liste est ${equipementsSport.size}",
@@ -129,7 +129,7 @@ class ActivitiesRepositoryTest {
     @Test
     fun initAssociationsTest() {
         activitiesRepository.initAsso(app)
-        val asso = activitiesRepository.getAssociationsList()
+        val asso = activitiesRepository.associations
         val sizeExpected = 23837
         Assert.assertEquals(
             "Le nombre d'associations attendu est $sizeExpected, la taille de la liste est ${asso.size}",
@@ -141,15 +141,15 @@ class ActivitiesRepositoryTest {
     @Test
     fun initAllTest() {
         activitiesRepository.initAll(app)
-        val musees = activitiesRepository.getMuseesList()
-        val sites = activitiesRepository.getSitesList()
-        val expositions = activitiesRepository.getExpositionsList()
-        val contenus = activitiesRepository.getContenusList()
-        val edifices = activitiesRepository.getEdificesList()
-        val jardins = activitiesRepository.getJardinsList()
-        val festivals = activitiesRepository.getFestivalsList()
-        val equipementsSport = activitiesRepository.getEquipementsSportList()
-        val associations = activitiesRepository.getAssociationsList()
+        val musees = activitiesRepository.museums
+        val sites = activitiesRepository.sites
+        val expositions = activitiesRepository.expositions
+        val contenus = activitiesRepository.contents
+        val edifices = activitiesRepository.buildings
+        val jardins = activitiesRepository.gardens
+        val festivals = activitiesRepository.festivals
+        val equipementsSport = activitiesRepository.sportEquipments
+        val associations = activitiesRepository.associations
         val sizeExpected = 1222 + 1134 + 243 + 1108 + 1657 + 413 + 7283 + 159463 + 23837
         val sizeActual =
             musees.size + sites.size + expositions.size + contenus.size + edifices.size + jardins.size + festivals.size + equipementsSport.size + associations.size
@@ -163,7 +163,7 @@ class ActivitiesRepositoryTest {
     @Test
     fun getMuseesListTest() {
         activitiesRepository.initMusees(app)
-        val musees = activitiesRepository.getMuseesList()
+        val musees = activitiesRepository.museums
         val sizeExpected = 1222
         Assert.assertEquals(
             "Le nombre de musées attendu est $sizeExpected, la taille de la liste est ${musees.size}",
@@ -175,7 +175,7 @@ class ActivitiesRepositoryTest {
     @Test
     fun getSitesListTest() {
         activitiesRepository.initSites(app)
-        val sites = activitiesRepository.getSitesList()
+        val sites = activitiesRepository.sites
         val sizeExpected = 1134
         Assert.assertEquals(
             "Le nombre de sites attendu est $sizeExpected, la taille de la liste est ${sites.size}",
@@ -187,7 +187,7 @@ class ActivitiesRepositoryTest {
     @Test
     fun getExpositionsListTest() {
         activitiesRepository.initExpositions(app)
-        val expositions = activitiesRepository.getExpositionsList()
+        val expositions = activitiesRepository.expositions
         val sizeExpected = 243
         Assert.assertEquals(
             "Le nombre d'expositions attendu est $sizeExpected, la taille de la liste est ${expositions.size}",
@@ -199,7 +199,7 @@ class ActivitiesRepositoryTest {
     @Test
     fun getContenusListTest() {
         activitiesRepository.initContenus(app)
-        val contenus = activitiesRepository.getContenusList()
+        val contenus = activitiesRepository.contents
         val sizeExpected = 1108
         Assert.assertEquals(
             "Le nombre de contenus culturels attendu est $sizeExpected, la taille de la liste est ${contenus.size}",
@@ -211,7 +211,7 @@ class ActivitiesRepositoryTest {
     @Test
     fun getEdificesListTest() {
         activitiesRepository.initEdifices(app)
-        val edifices = activitiesRepository.getEdificesList()
+        val edifices = activitiesRepository.buildings
         val sizeExpected = 1657
         Assert.assertEquals(
             "Le nombre d'édifices attendu est $sizeExpected, la taille de la liste est ${edifices.size}",
@@ -223,7 +223,7 @@ class ActivitiesRepositoryTest {
     @Test
     fun getJardinsListTest() {
         activitiesRepository.initJardins(app)
-        val jardins = activitiesRepository.getJardinsList()
+        val jardins = activitiesRepository.gardens
         val sizeExpected = 413
         Assert.assertEquals(
             "Le nombre de jardins attendu est $sizeExpected, la taille de la liste est ${jardins.size}",
@@ -235,7 +235,7 @@ class ActivitiesRepositoryTest {
     @Test
     fun getFestivalsListTest() {
         activitiesRepository.initFestivals(app)
-        val festivals = activitiesRepository.getFestivalsList()
+        val festivals = activitiesRepository.festivals
         val sizeExpected = 7283
         Assert.assertEquals(
             "Le nombre de festivals attendu est $sizeExpected, la taille de la liste est ${festivals.size}",
@@ -247,7 +247,7 @@ class ActivitiesRepositoryTest {
     @Test
     fun getEquipementsSportListTest() {
         activitiesRepository.initEquipementsSport(app)
-        val equipementsSport = activitiesRepository.getEquipementsSportList()
+        val equipementsSport = activitiesRepository.sportEquipments
         val sizeExpected = 159463
         Assert.assertEquals(
             "Le nombre d'équipements sportifs attendu est $sizeExpected, la taille de la liste est ${equipementsSport.size}",
@@ -259,7 +259,7 @@ class ActivitiesRepositoryTest {
     @Test
     fun getAssociationsListTest() {
         activitiesRepository.initAsso(app)
-        val asso = activitiesRepository.getAssociationsList()
+        val asso = activitiesRepository.associations
         val sizeExpected = 23837
         Assert.assertEquals(
             "Le nombre d'associations attendu est $sizeExpected, la taille de la liste est ${asso.size}",

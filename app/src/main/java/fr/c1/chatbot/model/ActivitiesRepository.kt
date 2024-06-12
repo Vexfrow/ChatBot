@@ -1,5 +1,6 @@
 package fr.c1.chatbot.model
 
+import fr.c1.chatbot.ChatBot
 import fr.c1.chatbot.R
 import fr.c1.chatbot.model.activity.AbstractActivity
 import fr.c1.chatbot.model.activity.Associations
@@ -12,18 +13,17 @@ import fr.c1.chatbot.model.activity.Jardins
 import fr.c1.chatbot.model.activity.Musees
 import fr.c1.chatbot.model.activity.Sites
 import fr.c1.chatbot.model.activity.Type
-import android.app.Application
-import android.location.Location
-import android.util.Log
-import fr.c1.chatbot.ChatBot
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONArray
+import android.app.Application
+import android.location.Location
+import android.util.Log
 import java.io.BufferedInputStream
 import java.io.InputStream
 import java.util.Locale
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 // Fichiers CSV venant du site data.gouv.fr
 class ActivitiesRepository {
@@ -36,149 +36,78 @@ class ActivitiesRepository {
     }
 
     private val listeVillesDisponible = sortedSetOf<String>()
+    val cities: Set<String> get() = listeVillesDisponible
 
 
-    private var date: String = null.toString()
+    var date: String = null.toString()
+        private set
 
-    private var distance = 10 // 10 km par défaut
+    var distance = 10 // 10 km par défaut
+        private set
 
-    private var location: Location = Location("")
+    var location: Location = Location("")
+        private set
 
     /**
      * Liste des musées
      */
     private val museesList = mutableListOf<Musees>()
+    val museums: List<Musees> get() = museesList
 
     /**
      * Liste des sites patrimoniaux
      */
     private val sitesList = mutableListOf<Sites>()
+    val sites: List<Sites> get() = sitesList
 
     /**
      * Liste des expositions
      */
     private val expositionsList = mutableListOf<Expositions>()
+    val expositions: List<Expositions> get() = expositionsList
 
     /**
      * Liste des contenus culturels
      */
     private val contenusList = mutableListOf<Contenus>()
+    val contents: List<Contenus> get() = contenusList
 
     /**
      * Liste des édifices
      */
     private val edificesList = mutableListOf<Edifices>()
+    val buildings: List<Edifices> get() = edificesList
 
     /**
      * Liste des jardins
      */
     private val jardinsList = mutableListOf<Jardins>()
+    val gardens: List<Jardins> get() = jardinsList
 
     /**
      * Liste des festivals
      */
     private val festivalsList = mutableListOf<Festivals>()
+    val festivals: List<Festivals> get() = festivalsList
 
     /**
      * Liste des équipements sportifs
      */
     private val equipementsSportList = mutableListOf<EquipementsSport>()
+    val sportEquipments: List<EquipementsSport> get() = equipementsSportList
 
     /**
      * Liste des associations
      */
     private val associationsList = mutableListOf<Associations>()
 
-    val all: List<AbstractActivity>
-        get() = museesList + sitesList + expositionsList + contenusList + edificesList + jardinsList + festivalsList + equipementsSportList + associationsList
-
-    /**
-     * Récupérer la liste des musées
-     */
-    fun getMuseesList(): List<Musees> {
-        return museesList
-    }
-
-    fun getVillesDisponible(): Collection<String> {
-        return listeVillesDisponible
-    }
-
-    /**
-     * Récupérer la liste des sites patrimoniaux
-     */
-    fun getSitesList(): List<Sites> {
-        return sitesList
-    }
-
-    /**
-     * Récupérer la liste des expositions
-     */
-    fun getExpositionsList(): List<Expositions> {
-        return expositionsList
-    }
-
-    /**
-     * Récupérer la liste des contenus culturels
-     */
-    fun getContenusList(): List<Contenus> {
-        return contenusList
-    }
-
-    /**
-     * Récupérer la liste des édifices
-     */
-    fun getEdificesList(): List<Edifices> {
-        return edificesList
-    }
-
-    /**
-     * Récupérer la liste des jardins
-     */
-    fun getJardinsList(): List<Jardins> {
-        return jardinsList
-    }
-
-    /**
-     * Récupérer la liste des festivals
-     */
-    fun getFestivalsList(): List<Festivals> {
-        return festivalsList
-    }
-
-    /**
-     * Récupérer la liste des équipements sportifs
-     */
-    fun getEquipementsSportList(): List<EquipementsSport> {
-        return equipementsSportList
-    }
-
     /**
      * Récupérer la liste des associations
      */
-    fun getAssociationsList(): List<Associations> {
-        return associationsList
-    }
+    val associations: List<Associations> get() = associationsList
 
-    /**
-     * Récupérer la date
-     */
-    fun getDate(): String {
-        return date
-    }
-
-    /**
-     * Récupérer la distance
-     */
-    fun getDistance(): Int {
-        return distance
-    }
-
-    /**
-     * Récupérer la localisation
-     */
-    fun getLocation(): Location {
-        return location
-    }
+    val all: List<AbstractActivity>
+        get() = museesList + sitesList + expositionsList + contenusList + edificesList + jardinsList + festivalsList + equipementsSportList + associationsList
 
     /**
      * Ajouter une ville à la liste des villes disponibles

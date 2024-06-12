@@ -7,7 +7,7 @@ import fr.c1.chatbot.composable.Message
 import fr.c1.chatbot.composable.MySearchBar
 import fr.c1.chatbot.composable.MySettings
 import fr.c1.chatbot.composable.PassionsList
-import fr.c1.chatbot.composable.ProposalList
+import fr.c1.chatbot.composable.Proposals
 import fr.c1.chatbot.composable.Suggestion
 import fr.c1.chatbot.composable.Tab
 import fr.c1.chatbot.composable.TopBar
@@ -461,19 +461,19 @@ fun MyColumn(
             }
         }
 
-        ProposalList(proposals = answers) {
+        Proposals(proposals = answers) {
             answers = emptyList()
             Log.i(TAG, "Choose '$it'")
             val i = tree.answersId.first { i -> tree.getAnswerText(i) == it }
             when (val act = tree.getUserAction(i)) {
                 TypeAction.EntrerDate -> {
                     enableSearchBar("Sélectionnez une date", act, i)
-                    return@ProposalList
+                    return@Proposals
                 }
 
                 TypeAction.EntrerDistance -> {
                     enableSearchBar("Saisissez une distance", act, i)
-                    return@ProposalList
+                    return@Proposals
                 }
 
                 TypeAction.EntrerVille -> {
@@ -483,7 +483,7 @@ fun MyColumn(
                         i,
                         app.activitiesRepository.cities
                     )
-                    return@ProposalList
+                    return@Proposals
                 }
 
                 TypeAction.AfficherResultat -> {
@@ -504,7 +504,7 @@ fun MyColumn(
                         i,
                         "Je suis ici : ${locationHandler.currentLocation!!.longitude}, ${locationHandler.currentLocation?.latitude}"
                     )
-                    return@ProposalList
+                    return@Proposals
                 }
 
 //                TypeAction.ChoisirPassions -> TODO()
@@ -516,7 +516,7 @@ fun MyColumn(
                 TypeAction.ChoisirPassions -> {
                     val passions = ActivitiesRepository.passionList
                     enableSearchBar("Choisissez une passion", act, i, passions)
-                    return@ProposalList
+                    return@Proposals
                 }
 
                 else -> {}

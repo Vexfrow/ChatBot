@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import fr.c1.chatbot.model.activity.Type
 import android.content.Context
 import android.util.Log
+import androidx.compose.ui.platform.LocalContext
 import java.io.File
 import java.io.FileFilter
 
@@ -17,15 +18,15 @@ class ProfilUtilisateur(
     /**
      * Prénom de l'utilisateur (utilisé pour l'affichage)
      */
-    private var prenom: String = "",
+    var prenom: String = "",
     /**
      * Age de l'utilisateur
      */
-    private var age: Int = -1,
+    var age: Int = -1,
     /**
      * Lise de villes de l'utilisateur
      */
-    private val villesList: MutableList<String> = mutableListOf("Grenoble"),
+    private val villesList: MutableList<String> = mutableListOf(),
     /**
      * Type d'activité souhaitée par l'utilisateur
      */
@@ -164,20 +165,6 @@ class ProfilUtilisateur(
     }
 
     /**
-     * Récupérer le prénom
-     */
-    fun getPrenom(): String {
-        return prenom
-    }
-
-    /**
-     * Récupérer l'âge
-     */
-    fun getAge(): Int {
-        return age
-    }
-
-    /**
      * Stocker les informations de l'utilisateur dans un fichier json
      */
     fun storeUserInformation(context: Context) {
@@ -247,7 +234,7 @@ fun loadAllUsersInformation(context: Context): MutableList<ProfilUtilisateur> {
             userList.add(user)
             Log.d(
                 TAG,
-                "loadAllUsersInformation: Loaded user profile from ${file.name} ${user.nom} ${user.getPrenom()}"
+                "loadAllUsersInformation: Loaded user profile from ${file.name}\nUtilisateur : ${user.prenom} ${user.nom}, ${user.age} ans"
             )
         }
 

@@ -3,13 +3,13 @@ package fr.c1.chatbot.model.activity
 class Jardins(
     val region: String,
     val departement: String,
-    val commune: String,
+    commune: String,
     val nom: String,
     val adresse: String,
     val codePostal: String,
     val accessible: Boolean,
 
-    ) : AbstractActivity() {
+    ) : AbstractActivity(commune) {
     companion object {
         val passions: List<String> = listOf(
             "jardin", "fleurs", "plantes",

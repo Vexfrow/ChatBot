@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import android.util.Log
+import androidx.compose.foundation.layout.padding
 
 private const val TAG = "QuestionsList"
 
@@ -86,7 +87,7 @@ fun Proposal(
     modifier = Modifier,
     onClick = onClick,
     label = {
-        Text(text = proposal, style = MaterialTheme.typography.titleLarge)
+        Text(modifier = Modifier.padding(vertical = 5.dp), text = proposal, style = MaterialTheme.typography.titleLarge)
     }
 )
 

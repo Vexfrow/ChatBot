@@ -2,7 +2,7 @@ package fr.c1.chatbot.model.activity
 
 class Contenus(
     val identifiant: String,
-    val commune: String,
+    commune: String,
     val nom: String,
     val adresse: String,
     val lieu: String,
@@ -10,7 +10,7 @@ class Contenus(
     val url: String,
     val accessible: Boolean,
 
-    ) : AbstractActivity() {
+    ) : AbstractActivity(commune) {
     companion object {
         val passions: List<String> = listOf(
             "culture", "art", "archives", "bibliothèque",

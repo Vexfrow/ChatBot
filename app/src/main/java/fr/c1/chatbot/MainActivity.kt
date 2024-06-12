@@ -1,17 +1,14 @@
 package fr.c1.chatbot
 
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority
+import fr.c1.chatbot.composable.AccountComp
 import fr.c1.chatbot.composable.Activities
+import fr.c1.chatbot.composable.History
 import fr.c1.chatbot.composable.Message
 import fr.c1.chatbot.composable.MySearchBar
 import fr.c1.chatbot.composable.MySettings
 import fr.c1.chatbot.composable.PassionsList
 import fr.c1.chatbot.composable.ProposalList
+import fr.c1.chatbot.composable.Suggestion
 import fr.c1.chatbot.composable.Tab
 import fr.c1.chatbot.composable.TopBar
 import fr.c1.chatbot.model.ActivitiesRepository
@@ -25,6 +22,7 @@ import fr.c1.chatbot.model.toDate
 import fr.c1.chatbot.ui.theme.ChatBotTheme
 import fr.c1.chatbot.ui.theme.colorSchemeExtension
 import fr.c1.chatbot.utils.Calendar
+import fr.c1.chatbot.utils.LocationHandler
 import fr.c1.chatbot.utils.application
 import fr.c1.chatbot.utils.hasPermission
 import fr.c1.chatbot.utils.rememberMutableStateListOf
@@ -33,7 +31,12 @@ import fr.c1.chatbot.utils.scheduleEventReminders
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.osmdroid.config.Configuration
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.compass.CompassOverlay
+import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -59,21 +62,22 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.app.ActivityCompat
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.preference.PreferenceManager
 import android.Manifest
-import android.content.ContentValues
-import android.content.Context
-import android.content.pm.PackageManager
 import android.location.Location
+import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
+import androidx.compose.material3.CircularProgressIndicator
+import fr.c1.chatbot.model.activity.AbstractActivity
+import fr.c1.chatbot.utils.Calendar.writeEvent
+import fr.c1.chatbot.utils.Calendar.deleteCalendar
 import android.view.Surface
 import android.widget.Button
 import android.widget.TextView
@@ -114,17 +118,15 @@ class MainActivity : ComponentActivity() {
         //load/initialize the osmdroid configuration, this can be done
         // This won't work unless you have imported this: org.osmdroid.config.Configuration.*
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
-        locationHandler.initLocation(this)
-
-        //locationHandler.startLocationUpdates(this)
 
         enableEdgeToEdge()
         setContent {
             ChatBotTheme {
                 PermissionsContent()
-                PermissionNotification()
 
                 val ctx = LocalContext.current
+
+                var res by remember { mutableStateOf<List<AbstractActivity>>(emptyList()) }
 
                 var tab by rememberMutableStateOf(value = Tab.ChatBotChat)
 
@@ -137,7 +139,8 @@ class MainActivity : ComponentActivity() {
                             if (tab == Tab.Settings && newTab != Tab.Settings)
                                 Settings.save(ctx)
 
-                            val accountTabs = listOf(Tab.AccountPassions, Tab.AccountData, Tab.AccountPref)
+                            val accountTabs =
+                                listOf(Tab.AccountPassions, Tab.AccountData, Tab.AccountPref)
                             if (tab in accountTabs && newTab !in accountTabs)
                                 storeAllUsersInformation(ctx, app.userList)
 
@@ -156,7 +159,12 @@ class MainActivity : ComponentActivity() {
 
                         when (tab) {
                             Tab.Settings -> MySettings()
-                            Tab.ChatBotResults -> Activities(list = app.activitiesRepository.getResultats(app))
+                            Tab.ChatBotResults -> Activities(
+                                list = app.activitiesRepository.getResultats(
+                                    app
+                                )
+                            )
+
                             Tab.AccountPassions -> PassionsList(
                                 selected = app.currentUser::hasPassion,
                                 onSelectionChanged = { passion, state ->
@@ -167,13 +175,17 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
 
+                            Tab.ChatBotMap -> OsmdroidMapView()
+                            Tab.Suggestion -> Suggestion()
+                            Tab.History -> History()
+                            Tab.AccountData -> AccountComp.Data()
+                            Tab.AccountPref -> AccountComp.Pref()
+
                             else -> {}
                         }
                     }
                 }
-                // A surface container using the 'background' color from the theme
             }
-
         }
     }
 
@@ -187,6 +199,10 @@ class MainActivity : ComponentActivity() {
 
         var hasFineLocation by remember { mutableStateOf(false) }
         var hasCoarseLocation by remember { mutableStateOf(false) }
+
+        var locationRequesting by remember { mutableStateOf(false) }
+
+        var initNotif by remember { mutableStateOf(false) }
 
         var permissionsArray: Array<String> = arrayOf()
 
@@ -221,23 +237,58 @@ class MainActivity : ComponentActivity() {
                 hasFineLocation = true
                 hasCoarseLocation = true
             }
+            if (!context.hasPermission(Manifest.permission.RECEIVE_BOOT_COMPLETED) || !context.hasPermission(
+                    Manifest.permission.POST_NOTIFICATIONS
+                )
+            ) {
+                permissionsArray = permissionsArray.plus(Manifest.permission.RECEIVE_BOOT_COMPLETED)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    permissionsArray = permissionsArray.plus(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            } else {
+                Log.i(TAG, "PermissionsContent: Notifications permissions granted")
+                initNotif = true
+            }
             if (permissionsArray.isNotEmpty()) {
                 requestPermissionLauncher.launch(permissionsArray)
             }
         }
 
-        if (hasReadPermission && hasWritePermission) {
-            events = Calendar.fetchCalendarEvents(context)
-            addNotifPush(events)
-            //EventList(events, Modifier.padding(innerPadding))
-        } else {
-            Log.d(TAG, "PermissionsContent: Calendar permissions not granted")
+        LaunchedEffect(hasReadPermission && hasWritePermission) {
+            if (hasReadPermission && hasWritePermission) {
+                events = Calendar.fetchCalendarEvents(context)
+                addNotifPush(events)
+                // 1 ajout unique d'un événement
+                /*writeEvent(
+                    context,
+                    "Test nouveau calendrier",
+                    System.currentTimeMillis(),
+                    System.currentTimeMillis() + 1000 * 60 * 60,
+                    events
+                )*/
+                //EventList(events, Modifier.padding(innerPadding))
+            } else {
+                Log.d(TAG, "PermissionsContent: Calendar permissions not granted")
+            }
         }
-        if (hasFineLocation && hasCoarseLocation) {
-            locationHandler.initLocation(this)
-            //locationHandler.startLocationUpdates(this)
-        } else {
-            Log.d(TAG, "PermissionsContent: Location permissions not granted")
+
+        LaunchedEffect(hasFineLocation && hasCoarseLocation) {
+            if (hasFineLocation && hasCoarseLocation) {
+                if (!locationRequesting) {
+                    locationHandler.initLocation(context)
+                    //locationHandler.startLocationUpdates()
+                }
+            } else {
+                Log.d(TAG, "PermissionsContent: Location permissions not granted")
+            }
+        }
+
+        LaunchedEffect(initNotif) {
+            if (initNotif) {
+                addNotifPush(events)
+            } else {
+                Log.d(TAG, "PermissionsContent: Notifications permissions not granted")
+            }
         }
     }
 
@@ -272,50 +323,36 @@ class MainActivity : ComponentActivity() {
         initNotif = true
     }
 }
+
 @Composable
 fun OsmdroidMapView() {
-    val context = LocalContext.current
     AndroidView(
         modifier = Modifier.fillMaxSize(),
         factory = { context ->
-            val mapView = MapView(context)
-            mapView.setTileSource(TileSourceFactory.MAPNIK)
-            mapView.setBuiltInZoomControls(true)
-            mapView.setMultiTouchControls(true)
-            val mapController = mapView.controller
-            mapController.setZoom(15)
-            val startPoint = GeoPoint(locationHandler.currentLocation!!.latitude,
-                locationHandler.currentLocation!!.longitude)
-            mapController.setCenter(startPoint);
-            val compassOverlay = CompassOverlay(context, InternalCompassOrientationProvider(context), mapView)
-            compassOverlay.enableCompass()
-            mapView.overlays.add(compassOverlay)
-            mapView
+            MapView(context).apply {
+                setTileSource(TileSourceFactory.MAPNIK)
+                zoomController.setVisibility(CustomZoomButtonsController.Visibility.SHOW_AND_FADEOUT)
+
+                setMultiTouchControls(true)
+                controller.apply {
+                    setZoom(15.0)
+                    setCenter(
+                        GeoPoint(
+                            locationHandler.currentLocation!!.latitude,
+                            locationHandler.currentLocation!!.longitude
+                        )
+                    )
+                }
+                val compassOverlay = CompassOverlay(
+                    context,
+                    InternalCompassOrientationProvider(context),
+                    this
+                ).apply { enableCompass() }
+
+                overlays.add(compassOverlay)
+            }
         }
     )
-}
-@Composable
-fun PermissionNotification() {
-    val requestPermissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        if (permissions[Manifest.permission.RECEIVE_BOOT_COMPLETED] == true &&
-            permissions[Manifest.permission.POST_NOTIFICATIONS] == true
-        ) {
-            Log.i(TAG, "Notifications Permissions granted")
-        } else {
-            Log.i(TAG, "Notifications Permissions denied")
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        requestPermissionLauncher.launch(
-            arrayOf(
-                Manifest.permission.RECEIVE_BOOT_COMPLETED,
-                Manifest.permission.POST_NOTIFICATIONS
-            )
-        )
-    }
 }
 
 @Composable
@@ -332,7 +369,6 @@ fun MyColumn(
     val lazyListState = rememberLazyListState()
     val animated = rememberMutableStateListOf<Boolean>()
     val user = app.currentUser
-
     val activitiesRepository = application.activitiesRepository
 
     val tts = application.tts
@@ -478,7 +514,9 @@ fun MyColumn(
                 }
 
                 TypeAction.Geolocalisation -> {
-                    app.activitiesRepository.setLocation(currentLocation ?: Location(""))
+                    app.activitiesRepository.setLocation(
+                        locationHandler.currentLocation ?: Location("")
+                    )
                     addAnswer(
                         i,
                         "Je suis ici : ${locationHandler.currentLocation!!.longitude}, ${locationHandler.currentLocation?.latitude}"

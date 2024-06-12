@@ -3,10 +3,10 @@ package fr.c1.chatbot.model.activity
 class Sites(
     val region: String,
     val departement: String,
-    val commune: String,
+    commune: String,
     val accessible: Boolean,
 
-    ) : AbstractActivity() {
+    ) : AbstractActivity(commune) {
     companion object {
         val passions: List<String> = listOf(
             "site", "monument", "patrimoine",

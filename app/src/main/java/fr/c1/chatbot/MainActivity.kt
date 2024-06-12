@@ -59,6 +59,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -71,10 +72,8 @@ import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.TextView
-import fr.c1.chatbot.utils.Calendar.createCalendar
-import fr.c1.chatbot.utils.Calendar.deleteAllDayEvents
+import androidx.compose.material3.CircularProgressIndicator
+import fr.c1.chatbot.model.activity.AbstractActivity
 import fr.c1.chatbot.utils.Calendar.writeEvent
 import fr.c1.chatbot.utils.Calendar.deleteCalendar
 import kotlin.time.Duration.Companion.seconds
@@ -111,6 +110,8 @@ class MainActivity : ComponentActivity() {
                 PermissionsContent()
 
                 val ctx = LocalContext.current
+
+                var res by remember { mutableStateOf<List<AbstractActivity>>(emptyList()) }
 
                 var tab by rememberMutableStateOf(value = Tab.ChatBotChat)
 
@@ -239,14 +240,13 @@ class MainActivity : ComponentActivity() {
                 events = Calendar.fetchCalendarEvents(context)
                 addNotifPush(events)
                 // 1 ajout unique d'un événement
-                deleteCalendar(context, 28) // -> Pour la tablette de Raph
-                writeEvent(
+                /*writeEvent(
                     context,
                     "Test nouveau calendrier",
                     System.currentTimeMillis(),
                     System.currentTimeMillis() + 1000 * 60 * 60,
                     events
-                )
+                )*/
                 //EventList(events, Modifier.padding(innerPadding))
             } else {
                 Log.d(TAG, "PermissionsContent: Calendar permissions not granted")
@@ -350,7 +350,6 @@ fun MyColumn(
     val lazyListState = rememberLazyListState()
     val animated = rememberMutableStateListOf<Boolean>()
     val user = app.currentUser
-
     val activitiesRepository = application.activitiesRepository
 
     val tts = application.tts
@@ -496,7 +495,9 @@ fun MyColumn(
                 }
 
                 TypeAction.Geolocalisation -> {
-                    app.activitiesRepository.setLocation(currentLocation ?: Location(""))
+                    app.activitiesRepository.setLocation(
+                        locationHandler.currentLocation ?: Location("")
+                    )
                     addAnswer(
                         i,
                         "Je suis ici : ${locationHandler.currentLocation!!.longitude}, ${locationHandler.currentLocation?.latitude}"

@@ -15,13 +15,15 @@ import fr.c1.chatbot.model.activity.Type
 import android.app.Application
 import android.location.Location
 import android.util.Log
-import androidx.compose.runtime.Composable
 import fr.c1.chatbot.ChatBot
-import fr.c1.chatbot.utils.application
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import org.json.JSONArray
 import java.io.BufferedInputStream
 import java.io.InputStream
-import java.util.Date
 import java.util.Locale
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 // Fichiers CSV venant du site data.gouv.fr
 class ActivitiesRepository {
@@ -40,7 +42,7 @@ class ActivitiesRepository {
 
     private var distance = 10 // 10 km par défaut
 
-    private lateinit var location: Location
+    private var location: Location = Location("")
 
     /**
      * Liste des musées
@@ -978,27 +980,71 @@ class ActivitiesRepository {
     }
 
     /**
+     * Obtenir la localisation d'une commune
+     */
+
+    suspend fun getCoordinates(commune: String): Pair<Double, Double>? {
+        return withContext(Dispatchers.IO) {
+            val client = OkHttpClient()
+            val url = "https://nominatim.openstreetmap.org/search?q=${
+                commune.replace(
+                    " ",
+                    "+"
+                )
+            }&format=json&addressdetails=1"
+            val request = Request.Builder().url(url).build()
+            val response = client.newCall(request).execute()
+            Log.d(TAG, "getCoordinates: commune = $commune")
+
+            if (response.isSuccessful) {
+                response.body?.string()?.let { responseBody ->
+                    val jsonArray = JSONArray(responseBody)
+                    if (jsonArray.length() > 0) {
+                        val location = jsonArray.getJSONObject(0)
+                        val latitude = location.getDouble("lat")
+                        val longitude = location.getDouble("lon")
+                        return@withContext Pair(latitude, longitude)
+                    }
+                }
+            }
+            return@withContext null
+        }
+    }
+
+    /**
      * Sélectionner par distance (km)
      */
-    private fun selectionnerParDistance(
+    suspend fun selectionnerParDistance(
         list: List<AbstractActivity>,
         distanceMax: Int,
         localisation: Location
     ): List<AbstractActivity> {
-        // Si la liste n'a pas de localisation, on ne peut pas sélectionner par distance
         if (list.isEmpty() || localisation.latitude == 0.0 || localisation.longitude == 0.0) {
             return emptyList()
         }
-        // TODO : distance entre la localisation et l'activité
-        /*return list.filter {
-            android.location.Location.distanceBetween(
-                localisation.latitude,
-                localisation.longitude,
-                it.localisation.latitude,
-                it.localisation.longitude,
-                FloatArray(1)
-            )[0] <= distanceMax*/
-        return list
+
+        val resultList = mutableListOf<AbstractActivity>()
+
+        for (activity in list) {
+            val coordinates = getCoordinates(activity.commune)
+            Log.d(TAG, "selectionnerParDistance: coordinates = $coordinates)")
+            if (coordinates != null) {
+                val latitude = coordinates.first
+                val longitude = coordinates.second
+                val distance = FloatArray(1)
+                Location.distanceBetween(
+                    localisation.latitude,
+                    localisation.longitude,
+                    latitude,
+                    longitude,
+                    distance
+                )
+                if (distance[0] <= distanceMax * 1000) {
+                    resultList.add(activity)
+                }
+            }
+        }
+        return resultList
     }
 
     /**
@@ -1029,7 +1075,12 @@ class ActivitiesRepository {
             }
         }
         // Afficher le nombre d'éléments de chaque liste
-        list.forEach { Log.d(TAG, "getResultats: list = ${it.size}") }
+        list.forEach { abstractActivityList ->
+            if (abstractActivityList.isNotEmpty()) {
+                Log.d(TAG, "getResultats: list = ${abstractActivityList.size}")
+            }
+        }
+        list = list.filter(List<AbstractActivity>::isNotEmpty)
         // Tri par Ville
         user.getVilles().forEach { ville ->
             list = list.map {
@@ -1041,16 +1092,19 @@ class ActivitiesRepository {
         if (date != "null") {
             // TODO : date des activités
         }
+        list = list.filter(List<AbstractActivity>::isNotEmpty)
         // Tri par Distance
         if (distance != 0) {
             // TODO : distance des activités à la localisation actuelle
         }
+        list = list.filter(List<AbstractActivity>::isNotEmpty)
+
         // Tri par Localisation
         //val localisation =
         //if (localisation.latitude != 0.0 && localisation.longitude != 0.0) {
         // TODO : activités dans un rayon de 5km par rapport à la localisation actuelle
         list = list
-            //.map { selectionnerParDistance(it, 5, getLocalisation()) }
+            //.map { selectionnerParDistance(it, 10, getLocation()) }
             .filter(List<AbstractActivity>::isNotEmpty)
         //}
         // Tri par Passion
@@ -1062,6 +1116,8 @@ class ActivitiesRepository {
 
         list = list.map(::trierParNom)
         // TODO : Trier la liste totale avant de retourner
+        Log.d(TAG, "getResultats: Fin de la recherche")
+        list.forEach { Log.d(TAG, "getResultats: list = ${it.size}") }
         return list.flatten()
     }
 

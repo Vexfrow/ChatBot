@@ -4,7 +4,7 @@ class Musees(
     val region: String,
     val departement: String,
     val identifiant: String,
-    val commune: String,
+    commune: String,
     val nom: String,
     val adresse: String,
     val lieu: String,
@@ -13,7 +13,7 @@ class Musees(
     val url: String,
     val accessible: Boolean,
 
-    ) : AbstractActivity() {
+    ) : AbstractActivity(commune) {
     companion object {
         val passions: List<String> = listOf(
             "musée", "exposition", "peinture",

@@ -26,7 +26,7 @@ class ProfilUtilisateur(
     /**
      * Lise de villes de l'utilisateur
      */
-    private val villesList: MutableList<String> = mutableListOf("Grenoble"),
+    private val villesList: MutableList<String> = mutableListOf(),
     /**
      * Type d'activité souhaitée par l'utilisateur
      */

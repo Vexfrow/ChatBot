@@ -163,3 +163,12 @@ fun SharedPreferences.Editor.putUri(
     key: String,
     value: Uri
 ) = putString(key, value.toString())
+
+fun SharedPreferences.Editor.putColor(
+    ref: KMutableProperty0<Color>
+): SharedPreferences.Editor = putInt(ref.name, ref.get().value.toInt())
+
+fun SharedPreferences.getColor(
+    ref: KMutableProperty0<Color>,
+    defaultValue: Int
+) = getInt(ref.name, defaultValue)

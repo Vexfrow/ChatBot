@@ -40,13 +40,10 @@ class ActivitiesRepository {
 
 
     var date: String = null.toString()
-        private set
 
     var distance = 10 // 10 km par défaut
-        private set
 
     var location: Location = Location("")
-        private set
 
     /**
      * Liste des musées
@@ -129,27 +126,6 @@ class ActivitiesRepository {
 
         if (!listeVillesDisponible.contains(tmp))
             listeVillesDisponible.add(tmp)
-    }
-
-    /**
-     * CHoisir la date
-     */
-    fun setDate(date: String) {
-        this.date = date
-    }
-
-    /**
-     * Choisir la distance
-     */
-    fun setDistance(distance: Int) {
-        this.distance = distance
-    }
-
-    /**
-     * Choisir la location
-     */
-    fun setLocation(location: Location) {
-        this.location = location
     }
 
     /**

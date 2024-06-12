@@ -498,9 +498,8 @@ fun MyColumn(
                 }
 
                 TypeAction.Geolocalisation -> {
-                    app.activitiesRepository.setLocation(
+                    app.activitiesRepository.location =
                         locationHandler.currentLocation ?: Location("")
-                    )
                     addAnswer(
                         i,
                         "Je suis ici : ${locationHandler.currentLocation!!.longitude}, ${locationHandler.currentLocation?.latitude}"
@@ -535,12 +534,12 @@ fun MyColumn(
             when (sbState.action) {
                 TypeAction.EntrerDate -> {
                     addAnswer(sbState.answerId, "Je veux y aller le $it")
-                    activitiesRepository.setDate(it)
+                    activitiesRepository.date = it
                 }
 
                 TypeAction.EntrerDistance -> {
                     addAnswer(sbState.answerId, "Je veux une distance de $it km")
-                    activitiesRepository.setDistance(it.toInt())
+                    activitiesRepository.distance = it.toInt()
                 }
 
                 TypeAction.EntrerVille -> {

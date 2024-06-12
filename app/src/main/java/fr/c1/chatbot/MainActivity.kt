@@ -62,6 +62,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -71,8 +72,13 @@ import androidx.preference.PreferenceManager
 import androidx.work.WorkManager
 import android.Manifest
 import android.location.Location
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import androidx.compose.material3.CircularProgressIndicator
+import fr.c1.chatbot.model.activity.AbstractActivity
+import fr.c1.chatbot.utils.Calendar.writeEvent
+import fr.c1.chatbot.utils.Calendar.deleteCalendar
 import kotlin.time.Duration.Companion.seconds
 
 private const val TAG = "MainActivity"
@@ -100,17 +106,15 @@ class MainActivity : ComponentActivity() {
         //load/initialize the osmdroid configuration, this can be done
         // This won't work unless you have imported this: org.osmdroid.config.Configuration.*
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
-        locationHandler.initLocation(this)
-
-        //locationHandler.startLocationUpdates(this)
 
         enableEdgeToEdge()
         setContent {
             ChatBotTheme {
                 PermissionsContent()
-                PermissionNotification()
 
                 val ctx = LocalContext.current
+
+                var res by remember { mutableStateOf<List<AbstractActivity>>(emptyList()) }
 
                 var tab by rememberMutableStateOf(value = Tab.ChatBotChat)
 
@@ -184,6 +188,10 @@ class MainActivity : ComponentActivity() {
         var hasFineLocation by remember { mutableStateOf(false) }
         var hasCoarseLocation by remember { mutableStateOf(false) }
 
+        var locationRequesting by remember { mutableStateOf(false) }
+
+        var initNotif by remember { mutableStateOf(false) }
+
         var permissionsArray: Array<String> = arrayOf()
 
         val requestPermissionLauncher = rememberLauncherForActivityResult(
@@ -217,23 +225,58 @@ class MainActivity : ComponentActivity() {
                 hasFineLocation = true
                 hasCoarseLocation = true
             }
+            if (!context.hasPermission(Manifest.permission.RECEIVE_BOOT_COMPLETED) || !context.hasPermission(
+                    Manifest.permission.POST_NOTIFICATIONS
+                )
+            ) {
+                permissionsArray = permissionsArray.plus(Manifest.permission.RECEIVE_BOOT_COMPLETED)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    permissionsArray = permissionsArray.plus(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            } else {
+                Log.i(TAG, "PermissionsContent: Notifications permissions granted")
+                initNotif = true
+            }
             if (permissionsArray.isNotEmpty()) {
                 requestPermissionLauncher.launch(permissionsArray)
             }
         }
 
-        if (hasReadPermission && hasWritePermission) {
-            events = Calendar.fetchCalendarEvents(context)
-            addNotifPush(events)
-            //EventList(events, Modifier.padding(innerPadding))
-        } else {
-            Log.d(TAG, "PermissionsContent: Calendar permissions not granted")
+        LaunchedEffect(hasReadPermission && hasWritePermission) {
+            if (hasReadPermission && hasWritePermission) {
+                events = Calendar.fetchCalendarEvents(context)
+                addNotifPush(events)
+                // 1 ajout unique d'un événement
+                /*writeEvent(
+                    context,
+                    "Test nouveau calendrier",
+                    System.currentTimeMillis(),
+                    System.currentTimeMillis() + 1000 * 60 * 60,
+                    events
+                )*/
+                //EventList(events, Modifier.padding(innerPadding))
+            } else {
+                Log.d(TAG, "PermissionsContent: Calendar permissions not granted")
+            }
         }
-        if (hasFineLocation && hasCoarseLocation) {
-            locationHandler.initLocation(this)
-            //locationHandler.startLocationUpdates(this)
-        } else {
-            Log.d(TAG, "PermissionsContent: Location permissions not granted")
+
+        LaunchedEffect(hasFineLocation && hasCoarseLocation) {
+            if (hasFineLocation && hasCoarseLocation) {
+                if (!locationRequesting) {
+                    locationHandler.initLocation(context)
+                    //locationHandler.startLocationUpdates()
+                }
+            } else {
+                Log.d(TAG, "PermissionsContent: Location permissions not granted")
+            }
+        }
+
+        LaunchedEffect(initNotif) {
+            if (initNotif) {
+                addNotifPush(events)
+            } else {
+                Log.d(TAG, "PermissionsContent: Notifications permissions not granted")
+            }
         }
     }
 
@@ -301,30 +344,6 @@ fun OsmdroidMapView() {
 }
 
 @Composable
-fun PermissionNotification() {
-    val requestPermissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        if (permissions[Manifest.permission.RECEIVE_BOOT_COMPLETED] == true &&
-            permissions[Manifest.permission.POST_NOTIFICATIONS] == true
-        ) {
-            Log.i(TAG, "Notifications Permissions granted")
-        } else {
-            Log.i(TAG, "Notifications Permissions denied")
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        requestPermissionLauncher.launch(
-            arrayOf(
-                Manifest.permission.RECEIVE_BOOT_COMPLETED,
-                Manifest.permission.POST_NOTIFICATIONS
-            )
-        )
-    }
-}
-
-@Composable
 fun MyColumn(
     modifier: Modifier = Modifier,
     enabled: Boolean,
@@ -338,7 +357,6 @@ fun MyColumn(
     val lazyListState = rememberLazyListState()
     val animated = rememberMutableStateListOf<Boolean>()
     val user = app.currentUser
-
     val activitiesRepository = application.activitiesRepository
 
     val tts = application.tts
@@ -484,7 +502,9 @@ fun MyColumn(
                 }
 
                 TypeAction.Geolocalisation -> {
-                    app.activitiesRepository.setLocation(currentLocation ?: Location(""))
+                    app.activitiesRepository.setLocation(
+                        locationHandler.currentLocation ?: Location("")
+                    )
                     addAnswer(
                         i,
                         "Je suis ici : ${locationHandler.currentLocation!!.longitude}, ${locationHandler.currentLocation?.latitude}"

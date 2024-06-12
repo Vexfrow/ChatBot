@@ -3,12 +3,12 @@ package fr.c1.chatbot.model.activity
 class Associations(
     val departement: String,
     val identifiant: String,
-    val commune: String,
+    commune: String,
     val nom: String,
     val adresse: String,
     val codePostal: String,
     val accessible: Boolean,
-) : AbstractActivity() {
+) : AbstractActivity(commune) {
     companion object {
         val passions: List<String> = listOf(
             "association", "bénévolat", "engagement", "solidarité",

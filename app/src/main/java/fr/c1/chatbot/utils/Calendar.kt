@@ -58,8 +58,15 @@ object Calendar {
             CalendarContract.Events.DTEND,
             CalendarContract.Events.DELETED
         )
-        val selection = "${CalendarContract.Events.DELETED} = ?"
-        val selectionArgs = arrayOf("0") // Récupérer uniquement les événements non supprimés
+        val selection = "${CalendarContract.Events.DELETED} = ? AND ${CalendarContract.Events.CALENDAR_ID} = ?"
+        // Vérifier que le calendrier d'id 99 existe
+        val calendarId = getCalendarId(context)
+        if (calendarId == -1L) {
+            Log.e(TAG, "fetchCalendarEvents: No ChatBot calendar !")
+            createCalendar(context)
+        }
+        // Récupérer uniquement les événements non supprimés du calendrier ChatBot
+        val selectionArgs = arrayOf("0", "99")
         val sortOrder = "${CalendarContract.Events.DTSTART} ASC"
         val uri: Uri = CalendarContract.Events.CONTENT_URI
         val cursor = context.contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)
@@ -99,7 +106,8 @@ object Calendar {
         val calendarId = getCalendarId(context)
 
         if (calendarId == -1L) {
-            Log.e(TAG, "writeEvent: No one calendar in edit mode!")
+            Log.e(TAG, "writeEvent: No ChatBot calendar !")
+            createCalendar(context)
             return
         }
 
@@ -120,6 +128,37 @@ object Calendar {
         val id = getNewID(events)
         val event = Event(id, title, startMillis, endMillis)
         writeEvent(context, event)
+    }
+
+    /**
+     * Créer un calendrier avec id = 99
+     */
+    fun createCalendar(context: Context) {
+        val values = ContentValues().apply {
+            put(CalendarContract.Calendars.ACCOUNT_NAME, "fr.c1.chatbot")
+            put(CalendarContract.Calendars.ACCOUNT_TYPE, CalendarContract.ACCOUNT_TYPE_LOCAL)
+            put(CalendarContract.Calendars.NAME, "ChatBot")
+            put(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME, "ChatBot")
+            put(CalendarContract.Calendars.CALENDAR_COLOR, -0x10000)
+            put(CalendarContract.Calendars.CALENDAR_ACCESS_LEVEL, CalendarContract.Calendars.CAL_ACCESS_OWNER)
+            put(CalendarContract.Calendars.OWNER_ACCOUNT, "fr.c1.chatbot")
+            put(CalendarContract.Calendars.SYNC_EVENTS, 1)
+            put(CalendarContract.Calendars.VISIBLE, 1)
+            // id
+            put(CalendarContract.Calendars._ID, 99)
+        }
+        val uri = CalendarContract.Calendars.CONTENT_URI
+        context.contentResolver.insert(uri, values)
+    }
+
+    /**
+     * Supprimer calendrier en utilisant l'id
+     */
+    fun deleteCalendar(context: Context, id: Long) {
+        val uri = CalendarContract.Calendars.CONTENT_URI
+        val selection = "${CalendarContract.Calendars._ID} = ?"
+        val selectionArgs = arrayOf(id.toString())
+        context.contentResolver.delete(uri, selection, selectionArgs)
     }
 
     /**
@@ -147,7 +186,7 @@ object Calendar {
 
                 Log.d("Calendar", "id: $id, name: $name, prim: $primary")
 
-                if (primary == 1) {
+                if (id == 99L && name.equals("ChatBot")) {
                     return id
                 }
             }
@@ -163,8 +202,8 @@ object Calendar {
             CalendarContract.Events.DTEND,
             CalendarContract.Events.DELETED
         )
-        val selection = "${CalendarContract.Events.DELETED} = ?"
-        val selectionArgs = arrayOf("0") // Récupérer uniquement les événements non supprimés
+        val selection = "${CalendarContract.Events.DELETED} = ? AND ${CalendarContract.Events.CALENDAR_ID} = ?"
+        val selectionArgs = arrayOf("0", "99") // Récupérer uniquement les événements non supprimés
         val sortOrder = "${CalendarContract.Events.DTSTART} ASC"
         val uri: Uri = CalendarContract.Events.CONTENT_URI
         val cursor = context.contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)
@@ -187,8 +226,8 @@ object Calendar {
 
     private fun isAllDayEvent(dtStart: Long): Boolean {
         val date = dtStart.toDate()
-        Log.d(TAG, "isAllDayEvent: ${date.substring(0, 9)}")
-        val res = date.substring(0, 10) == "27/05/2024"
+        Log.d(TAG, "isAllDayEvent: ${date.substring(0, 10)}")
+        val res = date.substring(0, 10) == "06/06/2024"
         return res
     }
 

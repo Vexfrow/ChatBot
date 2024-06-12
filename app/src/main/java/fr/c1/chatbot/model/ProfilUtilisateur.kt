@@ -4,7 +4,6 @@ import com.google.gson.Gson
 import fr.c1.chatbot.model.activity.Type
 import android.content.Context
 import android.util.Log
-import androidx.compose.ui.platform.LocalContext
 import java.io.File
 import java.io.FileFilter
 
@@ -26,19 +25,19 @@ class ProfilUtilisateur(
     /**
      * Lise de villes de l'utilisateur
      */
-    private val villesList: MutableList<String> = mutableListOf(),
+    private val _villesList: MutableList<String> = mutableListOf(),
     /**
      * Type d'activité souhaitée par l'utilisateur
      */
-    private var types: MutableList<Type> = mutableListOf(),
+    private var _types: MutableList<Type> = mutableListOf(),
     /**
      * Passions de l'utilisateur
      */
-    private val passions: MutableList<String> = mutableListOf(),
+    private val _passions: MutableList<String> = mutableListOf(),
     /**
      * Liste des préférences hebdomadaires de l'utilisateur
      */
-    private var preferencesHebdomadaires: MutableList<PreferencesHebdo> = mutableListOf()
+    private var _preferencesHebdomadaires: MutableList<PreferencesHebdo> = mutableListOf()
 ) {
 
     /**
@@ -54,115 +53,108 @@ class ProfilUtilisateur(
      * Ajouter une ville
      */
     fun addVille(ville: String) {
-        villesList.add(ville)
+        _villesList.add(ville)
     }
 
     /**
      * Ajouter un type d'activité
      */
     fun addType(type: Type) {
-        types.add(type)
+        _types.add(type)
     }
 
     /**
      * Ajouter une passion
      */
     fun addPassion(passion: String) {
-        passions.add(passion)
+        _passions.add(passion)
     }
 
     /**
      * Ajouter une préférence hebdomadaire
      */
     fun addPreferenceHebdo(jour: String, heure: String, duree: Int) {
-        preferencesHebdomadaires.add(PreferencesHebdo(jour, heure, duree))
+        _preferencesHebdomadaires.add(PreferencesHebdo(jour, heure, duree))
     }
 
     /**
      * Supprimer une préférence hebdomadaire
      */
     fun removePreferenceHebdo(jour: String, heure: String, duree: Int) {
-        preferencesHebdomadaires.remove(PreferencesHebdo(jour, heure, duree))
+        _preferencesHebdomadaires.remove(PreferencesHebdo(jour, heure, duree))
     }
 
     /**
      * Supprimer toutes les préférences hebdomadaires
      */
     fun removeAllPreferencesHebdo() {
-        preferencesHebdomadaires.clear()
+        _preferencesHebdomadaires.clear()
     }
 
     /**
      * Supprimer une ville
      */
     fun removeVille(ville: String) {
-        villesList.remove(ville)
+        _villesList.remove(ville)
     }
 
     /**
      * Supprimer toutes les villes
      */
     fun removeAllVilles() {
-        villesList.clear()
+        _villesList.clear()
     }
 
     /**
      * Supprimer une passion
      */
     fun removePassion(passion: String) {
-        passions.remove(passion)
+        _passions.remove(passion)
     }
 
     /**
      * Supprimer toutes les passions
      */
     fun removeAllPassions() {
-        passions.clear()
+        _passions.clear()
     }
 
     /**
      * Supprimer un type d'activité
      */
     fun removeType(type: Type) {
-        types.remove(type)
+        _types.remove(type)
     }
 
     /**
      * Supprimer toutes les activités
      */
     fun removeAllTypes() {
-        types.clear()
+        _types.clear()
     }
 
     /**
      * Récupérer les villes
      */
-    fun getVilles(): MutableList<String> {
-        return villesList
-    }
+    val cities: List<String> get() = _villesList
 
     /**
      * Récupérer les types d'activité
      */
-    fun getTypes(): MutableList<Type> {
-        return types
-    }
+    val types: List<Type> get() = _types
 
     fun hasPassion(passion: String): Boolean = passions.contains(passion)
 
     /**
      * Récupérer les passions
      */
-    fun getPassions(): MutableList<String> {
-        return passions
-    }
+    val passions: List<String>
+        get() = _passions
 
     /**
      * Récupérer les préférences hebdomadaires
      */
-    fun getPreferencesHebdo(): MutableList<PreferencesHebdo> {
-        return preferencesHebdomadaires
-    }
+    val weeklyPreferences: List<PreferencesHebdo> get() = _preferencesHebdomadaires
 
     /**
      * Stocker les informations de l'utilisateur dans un fichier json
@@ -176,11 +168,11 @@ class ProfilUtilisateur(
             "nom": "$nom",
             "prenom": "$prenom",
             "age": $age,
-            "villes": ${villesList.joinToString(prefix = "[", postfix = "]") { "\"$it\"" }},
-            "types": ${types.joinToString(prefix = "[", postfix = "]") { "\"$it\"" }},
+            "villes": ${_villesList.joinToString(prefix = "[", postfix = "]") { "\"$it\"" }},
+            "types": ${_types.joinToString(prefix = "[", postfix = "]") { "\"$it\"" }},
             "passions": ${passions.joinToString(prefix = "[", postfix = "]") { "\"$it\"" }},
             "preferencesHebdo": ${
-            preferencesHebdomadaires.joinToString(
+            weeklyPreferences.joinToString(
                 prefix = "[",
                 postfix = "]"
             ) { "\"$it\"" }

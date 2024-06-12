@@ -1,8 +1,8 @@
 package fr.c1.chatbot.model
 
-import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import android.util.Log
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
@@ -103,7 +103,7 @@ class Tree {
 
                 }
             }
-            Log.d(TAG, "selectAnswer: new type : ${user.getTypes()}")
+            Log.d(TAG, "selectAnswer: new type : ${user.types}")
         }
     }
 

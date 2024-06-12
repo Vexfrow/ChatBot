@@ -997,7 +997,7 @@ class ActivitiesRepository {
         )
         list.forEach { Log.d(TAG, "getResultats: list = ${it.size}") }
         // Tri par Type
-        user.getTypes().forEach { type ->
+        user.types.forEach { type ->
             list = list.map {
                 Log.d(TAG, "getResultats: list = ${it.subList(0, 1)}")
                 selectionnerParType(it, type)
@@ -1011,7 +1011,7 @@ class ActivitiesRepository {
         }
         list = list.filter(List<AbstractActivity>::isNotEmpty)
         // Tri par Ville
-        user.getVilles().forEach { ville ->
+        user.cities.forEach { ville ->
             list = list.map {
                 selectionnerParCommune(it, ville)
             }
@@ -1037,7 +1037,7 @@ class ActivitiesRepository {
             .filter(List<AbstractActivity>::isNotEmpty)
         //}
         // Tri par Passion
-        user.getPassions().forEach { passion ->
+        user.passions.forEach { passion ->
             list = list
                 .map { selectionnerParPassion(it, passion) }
                 .filter(List<AbstractActivity>::isNotEmpty)

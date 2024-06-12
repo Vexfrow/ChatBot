@@ -16,15 +16,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -51,9 +46,6 @@ import androidx.compose.ui.window.Dialog
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import fr.c1.chatbot.model.Settings
-import fr.c1.chatbot.ui.icons.Bot
-import fr.c1.chatbot.ui.icons.Robot
-import fr.c1.chatbot.ui.icons.RobotFace
 import fr.c1.chatbot.ui.theme.ChatBotPrev
 import fr.c1.chatbot.utils.rememberMutableStateOf
 
@@ -71,10 +63,8 @@ fun MySettings() {
 
     val selectImageLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
-            if (botDialog)
-                Settings.botImage = uri
-            else
-                Settings.userImage = uri
+            if (botDialog) Settings.botImage = uri
+            else Settings.userImage = uri
 
             isDialogOpen = false
         }
@@ -87,36 +77,27 @@ fun MySettings() {
         verticalArrangement = Arrangement.Center
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
+            modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             val mod = Modifier.size(100.dp)
 
             @Composable
             fun MyIcon(icon: ImageVector) = Icon(
-                modifier = mod,
-                imageVector = icon,
-                contentDescription = null
+                modifier = mod, imageVector = icon, contentDescription = null
             )
 
             @Composable
             fun MyImage(img: Uri) = Image(
-                modifier = mod,
-                painter = rememberAsyncImagePainter(
+                modifier = mod, painter = rememberAsyncImagePainter(
                     ImageRequest.Builder(context).data(img).build()
-                ),
-                contentDescription = null
+                ), contentDescription = null
             )
 
-            if (Settings.botImage == null)
-                MyIcon(icon = Settings.botIcon)
-            else
-                MyImage(img = Settings.botImage!!)
+            if (Settings.botImage == null) MyIcon(icon = Settings.botIcon)
+            else MyImage(img = Settings.botImage!!)
 
-            if (Settings.userImage == null)
-                MyIcon(icon = Settings.userIcon)
-            else
-                MyImage(img = Settings.userImage!!)
+            if (Settings.userImage == null) MyIcon(icon = Settings.userIcon)
+            else MyImage(img = Settings.userImage!!)
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -136,14 +117,10 @@ fun MySettings() {
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Button(
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = with(Color) { if (Settings.tts) Green else Red }
-                ),
+            Button(colors = ButtonDefaults.buttonColors(containerColor = with(Color) { if (Settings.tts) Green else Red }),
                 onClick = {
                     Settings.tts = !Settings.tts
-                }
-            ) {
+                }) {
                 Text(text = "Lecture Audio: ${if (Settings.tts) "ON" else "OFF"}")
             }
             Button(onClick = { botDialog = true; isDialogOpen = true }) {
@@ -247,12 +224,7 @@ fun MySettings() {
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                         val colors = with(Color) {
                             listOf(
-                                Red,
-                                Blue,
-                                White,
-                                Gray,
-                                Cyan,
-                                Green
+                                Red, Blue, White, Gray, Cyan, Green
                             )
                         }
 
@@ -262,12 +234,9 @@ fun MySettings() {
                                     .background(color)
                                     .size(100.dp)
                                     .clickable {
-                                        if (botColorPicker)
-                                            Settings.bubbleSpeechBotColor = color
-                                        else if (fontColorPicker)
-                                            Settings.fontColor = color
-                                        else
-                                            Settings.bubbleSpeechUserColor = color
+                                        if (botColorPicker) Settings.bubbleSpeechBotColor = color
+                                        else if (fontColorPicker) Settings.fontColor = color
+                                        else Settings.bubbleSpeechUserColor = color
 
                                         isColorPickerOpen = false
                                     },
@@ -282,15 +251,13 @@ fun MySettings() {
                     }
                 }
             }
-
         }
     }
 }
 
 @Composable
 fun IconOption(imageVector: ImageVector, size: Dp = 100.dp, onClick: () -> Unit) = IconButton(
-    modifier = Modifier.size(size),
-    onClick = onClick
+    modifier = Modifier.size(size), onClick = onClick
 ) {
     Icon(
         modifier = Modifier.fillMaxSize(),

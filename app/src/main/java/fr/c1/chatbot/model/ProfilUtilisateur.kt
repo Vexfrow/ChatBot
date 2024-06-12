@@ -17,11 +17,11 @@ class ProfilUtilisateur(
     /**
      * Prénom de l'utilisateur (utilisé pour l'affichage)
      */
-    private var prenom: String = "",
+    var prenom: String = "",
     /**
      * Age de l'utilisateur
      */
-    private var age: Int = -1,
+    var age: Int = -1,
     /**
      * Lise de villes de l'utilisateur
      */
@@ -164,20 +164,6 @@ class ProfilUtilisateur(
     }
 
     /**
-     * Récupérer le prénom
-     */
-    fun getPrenom(): String {
-        return prenom
-    }
-
-    /**
-     * Récupérer l'âge
-     */
-    fun getAge(): Int {
-        return age
-    }
-
-    /**
      * Stocker les informations de l'utilisateur dans un fichier json
      */
     fun storeUserInformation(context: Context) {
@@ -247,7 +233,7 @@ fun loadAllUsersInformation(context: Context): MutableList<ProfilUtilisateur> {
             userList.add(user)
             Log.d(
                 TAG,
-                "loadAllUsersInformation: Loaded user profile from ${file.name} ${user.nom} ${user.getPrenom()}"
+                "loadAllUsersInformation: Loaded user profile from ${file.name} ${user.nom} ${user.prenom}"
             )
         }
 

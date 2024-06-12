@@ -1,11 +1,14 @@
 package fr.c1.chatbot
 
+import fr.c1.chatbot.composable.AccountComp
 import fr.c1.chatbot.composable.Activities
+import fr.c1.chatbot.composable.History
 import fr.c1.chatbot.composable.Message
 import fr.c1.chatbot.composable.MySearchBar
 import fr.c1.chatbot.composable.MySettings
 import fr.c1.chatbot.composable.PassionsList
 import fr.c1.chatbot.composable.ProposalList
+import fr.c1.chatbot.composable.Suggestion
 import fr.c1.chatbot.composable.Tab
 import fr.c1.chatbot.composable.TopBar
 import fr.c1.chatbot.model.ActivitiesRepository
@@ -157,6 +160,10 @@ class MainActivity : ComponentActivity() {
                             )
 
                             Tab.ChatBotMap -> OsmdroidMapView()
+                            Tab.Suggestion -> Suggestion()
+                            Tab.History -> History()
+                            Tab.AccountData -> AccountComp.Data()
+                            Tab.AccountPref -> AccountComp.Pref()
 
                             else -> {}
                         }

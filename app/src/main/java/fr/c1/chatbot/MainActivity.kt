@@ -1,7 +1,7 @@
 package fr.c1.chatbot
 
 import fr.c1.chatbot.composable.AccountComp
-import fr.c1.chatbot.composable.Activities
+import fr.c1.chatbot.composable.ActivitiesComp
 import fr.c1.chatbot.composable.History
 import fr.c1.chatbot.composable.Message
 import fr.c1.chatbot.composable.MySearchBar
@@ -143,7 +143,7 @@ class MainActivity : ComponentActivity() {
 
                         when (tab) {
                             Tab.Settings -> MySettings()
-                            Tab.ChatBotResults -> Activities(
+                            Tab.ChatBotResults -> ActivitiesComp(
                                 list = app.activitiesRepository.getResultats(
                                     app
                                 )

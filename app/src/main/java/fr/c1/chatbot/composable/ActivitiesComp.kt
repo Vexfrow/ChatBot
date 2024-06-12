@@ -52,7 +52,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import java.util.UUID
 
-object Activities {
+object ActivitiesComp {
     @Composable
     operator fun invoke(
         list: List<AbstractActivity>,
@@ -63,11 +63,11 @@ object Activities {
     ) {
         items(list) {
             when (it) {
-                is Associations -> Assoc(association = it)
+                is Associations -> Association(association = it)
                 is Contenus -> Content(contenu = it)
                 is Edifices -> Building(edifice = it)
                 is EquipementsSport -> SportEquipment(equipementSport = it)
-                is Expositions -> Expo(exposition = it)
+                is Expositions -> Exposition(exposition = it)
                 is Festivals -> Festival(festival = it)
                 is Jardins -> Garden(jardin = it)
                 is Musees -> Museum(musee = it)
@@ -126,7 +126,7 @@ object Activities {
     }
 
     @Composable
-    fun Assoc(
+    fun Association(
         association: Associations,
         modifier: Modifier = Modifier
     ) = MyColumn(association.accessible, modifier) {
@@ -195,7 +195,7 @@ object Activities {
     }
 
     @Composable
-    fun Expo(
+    fun Exposition(
         exposition: Expositions,
         modifier: Modifier = Modifier
     ) = MyColumn(exposition.accessible, modifier, exposition.url) {
@@ -283,7 +283,7 @@ object Activities {
 @Preview(device = Devices.PIXEL_TABLET)
 @Composable
 private fun Prev() = ChatBotPrev {
-    Activities(
+    ActivitiesComp(
         list = listOf(
             Associations(
                 departement = "Dep",

@@ -20,7 +20,6 @@ import fr.c1.chatbot.model.activity.Type.SPORT
 import fr.c1.chatbot.model.storeAllUsersInformation
 import fr.c1.chatbot.model.toDate
 import fr.c1.chatbot.ui.theme.ChatBotTheme
-import fr.c1.chatbot.ui.theme.colorSchemeExtension
 import fr.c1.chatbot.utils.Calendar
 import fr.c1.chatbot.utils.LocationHandler
 import fr.c1.chatbot.utils.application
@@ -53,7 +52,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -62,7 +60,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -75,10 +72,8 @@ import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.background
 import fr.c1.chatbot.model.activity.AbstractActivity
-import fr.c1.chatbot.utils.Calendar.writeEvent
-import fr.c1.chatbot.utils.Calendar.deleteCalendar
 import kotlin.time.Duration.Companion.seconds
 
 private const val TAG = "MainActivity"
@@ -373,7 +368,8 @@ fun MyColumn(
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f),
+                .weight(1f)
+                .background(Settings.fontColor),
             state = lazyListState
         ) {
             itemsIndexed(messages) { i, message ->
@@ -399,8 +395,7 @@ fun MyColumn(
                 if (isBot)
                     Message(
                         modifier = if (i == messages.lastIndex) mod else Modifier,
-                        text = message,
-                        color = MaterialTheme.colorSchemeExtension.bot,
+                        text = message
                     )
                 else
                     Box(
@@ -411,7 +406,6 @@ fun MyColumn(
                         Message(
                             modifier = Modifier.align(Alignment.CenterEnd),
                             text = message,
-                            color = MaterialTheme.colorSchemeExtension.user,
                             isUser = true
                         )
                     }

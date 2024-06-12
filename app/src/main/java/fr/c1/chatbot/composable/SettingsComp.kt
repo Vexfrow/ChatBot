@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,10 +16,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -45,14 +51,23 @@ import androidx.compose.ui.window.Dialog
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import fr.c1.chatbot.model.Settings
+import fr.c1.chatbot.ui.icons.Bot
+import fr.c1.chatbot.ui.icons.Robot
+import fr.c1.chatbot.ui.icons.RobotFace
 import fr.c1.chatbot.ui.theme.ChatBotPrev
 import fr.c1.chatbot.utils.rememberMutableStateOf
 
 @Composable
 fun MySettings() {
-    var isDialogOpen by remember { mutableStateOf(false) }
     val context = LocalContext.current
+
+    var isDialogOpen by remember { mutableStateOf(false) }
     var botDialog by rememberMutableStateOf(false)
+
+    var isColorPickerOpen by remember { mutableStateOf(false) }
+    var botColorPicker by rememberMutableStateOf(false)
+    var fontColorPicker by rememberMutableStateOf(false)
+
 
     val selectImageLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -138,6 +153,25 @@ fun MySettings() {
                 Text(text = "Changer l'icône de l'utilisateur")
             }
         }
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Button(onClick = {
+                botColorPicker = true; fontColorPicker = false; isColorPickerOpen = true
+            }) {
+                Text(text = "Changer la couleur des bulles du robot")
+            }
+            Button(onClick = {
+                botColorPicker = false; fontColorPicker = false; isColorPickerOpen = true
+            }) {
+                Text(text = "Changer la couleur des bulles de l'utilisateur")
+            }
+            Button(onClick = {
+                botColorPicker = false; fontColorPicker = true; isColorPickerOpen = true
+            }) {
+                Text(text = "Changer la couleur du background")
+            }
+        }
     }
     if (isDialogOpen) {
         Dialog(onDismissRequest = { isDialogOpen = false }) {
@@ -189,6 +223,66 @@ fun MySettings() {
                     }
                 }
             }
+        }
+    }
+    if (isColorPickerOpen) {
+        Dialog(onDismissRequest = { isColorPickerOpen = false }) {
+            Surface(
+                shape = MaterialTheme.shapes.medium,
+                color = MaterialTheme.colorScheme.surface,
+                modifier = Modifier.padding(16.dp)
+            ) {
+
+                Column(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .wrapContentSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Text(
+                        text = "Veuillez choisir une couleur",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        val colors = with(Color) {
+                            listOf(
+                                Red,
+                                Blue,
+                                White,
+                                Gray,
+                                Cyan,
+                                Green
+                            )
+                        }
+
+                        items(colors) { color ->
+                            Box(
+                                modifier = Modifier
+                                    .background(color)
+                                    .size(100.dp)
+                                    .clickable {
+                                        if (botColorPicker)
+                                            Settings.bubbleSpeechBotColor = color
+                                        else if (fontColorPicker)
+                                            Settings.fontColor = color
+                                        else
+                                            Settings.bubbleSpeechUserColor = color
+
+                                        isColorPickerOpen = false
+                                    },
+                            ) {
+
+                            }
+                        }
+                    }
+
+                    Button(onClick = { isColorPickerOpen = false }) {
+                        Text("Annuler")
+                    }
+                }
+            }
+
         }
     }
 }

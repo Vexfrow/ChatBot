@@ -19,7 +19,6 @@ import androidx.core.content.edit
 import fr.c1.chatbot.ui.icons.Bot
 import fr.c1.chatbot.ui.icons.Robot
 import fr.c1.chatbot.ui.icons.RobotFace
-import fr.c1.chatbot.ui.theme.LocalColorSchemeExtension
 import fr.c1.chatbot.utils.getBool
 import fr.c1.chatbot.utils.getColor
 import fr.c1.chatbot.utils.getNullable
@@ -33,15 +32,19 @@ import fr.c1.chatbot.utils.saveImage
 private const val TAG = "Settings"
 
 object Settings {
+
+    private var defaultBubbleSpeechColor = Color.Blue
+    private var defaultFontColor = Color.Red
+
     var textSize: TextUnit by mutableStateOf(40.sp)
     var tts: Boolean by mutableStateOf(false)
     var botIcon: ImageVector by mutableStateOf(Icons.Default.Bot)
     var botImage: Uri? by mutableStateOf(null)
     var userIcon: ImageVector by mutableStateOf(Icons.Default.Person)
     var userImage: Uri? by mutableStateOf(null)
-    var bubbleSpeachBotColor : Color by mutableStateOf(Color.Blue)
-    var bubbleSpeachUserColor : Color by mutableStateOf(Color.Blue)
-    var fontColor : Color by mutableStateOf(Color.White)
+    var bubbleSpeechBotColor: Color by mutableStateOf(defaultBubbleSpeechColor)
+    var bubbleSpeechUserColor: Color by mutableStateOf(defaultBubbleSpeechColor)
+    var fontColor: Color by mutableStateOf(defaultFontColor)
 
     val iconsAvailable = with(Icons.Default) {
         listOf(
@@ -62,19 +65,19 @@ object Settings {
         if (pref.contains("init"))
             from(pref)
         else
-            reset(ctx)
+            reset()
     }
 
-    fun reset(context: Context) {
+    fun reset() {
         textSize = 40.sp
         tts = false
         botIcon = Icons.Default.Bot
         botImage = null
         userIcon = Icons.Default.Person
         userImage = null
-        bubbleSpeachBotColor = Color.Blue
-        bubbleSpeachUserColor = Color.Blue
-        fontColor = Color.White
+        bubbleSpeechBotColor = defaultBubbleSpeechColor
+        bubbleSpeechUserColor = defaultBubbleSpeechColor
+        fontColor = defaultFontColor
     }
 
     private fun from(pref: SharedPreferences) = pref.run {
@@ -92,9 +95,9 @@ object Settings {
             ::getUri,
             "https://upload.wikimedia.org/wikipedia/commons/4/41/Noimage.svg"
         )
-        getColor(::bubbleSpeachBotColor, Color.Blue.value.toInt())
-        getColor(::bubbleSpeachUserColor, Color.Blue.value.toInt())
-        getColor(::fontColor, Color.Blue.value.toInt())
+        getColor(::bubbleSpeechBotColor, defaultBubbleSpeechColor.value.toInt())
+        getColor(::bubbleSpeechUserColor, defaultBubbleSpeechColor.value.toInt())
+        getColor(::fontColor, defaultFontColor.value.toInt())
 
         Log.i(TAG, "Settings loaded: ${this@Settings}")
     }
@@ -110,8 +113,8 @@ object Settings {
             saveImage(::botImage, context)
             putString(::userIcon.name, userIcon.name)
             saveImage(::userImage, context)
-            putColor(::bubbleSpeachBotColor)
-            putColor(::bubbleSpeachUserColor)
+            putColor(::bubbleSpeechBotColor)
+            putColor(::bubbleSpeechUserColor)
             putColor(::fontColor)
 
             Log.i(TAG, "Settings saved : ${this@Settings}")

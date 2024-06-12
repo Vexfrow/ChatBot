@@ -83,6 +83,6 @@ object AccountComp {
     }
 
     @Composable
-    fun Pref(modifier: Modifier = Modifier) =
+    fun Preferences(modifier: Modifier = Modifier) =
         ToDo(name = "Afficher les différentes préférences hebdomadaires")
 }

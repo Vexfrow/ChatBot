@@ -163,7 +163,7 @@ class MainActivity : ComponentActivity() {
                             Tab.Suggestion -> Suggestion()
                             Tab.History -> History()
                             Tab.AccountData -> AccountComp.Data()
-                            Tab.AccountPref -> AccountComp.Pref()
+                            Tab.AccountPref -> AccountComp.Preferences()
 
                             else -> {}
                         }

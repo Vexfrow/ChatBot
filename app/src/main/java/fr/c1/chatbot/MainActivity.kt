@@ -10,6 +10,7 @@ import fr.c1.chatbot.composable.Activities
 import fr.c1.chatbot.composable.Message
 import fr.c1.chatbot.composable.MySearchBar
 import fr.c1.chatbot.composable.MySettings
+import fr.c1.chatbot.composable.PassionsList
 import fr.c1.chatbot.composable.ProposalList
 import fr.c1.chatbot.composable.Tab
 import fr.c1.chatbot.composable.TopBar
@@ -17,11 +18,15 @@ import fr.c1.chatbot.model.ActivitiesRepository
 import fr.c1.chatbot.model.Event
 import fr.c1.chatbot.model.Settings
 import fr.c1.chatbot.model.TypeAction
+import fr.c1.chatbot.model.activity.Type.CULTURE
+import fr.c1.chatbot.model.activity.Type.SPORT
+import fr.c1.chatbot.model.storeAllUsersInformation
 import fr.c1.chatbot.model.toDate
 import fr.c1.chatbot.ui.theme.ChatBotTheme
 import fr.c1.chatbot.ui.theme.colorSchemeExtension
 import fr.c1.chatbot.utils.Calendar
 import fr.c1.chatbot.utils.application
+import fr.c1.chatbot.utils.hasPermission
 import fr.c1.chatbot.utils.rememberMutableStateListOf
 import fr.c1.chatbot.utils.rememberMutableStateOf
 import fr.c1.chatbot.utils.scheduleEventReminders
@@ -127,12 +132,16 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
                         TopBar(tab.value) {
-                            val tmp = Tab.valueOf(it)
+                            val newTab = Tab.valueOf(it)
 
-                            if (tab == Tab.Settings && tmp != Tab.Settings)
+                            if (tab == Tab.Settings && newTab != Tab.Settings)
                                 Settings.save(ctx)
 
-                            tab = tmp
+                            val accountTabs = listOf(Tab.AccountPassions, Tab.AccountData, Tab.AccountPref)
+                            if (tab in accountTabs && newTab !in accountTabs)
+                                storeAllUsersInformation(ctx, app.userList)
+
+                            tab = newTab
                         }
                     }
                 ) { innerPadding ->
@@ -147,8 +156,15 @@ class MainActivity : ComponentActivity() {
 
                         when (tab) {
                             Tab.Settings -> MySettings()
-                            Tab.ChatBotResults -> Activities(
-                                list = app.activitiesRepository.getResultats(app)
+                            Tab.ChatBotResults -> Activities(list = app.activitiesRepository.getResultats(app))
+                            Tab.AccountPassions -> PassionsList(
+                                selected = app.currentUser::hasPassion,
+                                onSelectionChanged = { passion, state ->
+                                    with(app.currentUser) {
+                                        if (state) addPassion(passion)
+                                        else removePassion(passion)
+                                    }
+                                }
                             )
 
                             else -> {}
@@ -481,6 +497,7 @@ fun MyColumn(
                     enableSearchBar("Choisissez une passion", act, i, passions)
                     return@ProposalList
                 }
+
                 else -> {}
             }
 
@@ -507,7 +524,10 @@ fun MyColumn(
                 TypeAction.EntrerVille -> {
                     user.addVille(it)
                     val text = if ("AEIOUaeiou".indexOf(it.first()) != -1) "d'$it" else "de $it"
-                    addAnswer(sbState.answerId, "Je souhaite faire mon activité dans les alentours de la ville $text")
+                    addAnswer(
+                        sbState.answerId,
+                        "Je souhaite faire mon activité dans les alentours de la ville $text"
+                    )
                 }
 
                 else -> {}

@@ -1,12 +1,11 @@
 package fr.c1.chatbot.model
 
-import android.content.Context
-import android.location.Location
-import android.util.Log
 import com.google.gson.Gson
 import fr.c1.chatbot.model.activity.Type
+import android.content.Context
+import android.util.Log
 import java.io.File
-import java.util.Date
+import java.io.FileFilter
 
 private const val TAG = "ProfilUtilisateur"
 
@@ -148,6 +147,8 @@ class ProfilUtilisateur(
         return types
     }
 
+    fun hasPassion(passion: String): Boolean = passions.contains(passion)
+
     /**
      * Récupérer les passions
      */
@@ -196,7 +197,7 @@ class ProfilUtilisateur(
                 prefix = "[",
                 postfix = "]"
             ) { "\"$it\"" }
-            }
+        }
         }
     """.trimIndent()
 
@@ -236,8 +237,11 @@ fun loadAllUsersInformation(context: Context): MutableList<ProfilUtilisateur> {
     val userList = mutableListOf<ProfilUtilisateur>()
     val regex = Regex("""\w+_\w+.json""")
 
-    context.filesDir.listFiles()?.forEach { file ->
-        if (file.isFile && regex.matches(file.name)) {
+    val files = context.filesDir.listFiles(FileFilter { it.isFile && regex.matches(it.name) })!!
+    if (files.isEmpty())
+        Log.i(TAG, "loadAllUsersInformation: No user file found !")
+    else
+        files.forEach { file ->
             val content = file.readText()
             val user = gson.fromJson(content, ProfilUtilisateur::class.java)
             userList.add(user)
@@ -245,10 +249,7 @@ fun loadAllUsersInformation(context: Context): MutableList<ProfilUtilisateur> {
                 TAG,
                 "loadAllUsersInformation: Loaded user profile from ${file.name} ${user.nom} ${user.getPrenom()}"
             )
-        } else {
-            Log.d(TAG, "loadAllUsersInformation: File does not exist")
         }
-    }
 
     return userList
 }

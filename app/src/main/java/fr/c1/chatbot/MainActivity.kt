@@ -348,7 +348,7 @@ fun MyColumn(
     val ctx = LocalContext.current
     val app = application
     val tree = app.chatbotTree
-    val messages = rememberMutableStateListOf(tree.getQuestion())
+    val messages = rememberMutableStateListOf(tree.question)
     val crtScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
     val animated = rememberMutableStateListOf<Boolean>()
@@ -414,7 +414,7 @@ fun MyColumn(
             }
         }
 
-        var answers by rememberMutableStateOf(value = tree.getAnswersId()
+        var answers by rememberMutableStateOf(value = tree.answersId
             .map { tree.getAnswerText(it) })
 
         data class SearchBarState(
@@ -450,11 +450,11 @@ fun MyColumn(
             crtScope.launch {
                 lazyListState.animateScrollToItem(messages.size)
                 delay(1.seconds)
-                messages += tree.getQuestion()
-                answers = tree.getAnswersId().map { i -> tree.getAnswerText(i) }
+                messages += tree.question
+                answers = tree.answersId.map { i -> tree.getAnswerText(i) }
                 lazyListState.animateScrollToItem(messages.size)
 
-                if (tree.getBotAction() == TypeAction.AfficherResultat) {
+                if (tree.botAction == TypeAction.AfficherResultat) {
                     delay(5.seconds)
                     onResult()
                 }
@@ -464,7 +464,7 @@ fun MyColumn(
         ProposalList(proposals = answers) {
             answers = emptyList()
             Log.i(TAG, "Choose '$it'")
-            val i = tree.getAnswersId().first { i -> tree.getAnswerText(i) == it }
+            val i = tree.answersId.first { i -> tree.getAnswerText(i) == it }
             when (val act = tree.getUserAction(i)) {
                 TypeAction.EntrerDate -> {
                     enableSearchBar("Sélectionnez une date", act, i)

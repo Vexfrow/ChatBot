@@ -543,7 +543,7 @@ fun MyColumn(
                 }
 
                 TypeAction.EntrerVille -> {
-                    user.addVille(it)
+                    user.addCity(it)
                     val text = if ("AEIOUaeiou".indexOf(it.first()) != -1) "d'$it" else "de $it"
                     addAnswer(
                         sbState.answerId,

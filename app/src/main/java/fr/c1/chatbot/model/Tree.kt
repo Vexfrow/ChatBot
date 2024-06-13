@@ -84,7 +84,7 @@ class Tree {
 
 
     //Update the current question and execute the action link to the answer chosen
-    fun selectAnswer(idAnswer: Int, user: ProfilUtilisateur) {
+    fun selectAnswer(idAnswer: Int, user: User) {
         if (idAnswer == retour && questionsHistory.size > 1) questionsHistory.removeLast()
         else if (idAnswer == recommencerConversation) { //Clear previous messages ?
             questionsHistory.removeAll(questionsHistory.toSet())

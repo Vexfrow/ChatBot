@@ -34,8 +34,8 @@ object AccountComp {
         ) {
             val user = application.currentUser
 
-            var firstName by rememberMutableStateOf(value = user.prenom)
-            var lastName by rememberMutableStateOf(value = user.nom)
+            var firstName by rememberMutableStateOf(value = user.firstName)
+            var lastName by rememberMutableStateOf(value = user.lastName)
             var age by remember { mutableIntStateOf(user.age) }
 
             Row(horizontalArrangement = Arrangement.spacedBy(25.dp)) {
@@ -43,7 +43,7 @@ object AccountComp {
                     value = firstName,
                     onValueChange = {
                         firstName = it
-                        user.prenom = it
+                        user.firstName = it
                     },
                     label = { Text(text = "Prénom") },
                     singleLine = true
@@ -53,7 +53,7 @@ object AccountComp {
                     value = lastName,
                     onValueChange = {
                         lastName = it
-                        user.nom = it
+                        user.lastName = it
                     },
                     label = { Text(text = "Nom de famille") },
                     singleLine = true

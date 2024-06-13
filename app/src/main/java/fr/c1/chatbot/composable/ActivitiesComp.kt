@@ -5,7 +5,7 @@ import fr.c1.chatbot.model.activity.Association
 import fr.c1.chatbot.model.activity.Content
 import fr.c1.chatbot.model.activity.Building
 import fr.c1.chatbot.model.activity.SportEquipment
-import fr.c1.chatbot.model.activity.Expositions
+import fr.c1.chatbot.model.activity.Exposition
 import fr.c1.chatbot.model.activity.Festivals
 import fr.c1.chatbot.model.activity.Jardins
 import fr.c1.chatbot.model.activity.Musees
@@ -67,7 +67,7 @@ object ActivitiesComp {
                 is Content -> Content(contenu = it)
                 is Building -> Building(edifice = it)
                 is SportEquipment -> SportEquipment(equipementSport = it)
-                is Expositions -> Exposition(exposition = it)
+                is Exposition -> Exposition(exposition = it)
                 is Festivals -> Festival(festival = it)
                 is Jardins -> Garden(jardin = it)
                 is Musees -> Museum(musee = it)
@@ -196,15 +196,15 @@ object ActivitiesComp {
 
     @Composable
     fun Exposition(
-        exposition: Expositions,
+        exposition: Exposition,
         modifier: Modifier = Modifier
     ) = MyColumn(exposition.accessible, modifier, exposition.url) {
         Text(
-            text = exposition.nom,
+            text = exposition.name,
             style = MaterialTheme.typography.bodyLarge
         )
         TextWithIcon(
-            text = "${exposition.commune} ${exposition.departement}",
+            text = "${exposition.commune} ${exposition.department}",
             style = MaterialTheme.typography.bodyMedium,
             icon = Icons.Default.Home
         )
@@ -326,11 +326,11 @@ private fun Prev() = ChatBotPrev {
                 url = "www.google.fr"
             ),
 
-            Expositions(
-                identifiant = UUID.randomUUID().toString(),
-                departement = "dep",
+            Exposition(
+                id = UUID.randomUUID().toString(),
+                department = "dep",
                 commune = "comm",
-                nom = "name",
+                name = "name",
                 accessible = true,
                 url = "www.google.fr",
                 region = "reg"

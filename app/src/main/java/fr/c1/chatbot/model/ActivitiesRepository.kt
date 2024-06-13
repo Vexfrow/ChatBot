@@ -7,7 +7,7 @@ import fr.c1.chatbot.model.activity.Association
 import fr.c1.chatbot.model.activity.Content
 import fr.c1.chatbot.model.activity.Building
 import fr.c1.chatbot.model.activity.SportEquipment
-import fr.c1.chatbot.model.activity.Expositions
+import fr.c1.chatbot.model.activity.Exposition
 import fr.c1.chatbot.model.activity.Festivals
 import fr.c1.chatbot.model.activity.Jardins
 import fr.c1.chatbot.model.activity.Musees
@@ -32,7 +32,7 @@ class ActivitiesRepository {
 
     companion object {
         val passionList: Set<String>
-            get() = Association.passions union Content.passions union Sites.passions union Musees.passions union Jardins.passions union Festivals.passions union Expositions.passions union SportEquipment.passions union Building.passions
+            get() = Association.passions union Content.passions union Sites.passions union Musees.passions union Jardins.passions union Festivals.passions union Exposition.passions union SportEquipment.passions union Building.passions
     }
 
     private val listeVillesDisponible = sortedSetOf<String>()
@@ -60,8 +60,8 @@ class ActivitiesRepository {
     /**
      * Liste des expositions
      */
-    private val expositionsList = mutableListOf<Expositions>()
-    val expositions: List<Expositions> get() = expositionsList
+    private val expositionList = mutableListOf<Exposition>()
+    val expositions: List<Exposition> get() = expositionList
 
     /**
      * Liste des contenus culturels
@@ -104,7 +104,7 @@ class ActivitiesRepository {
     val associations: List<Association> get() = associationsList
 
     val all: List<AbstractActivity>
-        get() = museesList + sitesList + expositionsList + contenusList + buildingList + jardinsList + festivalsList + sportEquipmentList + associationsList
+        get() = museesList + sitesList + expositionList + contenusList + buildingList + jardinsList + festivalsList + sportEquipmentList + associationsList
 
     /**
      * Ajouter une ville à la liste des villes disponibles
@@ -211,7 +211,7 @@ class ActivitiesRepository {
             val identifiant = csvRecord[1]
             val nom = csvRecord[4]
             val url = csvRecord[7]
-            val activity = Expositions(
+            val activity = Exposition(
                 region,
                 departement,
                 identifiant,
@@ -220,7 +220,7 @@ class ActivitiesRepository {
                 url,
                 true
             )
-            expositionsList.add(activity)
+            expositionList.add(activity)
             addVilleDispo(commune)
         }
     }
@@ -479,7 +479,7 @@ class ActivitiesRepository {
      * Afficher la liste des expositions
      */
     fun displayExpositions() {
-        displayList(expositionsList)
+        displayList(expositionList)
     }
 
     /**
@@ -532,7 +532,7 @@ class ActivitiesRepository {
         return when (clazz) {
             Musees::class -> list.sortedBy { (it as Musees).region }
             Sites::class -> list.sortedBy { (it as Sites).region }
-            Expositions::class -> list.sortedBy { (it as Expositions).region }
+            Exposition::class -> list.sortedBy { (it as Exposition).region }
             Building::class -> list.sortedBy { (it as Building).region }
             Jardins::class -> list.sortedBy { (it as Jardins).region }
             Festivals::class -> list.sortedBy { (it as Festivals).region }
@@ -554,8 +554,8 @@ class ActivitiesRepository {
                 (it as Sites).region.lowercase().contains(region.lowercase())
             }
 
-            Expositions::class -> list.filter {
-                (it as Expositions).region.lowercase().contains(region.lowercase())
+            Exposition::class -> list.filter {
+                (it as Exposition).region.lowercase().contains(region.lowercase())
             }
 
             Building::class -> list.filter {
@@ -582,7 +582,7 @@ class ActivitiesRepository {
         return when (clazz) {
             Musees::class -> list.sortedBy { (it as Musees).departement }
             Sites::class -> list.sortedBy { (it as Sites).departement }
-            Expositions::class -> list.sortedBy { (it as Expositions).departement }
+            Exposition::class -> list.sortedBy { (it as Exposition).department }
             Building::class -> list.sortedBy { (it as Building).department }
             Jardins::class -> list.sortedBy { (it as Jardins).departement }
             Festivals::class -> list.sortedBy { (it as Festivals).departement }
@@ -606,8 +606,8 @@ class ActivitiesRepository {
                 (it as Sites).departement.lowercase().contains(departement.lowercase())
             }
 
-            Expositions::class -> list.filter {
-                (it as Expositions).departement.lowercase().contains(departement.lowercase())
+            Exposition::class -> list.filter {
+                (it as Exposition).department.lowercase().contains(departement.lowercase())
             }
 
             Building::class -> list.filter {
@@ -642,7 +642,7 @@ class ActivitiesRepository {
         return when (clazz) {
             Musees::class -> list.sortedBy { (it as Musees).commune }
             Sites::class -> list.sortedBy { (it as Sites).commune }
-            Expositions::class -> list.sortedBy { (it as Expositions).commune }
+            Exposition::class -> list.sortedBy { (it as Exposition).commune }
             Content::class -> list.sortedBy { (it as Content).commune }
             Building::class -> list.sortedBy { (it as Building).commune }
             Jardins::class -> list.sortedBy { (it as Jardins).commune }
@@ -667,8 +667,8 @@ class ActivitiesRepository {
                 (it as Sites).commune.lowercase().contains(commune.lowercase())
             }
 
-            Expositions::class -> list.filter {
-                (it as Expositions).commune.lowercase().contains(commune.lowercase())
+            Exposition::class -> list.filter {
+                (it as Exposition).commune.lowercase().contains(commune.lowercase())
             }
 
             Content::class -> list.filter {
@@ -706,7 +706,7 @@ class ActivitiesRepository {
         val clazz = list.first()!!::class
         return when (clazz) {
             Musees::class -> list.sortedBy { (it as Musees).nom }
-            Expositions::class -> list.sortedBy { (it as Expositions).nom }
+            Exposition::class -> list.sortedBy { (it as Exposition).name }
             Content::class -> list.sortedBy { (it as Content).name }
             Building::class -> list.sortedBy { (it as Building).name }
             Jardins::class -> list.sortedBy { (it as Jardins).nom }
@@ -727,8 +727,8 @@ class ActivitiesRepository {
                 (it as Musees).nom.lowercase().contains(nom.lowercase())
             }
 
-            Expositions::class -> list.filter {
-                (it as Expositions).nom.lowercase().contains(nom.lowercase())
+            Exposition::class -> list.filter {
+                (it as Exposition).name.lowercase().contains(nom.lowercase())
             }
 
             Content::class -> list.filter {
@@ -847,7 +847,7 @@ class ActivitiesRepository {
         return when (clazz) {
             Musees::class -> list.filter { (it as Musees).accessible == accessible }
             Sites::class -> list.filter { (it as Sites).accessible == accessible }
-            Expositions::class -> list.filter { (it as Expositions).accessible == accessible }
+            Exposition::class -> list.filter { (it as Exposition).accessible == accessible }
             Content::class -> list.filter { (it as Content).accessible == accessible }
             Building::class -> list.filter { (it as Building).accessible == accessible }
             Jardins::class -> list.filter { (it as Jardins).accessible == accessible }
@@ -865,7 +865,7 @@ class ActivitiesRepository {
         val clazz = list.first()!!::class
         return when (clazz) {
             Musees::class -> list.sortedBy { (it as Musees).identifiant }
-            Expositions::class -> list.sortedBy { (it as Expositions).identifiant }
+            Exposition::class -> list.sortedBy { (it as Exposition).id }
             Content::class -> list.sortedBy { (it as Content).id }
             SportEquipment::class -> list.sortedBy { (it as SportEquipment).id }
             Association::class -> list.sortedBy { (it as Association).id }
@@ -963,7 +963,7 @@ class ActivitiesRepository {
         var list: List<List<AbstractActivity>> = listOf(
             museesList,
             sitesList,
-            expositionsList,
+            expositionList,
             contenusList,
             buildingList,
             jardinsList,
@@ -1037,7 +1037,7 @@ class ActivitiesRepository {
                     .contains("sport"))
             }
 
-            Type.CULTURE -> it.filter { it is Musees || it is Sites || it is Expositions || it is Content || it is Building || it is Jardins || it is Festivals }
+            Type.CULTURE -> it.filter { it is Musees || it is Sites || it is Exposition || it is Content || it is Building || it is Jardins || it is Festivals }
             Type.MUSIQUE -> it.filter {
                 it is Festivals && it.discipline.lowercase().contains("musique")
             }

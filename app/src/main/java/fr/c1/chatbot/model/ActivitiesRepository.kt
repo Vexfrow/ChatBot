@@ -1038,7 +1038,7 @@ class ActivitiesRepository {
             }
 
             Type.CULTURE -> it.filter { it is Museum || it is Site || it is Exposition || it is Content || it is Building || it is Garden || it is Festival }
-            Type.MUSIQUE -> it.filter {
+            Type.MUSIC -> it.filter {
                 it is Festival && it.discipline.lowercase().contains("musique")
             }
 
@@ -1063,7 +1063,7 @@ class ActivitiesRepository {
 
             Type.ASSOCIATION -> it.filterIsInstance<Association>()
             Type.ALL -> it
-            Type.AUTRE -> it
+            Type.OTHER -> it
         }
     }
 }

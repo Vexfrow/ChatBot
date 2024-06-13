@@ -6,7 +6,7 @@ import fr.c1.chatbot.model.activity.Content
 import fr.c1.chatbot.model.activity.Building
 import fr.c1.chatbot.model.activity.SportEquipment
 import fr.c1.chatbot.model.activity.Exposition
-import fr.c1.chatbot.model.activity.Festivals
+import fr.c1.chatbot.model.activity.Festival
 import fr.c1.chatbot.model.activity.Jardins
 import fr.c1.chatbot.model.activity.Musees
 import fr.c1.chatbot.model.activity.Sites
@@ -68,7 +68,7 @@ object ActivitiesComp {
                 is Building -> Building(edifice = it)
                 is SportEquipment -> SportEquipment(equipementSport = it)
                 is Exposition -> Exposition(exposition = it)
-                is Festivals -> Festival(festival = it)
+                is Festival -> Festival(festival = it)
                 is Jardins -> Garden(jardin = it)
                 is Musees -> Museum(musee = it)
                 is Sites -> Site(site = it)
@@ -213,15 +213,15 @@ object ActivitiesComp {
 
     @Composable
     fun Festival(
-        festival: Festivals,
+        festival: Festival,
         modifier: Modifier = Modifier
     ) = MyColumn(festival.accessible, modifier) {
         Text(
-            text = festival.nom,
+            text = festival.name,
             style = MaterialTheme.typography.bodyLarge
         )
         TextWithIcon(
-            text = "${festival.adresse}, ${festival.codePostal} ${festival.commune}",
+            text = "${festival.address}, ${festival.postalCode} ${festival.commune}",
             style = MaterialTheme.typography.bodyMedium,
             icon = Icons.Default.Home
         )
@@ -336,14 +336,14 @@ private fun Prev() = ChatBotPrev {
                 region = "reg"
             ),
 
-            Festivals(
-                departement = "dep",
+            Festival(
+                department = "dep",
                 commune = "comm",
-                nom = "name",
+                name = "name",
                 accessible = true,
                 region = "reg",
-                adresse = "addr",
-                codePostal = "cp",
+                address = "addr",
+                postalCode = "cp",
                 discipline = "disc"
             ),
 

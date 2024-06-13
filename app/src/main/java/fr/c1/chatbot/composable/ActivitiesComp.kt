@@ -8,7 +8,7 @@ import fr.c1.chatbot.model.activity.SportEquipment
 import fr.c1.chatbot.model.activity.Exposition
 import fr.c1.chatbot.model.activity.Festival
 import fr.c1.chatbot.model.activity.Garden
-import fr.c1.chatbot.model.activity.Musees
+import fr.c1.chatbot.model.activity.Museum
 import fr.c1.chatbot.model.activity.Sites
 import fr.c1.chatbot.ui.icons.Deceased
 import fr.c1.chatbot.ui.icons.InteractiveSpace
@@ -70,7 +70,7 @@ object ActivitiesComp {
                 is Exposition -> Exposition(exposition = it)
                 is Festival -> Festival(festival = it)
                 is Garden -> Garden(jardin = it)
-                is Musees -> Museum(musee = it)
+                is Museum -> Museum(musee = it)
                 is Sites -> Site(site = it)
                 else -> throw NotImplementedError()
             }
@@ -247,15 +247,15 @@ object ActivitiesComp {
 
     @Composable
     fun Museum(
-        musee: Musees,
+        musee: Museum,
         modifier: Modifier = Modifier
     ) = MyColumn(musee.accessible, modifier) {
         Text(
-            text = musee.nom,
+            text = musee.name,
             style = MaterialTheme.typography.bodyLarge
         )
         TextWithIcon(
-            text = "${musee.adresse}, ${musee.codePostal} ${musee.commune}",
+            text = "${musee.address}, ${musee.postalCode} ${musee.commune}",
             style = MaterialTheme.typography.bodyMedium,
             icon = Icons.Default.Home
         )
@@ -358,17 +358,17 @@ private fun Prev() = ChatBotPrev {
             ),
 
 
-            Musees(
-                identifiant = UUID.randomUUID().toString(),
-                departement = "dep",
+            Museum(
+                id = UUID.randomUUID().toString(),
+                department = "dep",
                 commune = "comm",
-                nom = "name",
+                name = "name",
                 accessible = true,
                 region = "reg",
-                adresse = "addr",
-                codePostal = "cp",
-                lieu = "lieu2",
-                telephone = "tel",
+                address = "addr",
+                postalCode = "cp",
+                location = "lieu2",
+                phone = "tel",
                 url = "www.google.fr"
             ),
 

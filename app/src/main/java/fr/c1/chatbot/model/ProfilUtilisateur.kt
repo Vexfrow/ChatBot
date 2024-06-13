@@ -37,7 +37,7 @@ class ProfilUtilisateur(
     /**
      * Liste des préférences hebdomadaires de l'utilisateur
      */
-    private var _preferencesHebdomadaires: MutableList<PreferencesHebdo> = mutableListOf()
+    private var _preferencesHebdomadaires: MutableList<WeeklyPreference> = mutableListOf()
 ) {
 
     /**
@@ -74,14 +74,14 @@ class ProfilUtilisateur(
      * Ajouter une préférence hebdomadaire
      */
     fun addPreferenceHebdo(jour: String, heure: String, duree: Int) {
-        _preferencesHebdomadaires.add(PreferencesHebdo(jour, heure, duree))
+        _preferencesHebdomadaires.add(WeeklyPreference(jour, heure, duree))
     }
 
     /**
      * Supprimer une préférence hebdomadaire
      */
     fun removePreferenceHebdo(jour: String, heure: String, duree: Int) {
-        _preferencesHebdomadaires.remove(PreferencesHebdo(jour, heure, duree))
+        _preferencesHebdomadaires.remove(WeeklyPreference(jour, heure, duree))
     }
 
     /**
@@ -154,7 +154,7 @@ class ProfilUtilisateur(
     /**
      * Récupérer les préférences hebdomadaires
      */
-    val weeklyPreferences: List<PreferencesHebdo> get() = _preferencesHebdomadaires
+    val weeklyPreferences: List<WeeklyPreference> get() = _preferencesHebdomadaires
 
     /**
      * Stocker les informations de l'utilisateur dans un fichier json

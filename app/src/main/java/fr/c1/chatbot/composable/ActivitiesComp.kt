@@ -3,7 +3,7 @@ package fr.c1.chatbot.composable
 import fr.c1.chatbot.model.activity.AbstractActivity
 import fr.c1.chatbot.model.activity.Association
 import fr.c1.chatbot.model.activity.Content
-import fr.c1.chatbot.model.activity.Edifices
+import fr.c1.chatbot.model.activity.Building
 import fr.c1.chatbot.model.activity.EquipementsSport
 import fr.c1.chatbot.model.activity.Expositions
 import fr.c1.chatbot.model.activity.Festivals
@@ -65,7 +65,7 @@ object ActivitiesComp {
             when (it) {
                 is Association -> Association(association = it)
                 is Content -> Content(contenu = it)
-                is Edifices -> Building(edifice = it)
+                is Building -> Building(edifice = it)
                 is EquipementsSport -> SportEquipment(equipementSport = it)
                 is Expositions -> Exposition(exposition = it)
                 is Festivals -> Festival(festival = it)
@@ -162,15 +162,15 @@ object ActivitiesComp {
 
     @Composable
     fun Building(
-        edifice: Edifices,
+        edifice: Building,
         modifier: Modifier = Modifier
     ) = MyColumn(edifice.accessible, modifier) {
         Text(
-            text = edifice.nom,
+            text = edifice.name,
             style = MaterialTheme.typography.bodyLarge
         )
         TextWithIcon(
-            text = "${edifice.adresse}, ${edifice.commune}, ${edifice.region}",
+            text = "${edifice.address}, ${edifice.commune}, ${edifice.region}",
             style = MaterialTheme.typography.bodyMedium,
             icon = Icons.Default.Home
         )
@@ -306,12 +306,12 @@ private fun Prev() = ChatBotPrev {
                 accessible = true
             ),
 
-            Edifices(
+            Building(
                 region = "reg",
-                departement = "dep",
+                department = "dep",
                 commune = "comm",
-                nom = "name",
-                adresse = "addr",
+                name = "name",
+                address = "addr",
                 accessible = true
             ),
 

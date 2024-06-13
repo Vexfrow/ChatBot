@@ -1,7 +1,7 @@
 package fr.c1.chatbot.composable
 
 import fr.c1.chatbot.model.activity.AbstractActivity
-import fr.c1.chatbot.model.activity.Associations
+import fr.c1.chatbot.model.activity.Association
 import fr.c1.chatbot.model.activity.Contenus
 import fr.c1.chatbot.model.activity.Edifices
 import fr.c1.chatbot.model.activity.EquipementsSport
@@ -63,7 +63,7 @@ object ActivitiesComp {
     ) {
         items(list) {
             when (it) {
-                is Associations -> Association(association = it)
+                is Association -> Association(association = it)
                 is Contenus -> Content(contenu = it)
                 is Edifices -> Building(edifice = it)
                 is EquipementsSport -> SportEquipment(equipementSport = it)
@@ -127,16 +127,16 @@ object ActivitiesComp {
 
     @Composable
     fun Association(
-        association: Associations,
+        association: Association,
         modifier: Modifier = Modifier
     ) = MyColumn(association.accessible, modifier) {
         Text(
-            text = association.nom,
+            text = association.name,
             style = MaterialTheme.typography.bodyLarge,
             lineHeight = MaterialTheme.typography.bodyLarge.fontSize
         )
         TextWithIcon(
-            text = "${association.adresse}, ${association.codePostal} ${association.commune}",
+            text = "${association.address}, ${association.postalCode} ${association.commune}",
             style = MaterialTheme.typography.bodyMedium,
             icon = Icons.Default.Home
         )
@@ -285,13 +285,13 @@ object ActivitiesComp {
 private fun Prev() = ChatBotPrev {
     ActivitiesComp(
         list = listOf(
-            Associations(
-                departement = "Dep",
-                identifiant = UUID.randomUUID().toString(),
+            Association(
+                department = "Dep",
+                id = UUID.randomUUID().toString(),
                 commune = "Comm",
-                nom = "Name",
-                adresse = "Addr",
-                codePostal = "38610",
+                name = "Name",
+                address = "Addr",
+                postalCode = "38610",
                 accessible = true
             ),
 

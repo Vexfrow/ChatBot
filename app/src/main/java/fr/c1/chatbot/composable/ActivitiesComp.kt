@@ -13,6 +13,7 @@ import fr.c1.chatbot.model.activity.Site
 import fr.c1.chatbot.ui.icons.Deceased
 import fr.c1.chatbot.ui.icons.InteractiveSpace
 import fr.c1.chatbot.ui.theme.ChatBotPrev
+import fr.c1.chatbot.utils.backgroundIf
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -95,10 +96,6 @@ object ActivitiesComp {
         label = { Text(text = text) },
         icon = { Icon(imageVector = icon, contentDescription = text) }
     )
-
-    private fun Modifier.backgroundIf(color: Color, condition: Boolean) =
-        if (condition) background(color)
-        else this
 
     @Composable
     private fun MyColumn(

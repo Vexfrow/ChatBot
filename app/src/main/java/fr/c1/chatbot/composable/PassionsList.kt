@@ -2,6 +2,7 @@ package fr.c1.chatbot.composable
 
 import fr.c1.chatbot.model.ActivitiesRepository
 import fr.c1.chatbot.ui.theme.ChatBotPrev
+import fr.c1.chatbot.utils.items
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid

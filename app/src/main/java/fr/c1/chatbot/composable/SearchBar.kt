@@ -4,6 +4,7 @@ import fr.c1.chatbot.model.TypeAction
 import fr.c1.chatbot.ui.theme.ChatBotPrev
 import fr.c1.chatbot.ui.theme.colorSchemeExtension
 import fr.c1.chatbot.utils.UnitLaunchedEffect
+import fr.c1.chatbot.utils.focusRequesterIfNotNull
 import fr.c1.chatbot.utils.rememberMutableStateOf
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -17,10 +18,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyGridItemScope
-import androidx.compose.foundation.lazy.grid.LazyGridItemSpanScope
-import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -56,7 +53,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.takeOrElse
@@ -76,10 +72,6 @@ import java.util.Date
 import java.util.Locale
 
 private const val TAG = "SearchBar"
-
-private fun Modifier.focusRequesterIfNotNull(fr: FocusRequester?) =
-    if (fr == null) this
-    else focusRequester(fr)
 
 @ExperimentalMaterial3Api
 @Composable
@@ -321,21 +313,6 @@ fun MyDatePicker(
     ) { DatePicker(state = state) }
 }
 
-@Preview(device = Devices.PIXEL_TABLET)
-@Composable
-private fun Prev() = ChatBotPrev {
-    Column(
-        modifier = Modifier.align(Alignment.BottomStart),
-        verticalArrangement = Arrangement.spacedBy(50.dp)
-    ) {
-        MySearchBar(
-            placeholder = "Écrire ici\u2026"
-        ) {
-            Log.i(TAG, "I have searched $it")
-        }
-    }
-}
-
 @ExperimentalMaterial3Api
 @Composable
 fun DropDown(
@@ -387,20 +364,17 @@ fun DropDown(
     }
 }
 
-inline fun <T> LazyGridScope.items(
-    items: Collection<T>,
-    noinline key: ((item: T) -> Any)? = null,
-    noinline span: (LazyGridItemSpanScope.(item: T) -> GridItemSpan)? = null,
-    noinline contentType: (item: T) -> Any? = { null },
-    crossinline itemContent: @Composable LazyGridItemScope.(item: T) -> Unit
-) {
-    items.forEach {
-        item(
-            key = key?.invoke(it),
-            span = span?.run { { span(it) } },
-            contentType = contentType(it)
+@Preview(device = Devices.PIXEL_TABLET)
+@Composable
+private fun Prev() = ChatBotPrev {
+    Column(
+        modifier = Modifier.align(Alignment.BottomStart),
+        verticalArrangement = Arrangement.spacedBy(50.dp)
+    ) {
+        MySearchBar(
+            placeholder = "Écrire ici\u2026"
         ) {
-            itemContent(it)
+            Log.i(TAG, "I have searched $it")
         }
     }
 }

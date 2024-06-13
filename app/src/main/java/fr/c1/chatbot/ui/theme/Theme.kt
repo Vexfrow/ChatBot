@@ -16,25 +16,22 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import android.os.Build
+import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = Purple80, secondary = PurpleGrey80, tertiary = Pink80
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = Purple40, secondary = PurpleGrey40, tertiary = Pink40
 )
+
 
 @Composable
 fun ChatBotTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+    dynamicColor: Boolean = true, content: @Composable () -> Unit
 ) {
     val colorScheme: ColorScheme
     val colorSchemeExtension: ColorSchemeExtension
@@ -42,9 +39,8 @@ fun ChatBotTheme(
     when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
-            colorScheme =
-                if (darkTheme) dynamicDarkColorScheme(context)
-                else dynamicLightColorScheme(context)
+            colorScheme = if (darkTheme) dynamicDarkColorScheme(context)
+            else dynamicLightColorScheme(context)
 
             colorSchemeExtension = DynamicColorSchemeExtension(colorScheme)
         }
@@ -64,9 +60,7 @@ fun ChatBotTheme(
         LocalColorSchemeExtension provides colorSchemeExtension
     ) {
         MaterialTheme(
-            colorScheme = colorScheme,
-            typography = Typography(),
-            content = content
+            colorScheme = colorScheme, typography = Typography(), content = content
         )
     }
 }

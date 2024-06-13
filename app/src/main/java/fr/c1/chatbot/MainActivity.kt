@@ -135,6 +135,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier
                             .padding(innerPadding)
                             .fillMaxSize()
+                            .background(Settings.fontColor)
                     ) {
                         MyColumn(modifier = Modifier, enabled = tab == Tab.ChatBotChat) {
                             tab = Tab.ChatBotResults
@@ -459,7 +460,7 @@ fun MyColumn(
             }
         }
 
-        ProposalList(proposals = answers) {
+        ProposalList(modifier = Modifier.background(Settings.fontColor), proposals = answers) {
             answers = emptyList()
             Log.i(TAG, "Choose '$it'")
             val i = tree.getAnswersId().first { i -> tree.getAnswerText(i) == it }

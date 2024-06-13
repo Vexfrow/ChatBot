@@ -23,10 +23,12 @@ import fr.c1.chatbot.utils.getBool
 import fr.c1.chatbot.utils.getColor
 import fr.c1.chatbot.utils.getNullable
 import fr.c1.chatbot.utils.getSp
+import fr.c1.chatbot.utils.getString
 import fr.c1.chatbot.utils.getUri
 import fr.c1.chatbot.utils.putBool
 import fr.c1.chatbot.utils.putColor
 import fr.c1.chatbot.utils.putSp
+import fr.c1.chatbot.utils.putString
 import fr.c1.chatbot.utils.saveImage
 
 private const val TAG = "Settings"
@@ -34,7 +36,8 @@ private const val TAG = "Settings"
 object Settings {
 
     private var defaultBubbleSpeechColor = Color.Blue
-    private var defaultFontColor = Color.Red
+    private var defaultFontColor = Color(136, 227, 160)
+    private var defaultBotName = "Rob"
 
     var textSize: TextUnit by mutableStateOf(40.sp)
     var tts: Boolean by mutableStateOf(false)
@@ -45,15 +48,11 @@ object Settings {
     var bubbleSpeechBotColor: Color by mutableStateOf(defaultBubbleSpeechColor)
     var bubbleSpeechUserColor: Color by mutableStateOf(defaultBubbleSpeechColor)
     var fontColor: Color by mutableStateOf(defaultFontColor)
+    var botName: String by mutableStateOf(defaultBotName)
 
     val iconsAvailable = with(Icons.Default) {
         listOf(
-            Bot,
-            Robot,
-            RobotFace,
-            Person,
-            AccountCircle,
-            AccountBox
+            Bot, Robot, RobotFace, Person, AccountCircle, AccountBox
         )
     }
 
@@ -62,10 +61,8 @@ object Settings {
 
     fun init(ctx: Context) {
         val pref = ctx.getSharedPreferences("Settings", Context.MODE_PRIVATE)
-        if (pref.contains("init"))
-            from(pref)
-        else
-            reset()
+        if (pref.contains("init")) from(pref)
+        else reset()
     }
 
     fun reset() {
@@ -78,6 +75,8 @@ object Settings {
         bubbleSpeechBotColor = defaultBubbleSpeechColor
         bubbleSpeechUserColor = defaultBubbleSpeechColor
         fontColor = defaultFontColor
+        botName = defaultBotName
+
     }
 
     private fun from(pref: SharedPreferences) = pref.run {
@@ -85,26 +84,22 @@ object Settings {
         getBool(::tts, false)
         botIcon = iconFromName(getString(::botIcon.name, "Filled.Bot")!!)
         getNullable(
-            ::botImage,
-            ::getUri,
-            "https://upload.wikimedia.org/wikipedia/commons/4/41/Noimage.svg"
+            ::botImage, ::getUri, "https://upload.wikimedia.org/wikipedia/commons/4/41/Noimage.svg"
         )
         userIcon = iconFromName(getString(::userIcon.name, "Filled.Person")!!)
         getNullable(
-            ::userImage,
-            ::getUri,
-            "https://upload.wikimedia.org/wikipedia/commons/4/41/Noimage.svg"
+            ::userImage, ::getUri, "https://upload.wikimedia.org/wikipedia/commons/4/41/Noimage.svg"
         )
         getColor(::bubbleSpeechBotColor, defaultBubbleSpeechColor.value.toInt())
         getColor(::bubbleSpeechUserColor, defaultBubbleSpeechColor.value.toInt())
         getColor(::fontColor, defaultFontColor.value.toInt())
+        getString(::botName, defaultBotName)
 
         Log.i(TAG, "Settings loaded: ${this@Settings}")
     }
 
-    fun save(context: Context) = context
-        .getSharedPreferences("Settings", Context.MODE_PRIVATE)
-        .edit(true) {
+    fun save(context: Context) =
+        context.getSharedPreferences("Settings", Context.MODE_PRIVATE).edit(true) {
             putBoolean("init", true)
 
             putSp(::textSize)
@@ -116,6 +111,7 @@ object Settings {
             putColor(::bubbleSpeechBotColor)
             putColor(::bubbleSpeechUserColor)
             putColor(::fontColor)
+            putString(::botName)
 
             Log.i(TAG, "Settings saved : ${this@Settings}")
         }

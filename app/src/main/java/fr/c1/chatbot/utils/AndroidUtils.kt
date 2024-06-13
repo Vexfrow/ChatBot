@@ -146,6 +146,14 @@ fun SharedPreferences.getBool(
     defaultValue: Boolean
 ) = ref.set(getBoolean(ref.name, defaultValue))
 
+fun SharedPreferences.Editor.putString(ref: KMutableProperty0<String>) =
+    putString(ref.name, ref.get())
+
+fun SharedPreferences.getString(
+    ref: KMutableProperty0<String>,
+    defaultValue: String
+) = getString(ref.name, defaultValue)?.let { ref.set(it) }
+
 fun SharedPreferences.Editor.putBool(ref: KMutableProperty0<Boolean>) =
     putBoolean(ref.name, ref.get())
 

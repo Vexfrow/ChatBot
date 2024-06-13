@@ -191,10 +191,10 @@ fun MySearchBar(
         .fillMaxWidth()
         .padding(horizontal = 10.dp)
 
-    var showDp by rememberMutableStateOf(key1 = action, action == TypeAction.EntrerDate)
+    var showDp by rememberMutableStateOf(key1 = action, action == TypeAction.DateInput)
 
     mod = when (action) {
-        TypeAction.EntrerDate -> mod.clickable { showDp = true }
+        TypeAction.DateInput -> mod.clickable { showDp = true }
         else -> mod
     }
 
@@ -223,7 +223,7 @@ fun MySearchBar(
     }
 
     val focus =
-        if (enabled && action != TypeAction.EntrerDate) remember { FocusRequester() }
+        if (enabled && action != TypeAction.DateInput) remember { FocusRequester() }
         else null
 
     if (proposals != null) {
@@ -253,7 +253,7 @@ fun MySearchBar(
         unfocusedPlaceholderColor = MaterialTheme.colorSchemeExtension.placeHolder
     )
 
-    if (action == TypeAction.EntrerDate)
+    if (action == TypeAction.DateInput)
         ifColors = ifColors.copy(
             disabledTextColor = MaterialTheme.colorScheme.onBackground,
             disabledTrailingIconColor =
@@ -266,18 +266,18 @@ fun MySearchBar(
         query = query,
         onQueryChange = { str ->
             query = when (action) {
-                TypeAction.EntrerDate -> str.filter { it.isDigit() }
+                TypeAction.DateInput -> str.filter { it.isDigit() }
                 else -> str
             }
         },
         onSearch = ::search,
-        enabled = enabled && action != TypeAction.EntrerDate,
+        enabled = enabled && action != TypeAction.DateInput,
         colors = SearchBarDefaults.colors(inputFieldColors = ifColors),
         placeholder = { Placeholder(text = placeholder) },
         trailingIcon = if (enabled) {
             { TrailingIcon { search(query) } }
         } else null,
-        keyboardType = if (action == TypeAction.EntrerDistance) KeyboardType.NumberPassword else KeyboardType.Text,
+        keyboardType = if (action == TypeAction.DistanceInput) KeyboardType.NumberPassword else KeyboardType.Text,
         focus = focus
     )
 

@@ -454,7 +454,7 @@ fun MyColumn(
                 answers = tree.answersId.map { i -> tree.getAnswerText(i) }
                 lazyListState.animateScrollToItem(messages.size)
 
-                if (tree.botAction == TypeAction.AfficherResultat) {
+                if (tree.botAction == TypeAction.ShowResults) {
                     delay(5.seconds)
                     onResult()
                 }
@@ -466,17 +466,17 @@ fun MyColumn(
             Log.i(TAG, "Choose '$it'")
             val i = tree.answersId.first { i -> tree.getAnswerText(i) == it }
             when (val act = tree.getUserAction(i)) {
-                TypeAction.EntrerDate -> {
+                TypeAction.DateInput -> {
                     enableSearchBar("Sélectionnez une date", act, i)
                     return@Proposals
                 }
 
-                TypeAction.EntrerDistance -> {
+                TypeAction.DistanceInput -> {
                     enableSearchBar("Saisissez une distance", act, i)
                     return@Proposals
                 }
 
-                TypeAction.EntrerVille -> {
+                TypeAction.CityInput -> {
                     enableSearchBar(
                         "Saisissez une ville",
                         act,
@@ -486,7 +486,7 @@ fun MyColumn(
                     return@Proposals
                 }
 
-                TypeAction.AfficherResultat -> {
+                TypeAction.ShowResults -> {
                     Log.i(
                         TAG,
                         "MyColumn: Affichage des résultats: ${
@@ -497,7 +497,7 @@ fun MyColumn(
                     )
                 }
 
-                TypeAction.Geolocalisation -> {
+                TypeAction.Geolocate -> {
                     app.activitiesRepository.location =
                         locationHandler.currentLocation ?: Location("")
                     addAnswer(
@@ -509,11 +509,11 @@ fun MyColumn(
 
 //                TypeAction.ChoisirPassions -> TODO()
 
-                TypeAction.ActivitePhysique -> user.addType(SPORT)
+                TypeAction.PhysicalActivity -> user.addType(SPORT)
 
-                TypeAction.ActiviteCulturelle -> user.addType(CULTURE)
+                TypeAction.CulturalActivity -> user.addType(CULTURE)
 
-                TypeAction.ChoisirPassions -> {
+                TypeAction.ChoosePassions -> {
                     val passions = ActivitiesRepository.passionList
                     enableSearchBar("Choisissez une passion", act, i, passions)
                     return@Proposals
@@ -532,17 +532,17 @@ fun MyColumn(
             proposals = sbState.list
         ) {
             when (sbState.action) {
-                TypeAction.EntrerDate -> {
+                TypeAction.DateInput -> {
                     addAnswer(sbState.answerId, "Je veux y aller le $it")
                     activitiesRepository.date = it
                 }
 
-                TypeAction.EntrerDistance -> {
+                TypeAction.DistanceInput -> {
                     addAnswer(sbState.answerId, "Je veux une distance de $it km")
                     activitiesRepository.distance = it.toInt()
                 }
 
-                TypeAction.EntrerVille -> {
+                TypeAction.CityInput -> {
                     user.addCity(it)
                     val text = if ("AEIOUaeiou".indexOf(it.first()) != -1) "d'$it" else "de $it"
                     addAnswer(

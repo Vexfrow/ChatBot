@@ -2,7 +2,7 @@ package fr.c1.chatbot.composable
 
 import fr.c1.chatbot.model.activity.AbstractActivity
 import fr.c1.chatbot.model.activity.Association
-import fr.c1.chatbot.model.activity.Contenus
+import fr.c1.chatbot.model.activity.Content
 import fr.c1.chatbot.model.activity.Edifices
 import fr.c1.chatbot.model.activity.EquipementsSport
 import fr.c1.chatbot.model.activity.Expositions
@@ -64,7 +64,7 @@ object ActivitiesComp {
         items(list) {
             when (it) {
                 is Association -> Association(association = it)
-                is Contenus -> Content(contenu = it)
+                is Content -> Content(contenu = it)
                 is Edifices -> Building(edifice = it)
                 is EquipementsSport -> SportEquipment(equipementSport = it)
                 is Expositions -> Exposition(exposition = it)
@@ -145,15 +145,15 @@ object ActivitiesComp {
 
     @Composable
     fun Content(
-        contenu: Contenus,
+        contenu: Content,
         modifier: Modifier = Modifier
     ) = MyColumn(contenu.accessible, modifier, contenu.url) {
         Text(
-            text = contenu.nom,
+            text = contenu.name,
             style = MaterialTheme.typography.bodyLarge
         )
         TextWithIcon(
-            text = "${contenu.adresse}, ${contenu.codePostal} ${contenu.commune}",
+            text = "${contenu.address}, ${contenu.postalCode} ${contenu.commune}",
             style = MaterialTheme.typography.bodyMedium,
             icon = Icons.Default.Home
         )
@@ -295,13 +295,13 @@ private fun Prev() = ChatBotPrev {
                 accessible = true
             ),
 
-            Contenus(
-                identifiant = UUID.randomUUID().toString(),
+            Content(
+                id = UUID.randomUUID().toString(),
                 commune = "Comm",
-                nom = "Name",
-                adresse = "Addr",
-                lieu = "Lieu",
-                codePostal = "38610",
+                name = "Name",
+                address = "Addr",
+                location = "Lieu",
+                postalCode = "38610",
                 url = "www.google.fr",
                 accessible = true
             ),

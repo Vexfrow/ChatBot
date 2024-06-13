@@ -9,7 +9,7 @@ import fr.c1.chatbot.model.activity.Exposition
 import fr.c1.chatbot.model.activity.Festival
 import fr.c1.chatbot.model.activity.Garden
 import fr.c1.chatbot.model.activity.Museum
-import fr.c1.chatbot.model.activity.Sites
+import fr.c1.chatbot.model.activity.Site
 import fr.c1.chatbot.ui.icons.Deceased
 import fr.c1.chatbot.ui.icons.InteractiveSpace
 import fr.c1.chatbot.ui.theme.ChatBotPrev
@@ -71,7 +71,7 @@ object ActivitiesComp {
                 is Festival -> Festival(festival = it)
                 is Garden -> Garden(jardin = it)
                 is Museum -> Museum(musee = it)
-                is Sites -> Site(site = it)
+                is Site -> Site(site = it)
                 else -> throw NotImplementedError()
             }
         }
@@ -264,7 +264,7 @@ object ActivitiesComp {
 
     @Composable
     fun Site(
-        site: Sites,
+        site: Site,
         modifier: Modifier = Modifier
     ) = MyColumn(site.accessible, modifier) {
         Text(
@@ -372,8 +372,8 @@ private fun Prev() = ChatBotPrev {
                 url = "www.google.fr"
             ),
 
-            Sites(
-                departement = "dep",
+            Site(
+                department = "dep",
                 commune = "comm",
                 accessible = true,
                 region = "reg",

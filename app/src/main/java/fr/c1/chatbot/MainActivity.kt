@@ -5,9 +5,9 @@ import fr.c1.chatbot.composable.ActivitiesComp
 import fr.c1.chatbot.composable.History
 import fr.c1.chatbot.composable.Message
 import fr.c1.chatbot.composable.MySearchBar
-import fr.c1.chatbot.composable.SettingsComp
 import fr.c1.chatbot.composable.PassionsList
 import fr.c1.chatbot.composable.Proposals
+import fr.c1.chatbot.composable.SettingsComp
 import fr.c1.chatbot.composable.Suggestion
 import fr.c1.chatbot.composable.Tab
 import fr.c1.chatbot.composable.TopBar
@@ -144,7 +144,7 @@ class MainActivity : ComponentActivity() {
                         when (tab) {
                             Tab.Settings -> SettingsComp()
                             Tab.ChatBotResults -> ActivitiesComp(
-                                list = app.activitiesRepository.getResultats(
+                                list = app.activitiesRepository.getResults(
                                     app
                                 )
                             )
@@ -490,7 +490,7 @@ fun MyColumn(
                     Log.i(
                         TAG,
                         "MyColumn: Affichage des résultats: ${
-                            app.activitiesRepository.getResultats(
+                            app.activitiesRepository.getResults(
                                 app
                             )
                         }"

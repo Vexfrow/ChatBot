@@ -32,7 +32,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun initMuseesTest() {
-        activitiesRepository.initMusees(app)
+        activitiesRepository.initMuseums(app)
         val musees = activitiesRepository.museums
         val sizeExpected = 1222
         Assert.assertEquals(
@@ -68,7 +68,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun initContenusTest() {
-        activitiesRepository.initContenus(app)
+        activitiesRepository.initContents(app)
         val contenus = activitiesRepository.contents
         val sizeExpected = 1108
         Assert.assertEquals(
@@ -80,7 +80,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun initEdificesTest() {
-        activitiesRepository.initEdifices(app)
+        activitiesRepository.initBuildings(app)
         val edifices = activitiesRepository.buildings
         val sizeExpected = 1657
         Assert.assertEquals(
@@ -92,7 +92,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun initJardinsTest() {
-        activitiesRepository.initJardins(app)
+        activitiesRepository.initGardens(app)
         val jardins = activitiesRepository.gardens
         val sizeExpected = 413
         Assert.assertEquals(
@@ -116,7 +116,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun initEquipementsSportTest() {
-        activitiesRepository.initEquipementsSport(app)
+        activitiesRepository.initSportEquipments(app)
         val equipementsSport = activitiesRepository.sportEquipments
         val sizeExpected = 159463
         Assert.assertEquals(
@@ -128,7 +128,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun initAssociationsTest() {
-        activitiesRepository.initAsso(app)
+        activitiesRepository.initAssociations(app)
         val asso = activitiesRepository.associations
         val sizeExpected = 23837
         Assert.assertEquals(
@@ -162,7 +162,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun getMuseesListTest() {
-        activitiesRepository.initMusees(app)
+        activitiesRepository.initMuseums(app)
         val musees = activitiesRepository.museums
         val sizeExpected = 1222
         Assert.assertEquals(
@@ -198,7 +198,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun getContenusListTest() {
-        activitiesRepository.initContenus(app)
+        activitiesRepository.initContents(app)
         val contenus = activitiesRepository.contents
         val sizeExpected = 1108
         Assert.assertEquals(
@@ -210,7 +210,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun getEdificesListTest() {
-        activitiesRepository.initEdifices(app)
+        activitiesRepository.initBuildings(app)
         val edifices = activitiesRepository.buildings
         val sizeExpected = 1657
         Assert.assertEquals(
@@ -222,7 +222,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun getJardinsListTest() {
-        activitiesRepository.initJardins(app)
+        activitiesRepository.initGardens(app)
         val jardins = activitiesRepository.gardens
         val sizeExpected = 413
         Assert.assertEquals(
@@ -246,7 +246,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun getEquipementsSportListTest() {
-        activitiesRepository.initEquipementsSport(app)
+        activitiesRepository.initSportEquipments(app)
         val equipementsSport = activitiesRepository.sportEquipments
         val sizeExpected = 159463
         Assert.assertEquals(
@@ -258,7 +258,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun getAssociationsListTest() {
-        activitiesRepository.initAsso(app)
+        activitiesRepository.initAssociations(app)
         val asso = activitiesRepository.associations
         val sizeExpected = 23837
         Assert.assertEquals(
@@ -367,7 +367,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val sortedList = activitiesRepository.trierParRegion(list)
+        val sortedList = activitiesRepository.sortByRegion(list)
 
         val expectedList = listOf(activity1, activity3, activity2)
 
@@ -420,7 +420,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val selectedList = activitiesRepository.selectionnerParRegion(list, "region1")
+        val selectedList = activitiesRepository.selectByRegion(list, "region1")
 
         val expectedList = listOf(activity1, activity3)
 
@@ -473,7 +473,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val sortedList = activitiesRepository.trierParDepartement(list)
+        val sortedList = activitiesRepository.sortByDepartement(list)
 
         val expectedList = listOf(activity3, activity2, activity1)
 
@@ -526,7 +526,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val selectedList = activitiesRepository.selectionnerParDepartement(list, "departement3")
+        val selectedList = activitiesRepository.selectByDepartement(list, "departement3")
 
         val expectedList = listOf(activity1)
 
@@ -579,7 +579,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val sortedList = activitiesRepository.trierParCommune(list)
+        val sortedList = activitiesRepository.sortByCommune(list)
 
         val expectedList = listOf(activity3, activity2, activity1)
 
@@ -632,7 +632,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val selectedList = activitiesRepository.selectionnerParCommune(list, "commune1")
+        val selectedList = activitiesRepository.selectByCommune(list, "commune1")
 
         val expectedList = listOf(activity3)
 
@@ -685,7 +685,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val sortedList = activitiesRepository.trierParNom(list)
+        val sortedList = activitiesRepository.sortByName(list)
 
         val expectedList = listOf(activity3, activity2, activity1)
 
@@ -738,7 +738,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val selectedList = activitiesRepository.selectionnerParNom(list, "nom1")
+        val selectedList = activitiesRepository.selectByName(list, "nom1")
 
         val expectedList = listOf(activity3)
 
@@ -791,7 +791,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val sortedList = activitiesRepository.trierParLieu(list)
+        val sortedList = activitiesRepository.sortByLocation(list)
 
         val expectedList = listOf(activity3, activity2, activity1)
 
@@ -844,7 +844,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val selectedList = activitiesRepository.selectionnerParLieu(list, "lieu1")
+        val selectedList = activitiesRepository.selectByLocation(list, "lieu1")
 
         val expectedList = listOf(activity3)
 
@@ -897,7 +897,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val sortedList = activitiesRepository.trierParCodePostal(list)
+        val sortedList = activitiesRepository.sortByPostalCode(list)
 
         val expectedList = listOf(activity3, activity2, activity1)
 
@@ -950,7 +950,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val selectedList = activitiesRepository.selectionnerParCodePostal(list, "codePostal1")
+        val selectedList = activitiesRepository.selectByPostalCode(list, "codePostal1")
 
         val expectedList = listOf(activity3)
 
@@ -1003,7 +1003,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val selectedList = activitiesRepository.selectionnerParAccessible(list, true)
+        val selectedList = activitiesRepository.selectByAccessible(list, true)
 
         val expectedList = listOf(activity1, activity3)
 
@@ -1056,7 +1056,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val sortedList = activitiesRepository.trierParIdentifiant(list)
+        val sortedList = activitiesRepository.sortByIdentifiant(list)
 
         val expectedList = listOf(activity3, activity2, activity1)
 

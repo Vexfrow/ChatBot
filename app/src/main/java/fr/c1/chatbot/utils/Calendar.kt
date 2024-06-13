@@ -1,6 +1,7 @@
 package fr.c1.chatbot.utils
 
 import fr.c1.chatbot.model.Event
+import fr.c1.chatbot.model.toDate
 import fr.c1.chatbot.utils.Calendar.PermissionsRequest.hasReadCalendarPermission
 import fr.c1.chatbot.utils.Calendar.PermissionsRequest.hasWriteCalendarPermission
 import android.Manifest
@@ -10,8 +11,6 @@ import android.content.Context
 import android.net.Uri
 import android.provider.CalendarContract
 import android.util.Log
-import fr.c1.chatbot.composable.getNewID
-import fr.c1.chatbot.model.toDate
 
 private const val TAG = "Calendar"
 
@@ -58,7 +57,8 @@ object Calendar {
             CalendarContract.Events.DTEND,
             CalendarContract.Events.DELETED
         )
-        val selection = "${CalendarContract.Events.DELETED} = ? AND ${CalendarContract.Events.CALENDAR_ID} = ?"
+        val selection =
+            "${CalendarContract.Events.DELETED} = ? AND ${CalendarContract.Events.CALENDAR_ID} = ?"
         // Vérifier que le calendrier d'id 99 existe
         val calendarId = getCalendarId(context)
         if (calendarId == -1L) {
@@ -69,7 +69,8 @@ object Calendar {
         val selectionArgs = arrayOf("0", "99")
         val sortOrder = "${CalendarContract.Events.DTSTART} ASC"
         val uri: Uri = CalendarContract.Events.CONTENT_URI
-        val cursor = context.contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)
+        val cursor =
+            context.contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)
         cursor?.use {
             val idIndex = it.getColumnIndexOrThrow(CalendarContract.Events._ID)
             val titleIndex = it.getColumnIndexOrThrow(CalendarContract.Events.TITLE)
@@ -124,7 +125,13 @@ object Calendar {
         Log.i(TAG, "writeEvent: Event added to calendar $calendarId")
     }
 
-    fun writeEvent(context: Context, title: String, startMillis: Long, endMillis: Long, events: List<Event>) {
+    fun writeEvent(
+        context: Context,
+        title: String,
+        startMillis: Long,
+        endMillis: Long,
+        events: List<Event>
+    ) {
         val id = getNewID(events)
         val event = Event(id, title, startMillis, endMillis)
         writeEvent(context, event)
@@ -140,7 +147,10 @@ object Calendar {
             put(CalendarContract.Calendars.NAME, "ChatBot")
             put(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME, "ChatBot")
             put(CalendarContract.Calendars.CALENDAR_COLOR, -0x10000)
-            put(CalendarContract.Calendars.CALENDAR_ACCESS_LEVEL, CalendarContract.Calendars.CAL_ACCESS_OWNER)
+            put(
+                CalendarContract.Calendars.CALENDAR_ACCESS_LEVEL,
+                CalendarContract.Calendars.CAL_ACCESS_OWNER
+            )
             put(CalendarContract.Calendars.OWNER_ACCOUNT, "fr.c1.chatbot")
             put(CalendarContract.Calendars.SYNC_EVENTS, 1)
             put(CalendarContract.Calendars.VISIBLE, 1)
@@ -202,11 +212,13 @@ object Calendar {
             CalendarContract.Events.DTEND,
             CalendarContract.Events.DELETED
         )
-        val selection = "${CalendarContract.Events.DELETED} = ? AND ${CalendarContract.Events.CALENDAR_ID} = ?"
+        val selection =
+            "${CalendarContract.Events.DELETED} = ? AND ${CalendarContract.Events.CALENDAR_ID} = ?"
         val selectionArgs = arrayOf("0", "99") // Récupérer uniquement les événements non supprimés
         val sortOrder = "${CalendarContract.Events.DTSTART} ASC"
         val uri: Uri = CalendarContract.Events.CONTENT_URI
-        val cursor = context.contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)
+        val cursor =
+            context.contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)
         cursor?.use {
             val idIndex = it.getColumnIndexOrThrow(CalendarContract.Events._ID)
             val dtStartIndex = it.getColumnIndexOrThrow(CalendarContract.Events.DTSTART)
@@ -238,4 +250,7 @@ object Calendar {
         context.contentResolver.delete(uri, selection, selectionArgs)
     }
 
+    private fun getNewID(events: List<Event>): Long {
+        return events.maxOfOrNull { it.id }?.plus(1) ?: 0
+    }
 }

@@ -7,7 +7,7 @@ import fr.c1.chatbot.model.activity.Building
 import fr.c1.chatbot.model.activity.SportEquipment
 import fr.c1.chatbot.model.activity.Exposition
 import fr.c1.chatbot.model.activity.Festival
-import fr.c1.chatbot.model.activity.Jardins
+import fr.c1.chatbot.model.activity.Garden
 import fr.c1.chatbot.model.activity.Musees
 import fr.c1.chatbot.model.activity.Sites
 import fr.c1.chatbot.ui.icons.Deceased
@@ -69,7 +69,7 @@ object ActivitiesComp {
                 is SportEquipment -> SportEquipment(equipementSport = it)
                 is Exposition -> Exposition(exposition = it)
                 is Festival -> Festival(festival = it)
-                is Jardins -> Garden(jardin = it)
+                is Garden -> Garden(jardin = it)
                 is Musees -> Museum(musee = it)
                 is Sites -> Site(site = it)
                 else -> throw NotImplementedError()
@@ -230,15 +230,15 @@ object ActivitiesComp {
 
     @Composable
     fun Garden(
-        jardin: Jardins,
+        jardin: Garden,
         modifier: Modifier = Modifier
     ) = MyColumn(jardin.accessible, modifier) {
         Text(
-            text = jardin.nom,
+            text = jardin.name,
             style = MaterialTheme.typography.bodyLarge
         )
         TextWithIcon(
-            text = "${jardin.adresse}, ${jardin.codePostal} ${jardin.commune}",
+            text = "${jardin.address}, ${jardin.postalCode} ${jardin.commune}",
             style = MaterialTheme.typography.bodyMedium,
             icon = Icons.Default.Home
         )
@@ -347,14 +347,14 @@ private fun Prev() = ChatBotPrev {
                 discipline = "disc"
             ),
 
-            Jardins(
-                departement = "dep",
+            Garden(
+                department = "dep",
                 commune = "comm",
-                nom = "name",
+                name = "name",
                 accessible = true,
                 region = "reg",
-                adresse = "addr",
-                codePostal = "cp"
+                address = "addr",
+                postalCode = "cp"
             ),
 
 

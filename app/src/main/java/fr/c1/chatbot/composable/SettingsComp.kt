@@ -1,6 +1,10 @@
 package fr.c1.chatbot.composable
 
-import android.net.Uri
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import fr.c1.chatbot.model.Settings
+import fr.c1.chatbot.ui.theme.ChatBotPrev
+import fr.c1.chatbot.utils.rememberMutableStateOf
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -42,14 +46,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
-import fr.c1.chatbot.model.Settings
-import fr.c1.chatbot.ui.theme.ChatBotPrev
-import fr.c1.chatbot.utils.rememberMutableStateOf
+import android.net.Uri
 
 @Composable
-fun MySettings() {
+fun SettingsComp() {
     var isDialogOpen by remember { mutableStateOf(false) }
     val context = LocalContext.current
     var botDialog by rememberMutableStateOf(false)
@@ -207,4 +207,4 @@ fun IconOption(imageVector: ImageVector, size: Dp = 100.dp, onClick: () -> Unit)
 
 @Preview(showBackground = true, device = Devices.TABLET)
 @Composable
-fun GreetingPreview() = ChatBotPrev { MySettings() }
+private fun Prev() = ChatBotPrev { SettingsComp() }

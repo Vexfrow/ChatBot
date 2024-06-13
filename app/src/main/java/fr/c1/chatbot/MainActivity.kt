@@ -124,7 +124,7 @@ class MainActivity : ComponentActivity() {
                                 Settings.save(ctx)
 
                             val accountTabs =
-                                listOf(Tab.AccountPassions, Tab.AccountData, Tab.AccountPref)
+                                listOf(Tab.AccountPassions, Tab.AccountData, Tab.AccountPreferences)
                             if (tab in accountTabs && newTab !in accountTabs)
                                 storeAllUsersInformation(ctx, app.userList)
 
@@ -163,7 +163,7 @@ class MainActivity : ComponentActivity() {
                             Tab.Suggestion -> Suggestion()
                             Tab.History -> History()
                             Tab.AccountData -> AccountComp.Data()
-                            Tab.AccountPref -> AccountComp.Preferences()
+                            Tab.AccountPreferences -> AccountComp.Preferences()
 
                             else -> {}
                         }

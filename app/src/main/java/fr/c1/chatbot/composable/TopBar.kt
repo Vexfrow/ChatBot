@@ -58,7 +58,7 @@ enum class Tab(val value: Float) {
     Suggestion(1f),
     History(2f),
     AccountData(3.0f),
-    AccountPref(3.1f),
+    AccountPreferences(3.1f),
     AccountPassions(3.2f),
     Settings(4f);
 

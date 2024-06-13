@@ -4,7 +4,7 @@ import fr.c1.chatbot.model.activity.AbstractActivity
 import fr.c1.chatbot.model.activity.Association
 import fr.c1.chatbot.model.activity.Content
 import fr.c1.chatbot.model.activity.Building
-import fr.c1.chatbot.model.activity.EquipementsSport
+import fr.c1.chatbot.model.activity.SportEquipment
 import fr.c1.chatbot.model.activity.Expositions
 import fr.c1.chatbot.model.activity.Festivals
 import fr.c1.chatbot.model.activity.Jardins
@@ -66,7 +66,7 @@ object ActivitiesComp {
                 is Association -> Association(association = it)
                 is Content -> Content(contenu = it)
                 is Building -> Building(edifice = it)
-                is EquipementsSport -> SportEquipment(equipementSport = it)
+                is SportEquipment -> SportEquipment(equipementSport = it)
                 is Expositions -> Exposition(exposition = it)
                 is Festivals -> Festival(festival = it)
                 is Jardins -> Garden(jardin = it)
@@ -179,15 +179,15 @@ object ActivitiesComp {
 
     @Composable
     fun SportEquipment(
-        equipementSport: EquipementsSport,
+        equipementSport: SportEquipment,
         modifier: Modifier = Modifier
     ) = MyColumn(equipementSport.accessible, modifier, equipementSport.url) {
         Text(
-            text = equipementSport.nom,
+            text = equipementSport.name,
             style = MaterialTheme.typography.bodyLarge
         )
         TextWithIcon(
-            text = "${equipementSport.adresse}, ${equipementSport.codePostal} ${equipementSport.commune}",
+            text = "${equipementSport.address}, ${equipementSport.postalCode} ${equipementSport.commune}",
             style = MaterialTheme.typography.bodyMedium,
             icon = Icons.Default.Home
         )
@@ -315,14 +315,14 @@ private fun Prev() = ChatBotPrev {
                 accessible = true
             ),
 
-            EquipementsSport(
-                identifiant = UUID.randomUUID().toString(),
-                departement = "dep",
+            SportEquipment(
+                id = UUID.randomUUID().toString(),
+                department = "dep",
                 commune = "comm",
-                nom = "name",
-                adresse = "addr",
+                name = "name",
+                address = "addr",
                 accessible = true,
-                codePostal = "cp",
+                postalCode = "cp",
                 url = "www.google.fr"
             ),
 

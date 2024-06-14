@@ -343,7 +343,7 @@ fun OsmdroidMapView() {
 fun MyColumn(
     modifier: Modifier = Modifier,
     enabled: Boolean,
-    onResult: () -> Unit
+    onResult: () -> Unit,
 ) {
     val ctx = LocalContext.current
     val app = application
@@ -365,7 +365,7 @@ fun MyColumn(
             tts.speak(messages.last())
     }
 
-    Column(modifier = modifier.fillMaxSize()) {
+    Column(modifier = modifier.fillMaxSize().background(Settings.fontColor)) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
@@ -526,6 +526,7 @@ fun MyColumn(
         }
 
         MySearchBar(
+            modifier = Modifier.background(Settings.fontColor),
             placeholder = sbState.text,
             enabled = sbState.enabled,
             action = sbState.action,

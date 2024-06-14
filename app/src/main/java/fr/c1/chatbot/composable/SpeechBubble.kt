@@ -184,12 +184,10 @@ fun Message(
 
 
 @Preview(device = Devices.PIXEL_TABLET)
-//@Preview(device = Devices.PIXEL_TABLET, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun Prev() = ChatBotPrev {
     Message(
         "Oui",
         Modifier.align(Alignment.TopStart), isUser = true
     )
-    //SpeechBubble(text = "bllllllllllllllllllllllbblblblblblblblblblblblblblblbllblblblb",modifier = Modifier.align(Alignment.TopStart),isUser = true)
 }

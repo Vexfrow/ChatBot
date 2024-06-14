@@ -57,7 +57,7 @@ object Settings {
     }
 
 
-    fun iconFromName(name: String) = iconsAvailable.first { it.name == name }
+    private fun iconFromName(name: String) = iconsAvailable.first { it.name == name }
 
     fun init(ctx: Context) {
         val pref = ctx.getSharedPreferences("Settings", Context.MODE_PRIVATE)
@@ -65,7 +65,7 @@ object Settings {
         else reset()
     }
 
-    fun reset() {
+    private fun reset() {
         textSize = 40.sp
         tts = false
         botIcon = Icons.Default.Bot

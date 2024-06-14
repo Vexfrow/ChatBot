@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -31,8 +30,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,27 +44,30 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.window.Dialog
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import fr.c1.chatbot.model.Settings
 import fr.c1.chatbot.ui.shape.SpeechBubbleShape
 import fr.c1.chatbot.ui.theme.ChatBotPrev
+import fr.c1.chatbot.ui.theme.pickColorList
 import fr.c1.chatbot.utils.rememberMutableStateOf
 
 @Composable
 fun MySettings() {
     val context = LocalContext.current
 
-    var isDialogOpen by remember { mutableStateOf(false) }
+    //Vars to manage icon's changes
+    var isDialogOpen by rememberMutableStateOf(false)
     var botDialog by rememberMutableStateOf(false)
 
-    var isColorPickerOpen by remember { mutableStateOf(false) }
+    //Vars to manage color's changes
+    var isColorPickerOpen by rememberMutableStateOf(false)
     var botColorPicker by rememberMutableStateOf(false)
     var fontColorPicker by rememberMutableStateOf(false)
 
-    var isBotNameOpen by remember { mutableStateOf(false) }
+    //Vars to manage bot name's changes
+    var isBotNameOpen by rememberMutableStateOf(false)
     var botName by rememberMutableStateOf(false)
 
 
@@ -141,7 +141,6 @@ fun MySettings() {
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))
-                //val mod2 = Modifier.clip(SpeechBubbleShape(15.dp, 15.dp, Size(50f, 50f))).background(Settings.bubbleSpeechBotColor)
                 Box(
                     modifier = Modifier
                         .size(250.dp, 100.dp)
@@ -232,14 +231,14 @@ fun MySettings() {
                             }
                         }
 
-                        item {// Ajouter + d'icônes si nécessaire
+                        item {// Add more icon if the user want to
                             Box(
                                 modifier = Modifier
                                     .size(100.dp)
                                     .clickable { selectImageLauncher.launch("image/*") },
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text("Ajouter une Photo de la galerie")
+                                Text("Ajouter une Photo de la galerie",style = MaterialTheme.typography.bodySmall)
                             }
                         }
                     }
@@ -271,19 +270,7 @@ fun MySettings() {
                         style = MaterialTheme.typography.titleLarge
                     )
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                        //Todo : Le déplacer à un autre endroit
-                        val colors = listOf(
-                            Color.Blue,
-                            Color(136, 227, 160),
-                            Color(140, 204, 219),
-                            Color(136, 227, 160),
-                            Color(198, 138, 209),
-                            Color(222, 138, 177),
-                            Color(217, 141, 126),
-                            Color(214, 197, 111)
-                        )
-
-                        items(colors) { color ->
+                        items(pickColorList) { color ->
                             Box(
                                 modifier = Modifier
                                     .background(color)

@@ -86,11 +86,6 @@ import fr.c1.chatbot.model.activity.Type.*
 import fr.c1.chatbot.utils.*
 import java.util.Date
 import androidx.compose.ui.viewinterop.AndroidView
-import fr.c1.chatbot.utils.LocationHandler
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory
-import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.overlay.compass.CompassOverlay
-import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider
 import kotlin.time.Duration.Companion.seconds
 
 private const val TAG = "MainActivity"
@@ -174,8 +169,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                             )
-
-                            Tab.ChatBotMap -> OsmdroidMapView()
+                            Tab.ChatBotMap -> OsmdroidMapView(locationHandler, activitiesRepository)
                             Tab.Suggestion -> Suggestion()
                             Tab.History -> History()
                             Tab.AccountData -> AccountComp.Data()
@@ -324,36 +318,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun OsmdroidMapView() {
-    AndroidView(
-        modifier = Modifier.fillMaxSize(),
-        factory = { context ->
-            MapView(context).apply {
-                setTileSource(TileSourceFactory.MAPNIK)
-                zoomController.setVisibility(CustomZoomButtonsController.Visibility.SHOW_AND_FADEOUT)
 
-                setMultiTouchControls(true)
-                controller.apply {
-                    setZoom(15.0)
-                    setCenter(
-                        GeoPoint(
-                            locationHandler.currentLocation!!.latitude,
-                            locationHandler.currentLocation!!.longitude
-                        )
-                    )
-                }
-                val compassOverlay = CompassOverlay(
-                    context,
-                    InternalCompassOrientationProvider(context),
-                    this
-                ).apply { enableCompass() }
-
-                overlays.add(compassOverlay)
-            }
-        }
-    )
-}
 
 @Composable
 fun MyColumn(

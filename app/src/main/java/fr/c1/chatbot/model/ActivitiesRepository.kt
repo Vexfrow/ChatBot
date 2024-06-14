@@ -25,11 +25,10 @@ import java.io.BufferedInputStream
 import java.io.InputStream
 import java.util.Locale
 
+private const val TAG = "ActivitiesRepository"
+
 // Fichiers CSV venant du site data.gouv.fr
 class ActivitiesRepository {
-
-    private val TAG = "ActivitiesRepository"
-
     companion object {
         val passionList: Set<String>
             get() = Association.passions union Content.passions union Site.passions union Museum.passions union Garden.passions union Festival.passions union Exposition.passions union SportEquipment.passions union Building.passions

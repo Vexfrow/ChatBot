@@ -19,7 +19,6 @@ import fr.c1.chatbot.model.activity.AbstractActivity
 import fr.c1.chatbot.model.activity.Type.CULTURE
 import fr.c1.chatbot.model.activity.Type.SPORT
 import fr.c1.chatbot.model.storeAllUsersInformation
-import fr.c1.chatbot.model.toDate
 import fr.c1.chatbot.ui.theme.ChatBotTheme
 import fr.c1.chatbot.ui.theme.colorSchemeExtension
 import fr.c1.chatbot.utils.Calendar
@@ -29,6 +28,7 @@ import fr.c1.chatbot.utils.hasPermission
 import fr.c1.chatbot.utils.rememberMutableStateListOf
 import fr.c1.chatbot.utils.rememberMutableStateOf
 import fr.c1.chatbot.utils.scheduleEventReminders
+import fr.c1.chatbot.utils.toDate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.osmdroid.config.Configuration

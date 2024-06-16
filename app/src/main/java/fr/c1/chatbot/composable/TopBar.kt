@@ -2,7 +2,6 @@ package fr.c1.chatbot.composable
 
 import fr.c1.chatbot.ui.icons.Robot
 import fr.c1.chatbot.ui.theme.ChatBotPrev
-import fr.c1.chatbot.utils.rememberMutableStateOf
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
@@ -20,92 +19,76 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import android.util.Log
-import kotlin.math.floor
 
-private val tabs = listOf(
-    "Chatbot" to Icons.Default.Robot,
-    "Suggestion" to Icons.Default.Lightbulb,
-    "Historique" to Icons.Default.History,
-    "Compte" to Icons.Default.AccountCircle,
-    "Paramètres" to Icons.Default.Settings
-)
+enum class Tab(
+    val value: Number,
+    val title: String,
+    val icon: ImageVector
+) {
+    ChatBot(0, "Chatbot", Icons.Default.Robot),
+    ChatBotChat(0.0f, "Conversation", Icons.Default.Forum),
+    ChatBotResults(0.1f, "Resultats", Icons.Default.ContentPasteSearch),
+    ChatBotMap(0.2f, "Carte", Icons.Default.Map),
+    Suggestion(1, "Suggestion", Icons.Default.Lightbulb),
+    History(2, "Historique", Icons.Default.History),
+    Account(3, "Compte", Icons.Default.AccountCircle),
+    AccountData(3.0f, "Données", Icons.Default.AccountCircle),
+    AccountPreferences(3.1f, "Préférences hebdomadaire", Icons.Default.DateRange),
+    AccountPassions(3.2f, "Passions", Icons.Default.SentimentVerySatisfied),
+    Settings(4, "Paramètres", Icons.Default.Settings);
 
-private val chatBotSubTabs = listOf(
-    "Conversation" to Icons.Default.Forum,
-    "Resultats" to Icons.Default.ContentPasteSearch,
-    "Carte" to Icons.Default.Map
-)
-
-private val accountSubTabs = listOf(
-    "Données" to Icons.Default.AccountCircle,
-    "Préférences hebdomadaire" to Icons.Default.DateRange,
-    "Passions" to Icons.Default.SentimentVerySatisfied
-)
-
-enum class Tab(val value: Float) {
-    ChatBotChat(0.0f),
-    ChatBotResults(0.1f),
-    ChatBotMap(0.2f),
-    Suggestion(1f),
-    History(2f),
-    AccountData(3.0f),
-    AccountPreferences(3.1f),
-    AccountPassions(3.2f),
-    Settings(4f);
-
-    companion object {
-        fun valueOf(value: Float) = entries.first { it.value == value }
-    }
+    val subTabs: List<Tab> get() = entries.filter { it.value !is Int && it.value.toInt() == value.toInt() }
+    val subValue: Int get() = ((value.toFloat() * 10) % 10).toInt()
+    val finalTab: Tab get() = if (value is Float) this else subTabs.firstOrNull() ?: this
 }
 
 @Composable
 fun TopBar(
-    tabSelected: Float,
-    onTabSelected: (Float) -> Unit
+    tabSelected: Tab,
+    onTabSelected: (Tab) -> Unit
 ) {
-    var state by remember(tabSelected) { mutableFloatStateOf(tabSelected) }
-    val subState by remember(tabSelected) { derivedStateOf { ((state * 10) % 10).toInt() } }
+    var state by remember(tabSelected) { mutableStateOf(tabSelected) }
 
-    fun setState(value: Float) {
-        state = value
+    fun setState(value: Tab) {
+        state = value.finalTab
         onTabSelected(state)
     }
 
     Column(modifier = Modifier.statusBarsPadding()) {
-        TabRow(selectedTabIndex = state.toInt()) {
-            tabs.forEachIndexed { i, (title, icon) ->
+        TabRow(selectedTabIndex = state.value.toInt()) {
+            Tab.entries.filter { it.value is Int }.forEach { tab ->
                 Tab(
-                    selected = i == state.toInt(),
-                    onClick = { setState(i.toFloat()) },
-                    text = { Text(text = title) },
-                    icon = { Icon(imageVector = icon, contentDescription = title) }
+                    selected = tab == state,
+                    onClick = { setState(tab) },
+                    text = { Text(text = tab.title) },
+                    icon = { Icon(imageVector = tab.icon, contentDescription = tab.title) }
                 )
             }
         }
 
-        val subTabs = when (floor(state)) {
-            Tab.ChatBotChat.value -> chatBotSubTabs
-            Tab.AccountData.value -> accountSubTabs
-            else -> null
-        }
-
-        if (subTabs != null)
-            TabRow(selectedTabIndex = subState) {
-                subTabs.forEachIndexed { i, (title, icon) ->
+        val subTabs = state.subTabs
+        if (subTabs.isNotEmpty())
+            TabRow(selectedTabIndex = state.subValue) {
+                subTabs.forEach { subTab ->
                     Tab(
-                        selected = i == ((state * 10) % 10).toInt(),
-                        onClick = { setState(state.toInt() + i / 10f) },
-                        text = { Text(text = title) },
-                        icon = { Icon(imageVector = icon, contentDescription = title) }
+                        selected = subTab.value.toFloat() == state.value.toFloat(),
+                        onClick = { setState(subTab) },
+                        text = { Text(text = subTab.title) },
+                        icon = {
+                            Icon(
+                                imageVector = subTab.icon,
+                                contentDescription = subTab.title
+                            )
+                        }
                     )
                 }
             }
@@ -117,6 +100,5 @@ private const val TAG = "TopBar"
 @Preview(device = Devices.TABLET)
 @Composable
 private fun Prev() = ChatBotPrev {
-    var set by rememberMutableStateOf(value = false)
-    TopBar(0f) { Log.i(TAG, "Prev: $it") }
+    TopBar(Tab.ChatBot) { Log.i(TAG, "Prev: $it") }
 }

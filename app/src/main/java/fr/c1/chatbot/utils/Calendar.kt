@@ -62,7 +62,7 @@ object Calendar {
         val calendarId = getCalendarId(context)
         if (calendarId == -1L) {
             Log.e(TAG, "fetchCalendarEvents: No ChatBot calendar !")
-            createCalendar(context)
+//            createCalendar(context)
         }
         // Récupérer uniquement les événements non supprimés du calendrier ChatBot
         val selectionArgs = arrayOf("0", "99")
@@ -107,7 +107,7 @@ object Calendar {
 
         if (calendarId == -1L) {
             Log.e(TAG, "writeEvent: No ChatBot calendar !")
-            createCalendar(context)
+//            createCalendar(context)
             return
         }
 

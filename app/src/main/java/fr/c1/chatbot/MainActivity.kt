@@ -61,25 +61,23 @@ class MainActivity : ComponentActivity() {
     private operator fun invoke() = ChatBotTheme {
         PermissionsContent(this)
 
-        var tab by rememberMutableStateOf(value = Tab.ChatBotChat)
+        var tab by rememberMutableStateOf(value = Tab.ChatBot.finalTab)
 
-        fun switchTab(value: Float) {
-            val newTab = Tab.valueOf(value)
-
-            if (tab == Tab.Settings && newTab != Tab.Settings)
+        fun switchTab(value: Tab) {
+            if (tab == Tab.Settings && value != Tab.Settings)
                 Settings.save(this)
 
             val accountTabs =
                 listOf(Tab.AccountPassions, Tab.AccountData, Tab.AccountPreferences)
-            if (tab in accountTabs && newTab !in accountTabs)
+            if (tab in accountTabs && value !in accountTabs)
                 storeAllUsersInformation(this, app.userList)
 
-            tab = newTab
+            tab = value
         }
 
         Scaffold(
             modifier = Modifier.fillMaxSize(),
-            topBar = { TopBar(tabSelected = tab.value, onTabSelected = ::switchTab) }
+            topBar = { TopBar(tabSelected = tab, onTabSelected = ::switchTab) }
         ) { innerPadding ->
             Box(
                 modifier = Modifier
@@ -114,6 +112,8 @@ class MainActivity : ComponentActivity() {
                     Tab.ChatBotMap -> OsmdroidMapView()
                     Tab.Suggestion -> Suggestion()
                     Tab.History -> History()
+
+                    else -> throw NotImplementedError("The $tab tab is not implemented yet")
                 }
             }
         }

@@ -24,10 +24,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.preference.PreferenceManager
 import androidx.work.WorkManager
 import android.os.Bundle
@@ -54,66 +54,66 @@ class MainActivity : ComponentActivity() {
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
 
         enableEdgeToEdge()
-        setContent {
-            ChatBotTheme {
-                PermissionsContent(this)
+        setContent { this() }
+    }
 
-                val ctx = LocalContext.current
-                var tab by rememberMutableStateOf(value = Tab.ChatBotChat)
+    @Composable
+    private operator fun invoke() = ChatBotTheme {
+        PermissionsContent(this)
 
-                fun switchTab(value: Float) {
-                    val newTab = Tab.valueOf(value)
+        var tab by rememberMutableStateOf(value = Tab.ChatBotChat)
 
-                    if (tab == Tab.Settings && newTab != Tab.Settings)
-                        Settings.save(ctx)
+        fun switchTab(value: Float) {
+            val newTab = Tab.valueOf(value)
 
-                    val accountTabs =
-                        listOf(Tab.AccountPassions, Tab.AccountData, Tab.AccountPreferences)
-                    if (tab in accountTabs && newTab !in accountTabs)
-                        storeAllUsersInformation(ctx, app.userList)
+            if (tab == Tab.Settings && newTab != Tab.Settings)
+                Settings.save(this)
 
-                    tab = newTab
-                }
+            val accountTabs =
+                listOf(Tab.AccountPassions, Tab.AccountData, Tab.AccountPreferences)
+            if (tab in accountTabs && newTab !in accountTabs)
+                storeAllUsersInformation(this, app.userList)
 
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    topBar = { TopBar(tabSelected = tab.value, onTabSelected = ::switchTab) }
-                ) { innerPadding ->
-                    Box(
-                        modifier = Modifier
-                            .padding(innerPadding)
-                            .fillMaxSize()
-                    ) {
-                        val messages =
-                            rememberMutableStateListOf((application as ChatBot).chatbotTree.question)
-                        val animated = rememberMutableStateListOf<Boolean>()
+            tab = newTab
+        }
 
-                        when (tab) {
-                            Tab.ChatBotChat -> ChatBotComp.Chat(
-                                messages = messages,
-                                animated = animated
-                            ) { tab = Tab.ChatBotResults }
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = { TopBar(tabSelected = tab.value, onTabSelected = ::switchTab) }
+        ) { innerPadding ->
+            Box(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+            ) {
+                val messages =
+                    rememberMutableStateListOf((application as ChatBot).chatbotTree.question)
+                val animated = rememberMutableStateListOf<Boolean>()
 
-                            Tab.ChatBotResults -> ChatBotComp.Result()
-                            Tab.Settings -> SettingsComp()
+                when (tab) {
+                    Tab.ChatBotChat -> ChatBotComp.Chat(
+                        messages = messages,
+                        animated = animated
+                    ) { tab = Tab.ChatBotResults }
 
-                            Tab.AccountPassions -> AccountComp.PassionsList(
-                                selected = app.currentUser::hasPassion,
-                                onSelectionChanged = { passion, state ->
-                                    with(app.currentUser) {
-                                        if (state) addPassion(passion)
-                                        else removePassion(passion)
-                                    }
-                                }
-                            )
+                    Tab.ChatBotResults -> ChatBotComp.Result()
+                    Tab.Settings -> SettingsComp()
 
-                            Tab.AccountData -> AccountComp.Data()
-                            Tab.AccountPreferences -> AccountComp.Preferences()
-                            Tab.ChatBotMap -> OsmdroidMapView()
-                            Tab.Suggestion -> Suggestion()
-                            Tab.History -> History()
+                    Tab.AccountPassions -> AccountComp.PassionsList(
+                        selected = app.currentUser::hasPassion,
+                        onSelectionChanged = { passion, state ->
+                            with(app.currentUser) {
+                                if (state) addPassion(passion)
+                                else removePassion(passion)
+                            }
                         }
-                    }
+                    )
+
+                    Tab.AccountData -> AccountComp.Data()
+                    Tab.AccountPreferences -> AccountComp.Preferences()
+                    Tab.ChatBotMap -> OsmdroidMapView()
+                    Tab.Suggestion -> Suggestion()
+                    Tab.History -> History()
                 }
             }
         }

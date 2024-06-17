@@ -8,7 +8,10 @@ class Associations(
     val adresse: String,
     val codePostal: String,
     val accessible: Boolean,
-) : AbstractActivity(commune) {
+    latitude: Double,
+    longitude: Double,
+    val url: String
+) : AbstractActivity(commune, latitude, longitude) {
     companion object {
         val passions: List<String> = listOf(
             "association", "bénévolat", "engagement", "solidarité",
@@ -27,6 +30,6 @@ class Associations(
     }
 
     override fun toString(): String {
-        return "Association (departement='$departement', identifiant='$identifiant', commune='$commune', nom='$nom', adresse='$adresse', codePostal='$codePostal', accessible='$accessible')"
+        return "Association (departement='$departement', identifiant='$identifiant', commune='$commune', nom='$nom', adresse='$adresse', codePostal='$codePostal', accessible='$accessible', latitude='$latitude', longitude='$longitude', url='$url')"
     }
 }

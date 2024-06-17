@@ -12,8 +12,9 @@ class Musees(
     val telephone: String,
     val url: String,
     val accessible: Boolean,
-
-    ) : AbstractActivity(commune) {
+    latitude: Double,
+    longitude: Double
+) : AbstractActivity(commune, latitude, longitude) {
     companion object {
         val passions: List<String> = listOf(
             "musée", "exposition", "peinture",
@@ -27,6 +28,6 @@ class Musees(
     }
 
     override fun toString(): String {
-        return "Musée (region='$region', departement='$departement', identifiant='$identifiant', commune='$commune', nom='$nom', adresse='$adresse', lieu='$lieu', codePostal='$codePostal', telephone='$telephone', url='$url', accessible='$accessible')"
+        return "Musée (region='$region', departement='$departement', identifiant='$identifiant', commune='$commune', nom='$nom', adresse='$adresse', lieu='$lieu', codePostal='$codePostal', telephone='$telephone', url='$url', accessible='$accessible', latitude='$latitude', longitude='$longitude')"
     }
 }

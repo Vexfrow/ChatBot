@@ -8,8 +8,9 @@ class Expositions(
     val nom: String,
     val url: String,
     val accessible: Boolean,
-
-    ) : AbstractActivity(commune) {
+    latitude: Double,
+    longitude: Double
+    ) : AbstractActivity(commune, latitude, longitude) {
     companion object {
         val passions: List<String> = listOf(
             "exposition", "musée", "peinture", "sculpture",
@@ -20,6 +21,6 @@ class Expositions(
     }
 
     override fun toString(): String {
-        return "Exposition (region='$region', departement='$departement', identifiant='$identifiant', commune='$commune', nom='$nom', url='$url', accessible='$accessible')"
+        return "Exposition (region='$region', departement='$departement', identifiant='$identifiant', commune='$commune', nom='$nom', url='$url', accessible='$accessible', latitude='$latitude', longitude='$longitude')"
     }
 }

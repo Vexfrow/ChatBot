@@ -7,8 +7,9 @@ class Edifices(
     val nom: String,
     val adresse: String,
     val accessible: Boolean,
-
-    ) : AbstractActivity(commune) {
+    latitude: Double,
+    longitude: Double
+    ) : AbstractActivity(commune, latitude, longitude) {
     companion object {
         val passions: List<String> = listOf(
             "architecture", "contemporaine", "édifices",
@@ -19,6 +20,6 @@ class Edifices(
     }
 
     override fun toString(): String {
-        return "Edifice avec architecture contemporaine (region='$region', departement='$departement', commune='$commune', nom='$nom', adresse='$adresse', accessible='$accessible')"
+        return "Edifice avec architecture contemporaine (region='$region', departement='$departement', commune='$commune', nom='$nom', adresse='$adresse', accessible='$accessible', latitude='$latitude', longitude='$longitude')"
     }
 }

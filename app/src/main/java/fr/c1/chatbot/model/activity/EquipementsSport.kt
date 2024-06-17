@@ -2,15 +2,14 @@ package fr.c1.chatbot.model.activity
 
 class EquipementsSport(
     val departement: String,
-    val identifiant: String,
     commune: String,
     val nom: String,
     val adresse: String,
     val codePostal: String,
-    val url: String,
     val accessible: Boolean,
-
-    ) : AbstractActivity(commune) {
+    latitude: Double,
+    longitude: Double
+    ) : AbstractActivity(commune, latitude, longitude) {
     companion object {
         val passions: List<String> = listOf(
             "sport", "activité", "activité sportive", "activité physique"
@@ -18,6 +17,6 @@ class EquipementsSport(
     }
 
     override fun toString(): String {
-        return "Equipement sportif (departement='$departement', identifiant='$identifiant', commune='$commune', nom='$nom', adresse='$adresse', codePostal='$codePostal', url='$url', accessible='$accessible')"
+        return "Equipement sportif (departement='$departement', commune='$commune', nom='$nom', adresse='$adresse', codePostal='$codePostal', accessible='$accessible', latitude='$latitude', longitude='$longitude')"
     }
 }

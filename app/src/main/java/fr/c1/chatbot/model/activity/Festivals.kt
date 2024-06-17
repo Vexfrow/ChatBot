@@ -9,8 +9,9 @@ class Festivals(
     val codePostal: String,
     val discipline: String,
     val accessible: Boolean,
-
-    ) : AbstractActivity(commune) {
+    latitude: Double,
+    longitude: Double
+    ) : AbstractActivity(commune, latitude, longitude) {
     companion object {
         val passions: List<String> = listOf(
             "musique", "danse", "théâtre", "cirque",
@@ -20,6 +21,6 @@ class Festivals(
     }
 
     override fun toString(): String {
-        return "Festival (region='$region', departement='$departement', commune='$commune', nom='$nom', adresse='$adresse', codePostal='$codePostal', accessible='$accessible')"
+        return "Festival (region='$region', departement='$departement', commune='$commune', nom='$nom', adresse='$adresse', codePostal='$codePostal', accessible='$accessible', discipline='$discipline', latitude=$latitude, longitude=$longitude)"
     }
 }

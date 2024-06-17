@@ -25,7 +25,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -42,13 +41,11 @@ import coil.request.ImageRequest
 import fr.c1.chatbot.model.Settings
 import fr.c1.chatbot.ui.shape.SpeechBubbleShape
 import fr.c1.chatbot.ui.theme.ChatBotPrev
-import fr.c1.chatbot.ui.theme.LocalColorSchemeExtension
 
 @Composable
 fun SpeechBubble(
     text: String,
     modifier: Modifier = Modifier,
-    color: Color = LocalColorSchemeExtension.current.bot,
     cornerRadius: Dp = 15.dp,
     tipSize: Dp = 15.dp,
     isUser: Boolean = false
@@ -68,6 +65,7 @@ fun SpeechBubble(
     if (isUser)
         mod = mod.graphicsLayer(rotationY = -180f)
 
+    val color = if (isUser) Settings.bubbleSpeechUserColor else Settings.bubbleSpeechBotColor
     mod = mod.background(color)
 
     Box(modifier = mod.fillMaxWidth()) {
@@ -110,7 +108,6 @@ fun SpeechBubble(
 fun Message(
     text: String,
     modifier: Modifier = Modifier,
-    color: Color = LocalColorSchemeExtension.current.bot,
     isUser: Boolean = false
 ) {
     Box(
@@ -131,7 +128,6 @@ fun Message(
         ) {
             SpeechBubble(
                 text = text,
-                color = color,
                 isUser = isUser
             )
         }
@@ -188,12 +184,10 @@ fun Message(
 
 
 @Preview(device = Devices.PIXEL_TABLET)
-//@Preview(device = Devices.PIXEL_TABLET, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun Prev() = ChatBotPrev {
     Message(
         "Oui",
         Modifier.align(Alignment.TopStart), isUser = true
     )
-    //SpeechBubble(text = "bllllllllllllllllllllllbblblblblblblblblblblblblblblbllblblblb",modifier = Modifier.align(Alignment.TopStart),isUser = true)
 }

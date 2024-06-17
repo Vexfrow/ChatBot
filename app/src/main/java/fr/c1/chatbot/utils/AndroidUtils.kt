@@ -146,6 +146,14 @@ fun SharedPreferences.getBool(
     defaultValue: Boolean
 ) = ref.set(getBoolean(ref.name, defaultValue))
 
+fun SharedPreferences.Editor.putString(ref: KMutableProperty0<String>) =
+    putString(ref.name, ref.get())
+
+fun SharedPreferences.getString(
+    ref: KMutableProperty0<String>,
+    defaultValue: String
+) = getString(ref.name, defaultValue)?.let { ref.set(it) }
+
 fun SharedPreferences.Editor.putBool(ref: KMutableProperty0<Boolean>) =
     putBoolean(ref.name, ref.get())
 
@@ -163,3 +171,12 @@ fun SharedPreferences.Editor.putUri(
     key: String,
     value: Uri
 ) = putString(key, value.toString())
+
+fun SharedPreferences.Editor.putColor(
+    ref: KMutableProperty0<Color>
+): SharedPreferences.Editor = putInt(ref.name, ref.get().value.toInt())
+
+fun SharedPreferences.getColor(
+    ref: KMutableProperty0<Color>,
+    defaultValue: Int
+) = getInt(ref.name, defaultValue)

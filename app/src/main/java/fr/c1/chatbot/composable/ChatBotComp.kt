@@ -5,7 +5,6 @@ import fr.c1.chatbot.model.Settings
 import fr.c1.chatbot.model.TypeAction
 import fr.c1.chatbot.model.activity.Type.CULTURE
 import fr.c1.chatbot.model.activity.Type.SPORT
-import fr.c1.chatbot.ui.theme.colorSchemeExtension
 import fr.c1.chatbot.utils.LocationHandler
 import fr.c1.chatbot.utils.application
 import fr.c1.chatbot.utils.rememberMutableStateOf
@@ -14,6 +13,7 @@ import kotlinx.coroutines.launch
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -60,11 +59,16 @@ object ChatBotComp {
                 tts.speak(messages.last())
         }
 
-        Column(modifier = modifier.fillMaxSize()) {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .background(Settings.fontColor)
+        ) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f),
+                    .weight(1f)
+                    .background(Settings.fontColor),
                 state = lazyListState
             ) {
                 itemsIndexed(messages) { i, message ->
@@ -90,8 +94,7 @@ object ChatBotComp {
                     if (isBot)
                         Message(
                             modifier = if (i == messages.lastIndex) mod else Modifier,
-                            text = message,
-                            color = MaterialTheme.colorSchemeExtension.bot,
+                            text = message
                         )
                     else
                         Box(
@@ -102,7 +105,6 @@ object ChatBotComp {
                             Message(
                                 modifier = Modifier.align(Alignment.CenterEnd),
                                 text = message,
-                                color = MaterialTheme.colorSchemeExtension.user,
                                 isUser = true
                             )
                         }
@@ -146,7 +148,10 @@ object ChatBotComp {
                 }
             }
 
-            Proposals(proposals = answers) {
+            Proposals(
+                modifier = Modifier.background(Settings.fontColor),
+                proposals = answers,
+            ) {
                 answers = emptyList()
                 Log.i(TAG, "Choose '$it'")
                 val i = tree.answersId.first { i -> tree.getAnswerText(i) == it }
@@ -217,7 +222,8 @@ object ChatBotComp {
 
                     TypeAction.CityInput -> {
                         user.addCity(value)
-                        val text = if ("AEIOUaeiou".indexOf(value.first()) != -1) "d'$value" else "de $value"
+                        val text =
+                            if ("AEIOUaeiou".indexOf(value.first()) != -1) "d'$value" else "de $value"
                         addAnswer(
                             sbState.answerId,
                             "Je souhaite faire mon activité dans les alentours de la ville $text"
@@ -230,6 +236,7 @@ object ChatBotComp {
             }
 
             MySearchBar(
+                modifier = Modifier.background(Settings.fontColor),
                 placeholder = sbState.text,
                 enabled = sbState.enabled,
                 action = sbState.action,

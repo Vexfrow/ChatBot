@@ -20,6 +20,7 @@ import org.osmdroid.views.MapView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -83,6 +84,7 @@ class MainActivity : ComponentActivity() {
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxSize()
+                    .background(Settings.fontColor)
             ) {
                 val messages =
                     rememberMutableStateListOf((application as ChatBot).chatbotTree.question)

@@ -4,21 +4,20 @@ import com.google.gson.Gson
 import fr.c1.chatbot.model.activity.Type
 import android.content.Context
 import android.util.Log
-import androidx.compose.ui.platform.LocalContext
 import java.io.File
 import java.io.FileFilter
 
 private const val TAG = "ProfilUtilisateur"
 
-class ProfilUtilisateur(
+class User(
     /**
      * Nom de l'utilisateur (utilisé, en plus du prénom, pour différencier les utilisateurs)
      */
-    var nom: String = "",
+    var lastName: String = "",
     /**
      * Prénom de l'utilisateur (utilisé pour l'affichage)
      */
-    var prenom: String = "",
+    var firstName: String = "",
     /**
      * Age de l'utilisateur
      */
@@ -26,161 +25,154 @@ class ProfilUtilisateur(
     /**
      * Lise de villes de l'utilisateur
      */
-    private val villesList: MutableList<String> = mutableListOf(),
+    private val _cities: MutableList<String> = mutableListOf(),
     /**
      * Type d'activité souhaitée par l'utilisateur
      */
-    private var types: MutableList<Type> = mutableListOf(),
+    private var _types: MutableList<Type> = mutableListOf(),
     /**
      * Passions de l'utilisateur
      */
-    private val passions: MutableList<String> = mutableListOf(),
+    private val _passions: MutableList<String> = mutableListOf(),
     /**
      * Liste des préférences hebdomadaires de l'utilisateur
      */
-    private var preferencesHebdomadaires: MutableList<PreferencesHebdo> = mutableListOf()
+    private var _weeklyPreferences: MutableList<WeeklyPreference> = mutableListOf()
 ) {
 
     /**
      * Constructeur secondaire
      */
-    constructor(nom: String, prenom: String, age: Int) : this() {
-        this.nom = nom
-        this.prenom = prenom
+    constructor(lastName: String, firstName: String, age: Int) : this() {
+        this.lastName = lastName
+        this.firstName = firstName
         this.age = age
     }
 
     /**
      * Ajouter une ville
      */
-    fun addVille(ville: String) {
-        villesList.add(ville)
+    fun addCity(city: String) {
+        _cities.add(city)
     }
 
     /**
      * Ajouter un type d'activité
      */
     fun addType(type: Type) {
-        types.add(type)
+        _types.add(type)
     }
 
     /**
      * Ajouter une passion
      */
     fun addPassion(passion: String) {
-        passions.add(passion)
+        _passions.add(passion)
     }
 
     /**
      * Ajouter une préférence hebdomadaire
      */
-    fun addPreferenceHebdo(jour: String, heure: String, duree: Int) {
-        preferencesHebdomadaires.add(PreferencesHebdo(jour, heure, duree))
+    fun addWeeklyPreference(day: String, houe: String, duration: Int) {
+        _weeklyPreferences.add(WeeklyPreference(day, houe, duration))
     }
 
     /**
      * Supprimer une préférence hebdomadaire
      */
-    fun removePreferenceHebdo(jour: String, heure: String, duree: Int) {
-        preferencesHebdomadaires.remove(PreferencesHebdo(jour, heure, duree))
+    fun removeWeeklyPeference(day: String, hour: String, duration: Int) {
+        _weeklyPreferences.remove(WeeklyPreference(day, hour, duration))
     }
 
     /**
      * Supprimer toutes les préférences hebdomadaires
      */
-    fun removeAllPreferencesHebdo() {
-        preferencesHebdomadaires.clear()
+    fun clearWeeklyPreferences() {
+        _weeklyPreferences.clear()
     }
 
     /**
      * Supprimer une ville
      */
-    fun removeVille(ville: String) {
-        villesList.remove(ville)
+    fun removeCity(city: String) {
+        _cities.remove(city)
     }
 
     /**
      * Supprimer toutes les villes
      */
-    fun removeAllVilles() {
-        villesList.clear()
+    fun clearCities() {
+        _cities.clear()
     }
 
     /**
      * Supprimer une passion
      */
     fun removePassion(passion: String) {
-        passions.remove(passion)
+        _passions.remove(passion)
     }
 
     /**
      * Supprimer toutes les passions
      */
-    fun removeAllPassions() {
-        passions.clear()
+    fun clearPassions() {
+        _passions.clear()
     }
 
     /**
      * Supprimer un type d'activité
      */
     fun removeType(type: Type) {
-        types.remove(type)
+        _types.remove(type)
     }
 
     /**
      * Supprimer toutes les activités
      */
-    fun removeAllTypes() {
-        types.clear()
+    fun clearTypes() {
+        _types.clear()
     }
 
     /**
      * Récupérer les villes
      */
-    fun getVilles(): MutableList<String> {
-        return villesList
-    }
+    val cities: List<String> get() = _cities
 
     /**
      * Récupérer les types d'activité
      */
-    fun getTypes(): MutableList<Type> {
-        return types
-    }
+    val types: List<Type> get() = _types
 
     fun hasPassion(passion: String): Boolean = passions.contains(passion)
 
     /**
      * Récupérer les passions
      */
-    fun getPassions(): MutableList<String> {
-        return passions
-    }
+    val passions: List<String>
+        get() = _passions
 
     /**
      * Récupérer les préférences hebdomadaires
      */
-    fun getPreferencesHebdo(): MutableList<PreferencesHebdo> {
-        return preferencesHebdomadaires
-    }
+    val weeklyPreferences: List<WeeklyPreference> get() = _weeklyPreferences
 
     /**
      * Stocker les informations de l'utilisateur dans un fichier json
      */
     fun storeUserInformation(context: Context) {
-        val fileName = "${nom.lowercase()}_${prenom.lowercase()}.json"
+        val fileName = "${lastName.lowercase()}_${firstName.lowercase()}.json"
 
         // Construire le contenu JSON
         val jsonContent = """
         {
-            "nom": "$nom",
-            "prenom": "$prenom",
+            "nom": "$lastName",
+            "prenom": "$firstName",
             "age": $age,
-            "villes": ${villesList.joinToString(prefix = "[", postfix = "]") { "\"$it\"" }},
-            "types": ${types.joinToString(prefix = "[", postfix = "]") { "\"$it\"" }},
+            "villes": ${_cities.joinToString(prefix = "[", postfix = "]") { "\"$it\"" }},
+            "types": ${_types.joinToString(prefix = "[", postfix = "]") { "\"$it\"" }},
             "passions": ${passions.joinToString(prefix = "[", postfix = "]") { "\"$it\"" }},
             "preferencesHebdo": ${
-            preferencesHebdomadaires.joinToString(
+            weeklyPreferences.joinToString(
                 prefix = "[",
                 postfix = "]"
             ) { "\"$it\"" }
@@ -197,20 +189,20 @@ class ProfilUtilisateur(
     /**
      * Charger les informations de l'utilisateur depuis un fichier json
      */
-    fun loadUserInformation(context: Context, nom: String, prenom: String): ProfilUtilisateur? {
+    fun loadUserInformation(context: Context, firstName: String, lastName: String): User? {
         val gson = Gson()
-        lateinit var user: ProfilUtilisateur
-        val fileName = "${nom.lowercase()}_${prenom.lowercase()}.json"
+        lateinit var user: User
+        val fileName = "${firstName.lowercase()}_${lastName.lowercase()}.json"
         val file = File(context.filesDir, fileName)
 
         return if (file.exists() && file.isFile) {
             val content = file.readText()
-            user = gson.fromJson(content, ProfilUtilisateur::class.java).also {
+            user = gson.fromJson(content, User::class.java).also {
                 Log.d(TAG, "loadAllUsersInformation: Loaded user profile from ${file.name}")
             }
             user
         } else {
-            Log.d(TAG, "loadUserInformation: User $nom $prenom does not exist")
+            Log.d(TAG, "loadUserInformation: User $firstName $lastName does not exist")
             null
         }
     }
@@ -219,9 +211,9 @@ class ProfilUtilisateur(
 /**
  * Charger toutes les informations des utilisateurs
  */
-fun loadAllUsersInformation(context: Context): MutableList<ProfilUtilisateur> {
+fun loadAllUsersInformation(context: Context): MutableList<User> {
     val gson = Gson()
-    val userList = mutableListOf<ProfilUtilisateur>()
+    val userList = mutableListOf<User>()
     val regex = Regex("""\w+_\w+.json""")
 
     val files = context.filesDir.listFiles(FileFilter { it.isFile && regex.matches(it.name) })!!
@@ -230,11 +222,11 @@ fun loadAllUsersInformation(context: Context): MutableList<ProfilUtilisateur> {
     else
         files.forEach { file ->
             val content = file.readText()
-            val user = gson.fromJson(content, ProfilUtilisateur::class.java)
+            val user = gson.fromJson(content, User::class.java)
             userList.add(user)
             Log.d(
                 TAG,
-                "loadAllUsersInformation: Loaded user profile from ${file.name}\nUtilisateur : ${user.prenom} ${user.nom}, ${user.age} ans"
+                "loadAllUsersInformation: Loaded user profile from ${file.name}\nUtilisateur : ${user.firstName} ${user.lastName}, ${user.age} ans"
             )
         }
 
@@ -244,7 +236,7 @@ fun loadAllUsersInformation(context: Context): MutableList<ProfilUtilisateur> {
 /**
  * Sauvegarder toute la liste des utilisateurs
  */
-fun storeAllUsersInformation(context: Context, userList: MutableList<ProfilUtilisateur>) {
+fun storeAllUsersInformation(context: Context, userList: MutableList<User>) {
     userList.forEach { user ->
         user.storeUserInformation(context)
     }

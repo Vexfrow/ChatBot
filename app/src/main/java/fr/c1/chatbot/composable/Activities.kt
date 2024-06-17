@@ -181,7 +181,7 @@ object Activities {
     fun SportEquipment(
         equipementSport: EquipementsSport,
         modifier: Modifier = Modifier
-    ) = MyColumn(equipementSport.accessible, modifier, equipementSport.url) {
+    ) = MyColumn(equipementSport.accessible, modifier, null) {
         Text(
             text = equipementSport.nom,
             style = MaterialTheme.typography.bodyLarge
@@ -292,7 +292,10 @@ private fun Prev() = ChatBotPrev {
                 nom = "Name",
                 adresse = "Addr",
                 codePostal = "38610",
-                accessible = true
+                accessible = true,
+                latitude = 0.0,
+                longitude = 0.0,
+                url = "www.google.fr"
             ),
 
             Contenus(
@@ -303,7 +306,9 @@ private fun Prev() = ChatBotPrev {
                 lieu = "Lieu",
                 codePostal = "38610",
                 url = "www.google.fr",
-                accessible = true
+                accessible = true,
+                latitude = 0.0,
+                longitude = 0.0
             ),
 
             Edifices(
@@ -312,18 +317,20 @@ private fun Prev() = ChatBotPrev {
                 commune = "comm",
                 nom = "name",
                 adresse = "addr",
-                accessible = true
+                accessible = true,
+                latitude = 0.0,
+                longitude = 0.0
             ),
 
             EquipementsSport(
-                identifiant = UUID.randomUUID().toString(),
                 departement = "dep",
                 commune = "comm",
                 nom = "name",
                 adresse = "addr",
                 accessible = true,
                 codePostal = "cp",
-                url = "www.google.fr"
+                latitude = 0.0,
+                longitude = 0.0
             ),
 
             Expositions(
@@ -333,7 +340,9 @@ private fun Prev() = ChatBotPrev {
                 nom = "name",
                 accessible = true,
                 url = "www.google.fr",
-                region = "reg"
+                region = "reg",
+                latitude = 0.0,
+                longitude = 0.0
             ),
 
             Festivals(
@@ -344,7 +353,9 @@ private fun Prev() = ChatBotPrev {
                 region = "reg",
                 adresse = "addr",
                 codePostal = "cp",
-                discipline = "disc"
+                discipline = "disc",
+                latitude = 0.0,
+                longitude = 0.0
             ),
 
             Jardins(
@@ -354,7 +365,9 @@ private fun Prev() = ChatBotPrev {
                 accessible = true,
                 region = "reg",
                 adresse = "addr",
-                codePostal = "cp"
+                codePostal = "cp",
+                latitude = 0.0,
+                longitude = 0.0
             ),
 
 
@@ -369,7 +382,9 @@ private fun Prev() = ChatBotPrev {
                 codePostal = "cp",
                 lieu = "lieu2",
                 telephone = "tel",
-                url = "www.google.fr"
+                url = "www.google.fr",
+                latitude = 0.0,
+                longitude = 0.0
             ),
 
             Sites(
@@ -377,6 +392,8 @@ private fun Prev() = ChatBotPrev {
                 commune = "comm",
                 accessible = true,
                 region = "reg",
+                latitude = 0.0,
+                longitude = 0.0
             )
         )
     )

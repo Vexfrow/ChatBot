@@ -133,22 +133,31 @@ object Calendar {
     /**
      * Créer un calendrier avec id = 99
      */
-    fun createCalendar(context: Context) {
+    fun createCalendar(context: Context): Long? {
+        val accountName = "ChatBot"
+        val accountType = CalendarContract.ACCOUNT_TYPE_LOCAL
+
         val values = ContentValues().apply {
-            put(CalendarContract.Calendars.ACCOUNT_NAME, "fr.c1.chatbot")
-            put(CalendarContract.Calendars.ACCOUNT_TYPE, CalendarContract.ACCOUNT_TYPE_LOCAL)
+            put(CalendarContract.Calendars.ACCOUNT_NAME, accountName)
+            put(CalendarContract.Calendars.ACCOUNT_TYPE, accountType)
             put(CalendarContract.Calendars.NAME, "ChatBot")
             put(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME, "ChatBot")
             put(CalendarContract.Calendars.CALENDAR_COLOR, -0x10000)
             put(CalendarContract.Calendars.CALENDAR_ACCESS_LEVEL, CalendarContract.Calendars.CAL_ACCESS_OWNER)
-            put(CalendarContract.Calendars.OWNER_ACCOUNT, "fr.c1.chatbot")
             put(CalendarContract.Calendars.SYNC_EVENTS, 1)
             put(CalendarContract.Calendars.VISIBLE, 1)
-            // id
             put(CalendarContract.Calendars._ID, 99)
         }
+
         val uri = CalendarContract.Calendars.CONTENT_URI
-        context.contentResolver.insert(uri, values)
+        val calendarUri = uri.buildUpon()
+            .appendQueryParameter(CalendarContract.CALLER_IS_SYNCADAPTER, "true")
+            .appendQueryParameter(CalendarContract.Calendars.ACCOUNT_NAME, accountName)
+            .appendQueryParameter(CalendarContract.Calendars.ACCOUNT_TYPE, accountType)
+            .build()
+
+        val resultUri = context.contentResolver.insert(calendarUri, values)
+        return resultUri?.lastPathSegment?.toLong()
     }
 
     /**

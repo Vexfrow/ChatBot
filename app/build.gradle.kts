@@ -88,6 +88,9 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     androidTestImplementation("androidx.test:runner:1.5.2")
 
+    implementation("com.opencsv:opencsv:5.5.2")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.7.0")
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

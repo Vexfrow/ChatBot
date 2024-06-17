@@ -1,5 +1,6 @@
 package fr.c1.chatbot.utils
 
+import android.app.Application
 import fr.c1.chatbot.ChatBot
 import kotlinx.coroutines.CoroutineScope
 import androidx.activity.ComponentActivity
@@ -30,10 +31,17 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.util.Log
+import com.opencsv.CSVParserBuilder
 import java.io.File
 import java.io.FileOutputStream
+import java.io.InputStream
+import java.io.InputStreamReader
 import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KProperty0
+import com.opencsv.CSVReader
+import com.opencsv.CSVReaderBuilder
+import fr.c1.chatbot.R
 
 val application: ChatBot
     @Composable
@@ -163,3 +171,38 @@ fun SharedPreferences.Editor.putUri(
     key: String,
     value: Uri
 ) = putString(key, value.toString())
+
+fun parseCsv(csvIS: InputStream): List<List<String>> {
+    val csvParser = CSVParserBuilder()
+        .withSeparator(';')
+        //.withQuoteChar('"')
+        .withIgnoreQuotations(false)
+        .withEscapeChar('\\')
+            .build()
+
+            val csvReader = CSVReaderBuilder(InputStreamReader(csvIS))
+        .withCSVParser(csvParser)
+        .build()
+
+    val allRows = csvReader.readAll()
+    return allRows.map { it.toList() }
+}
+
+fun copyFileToInternalDirectory(app: Application) {
+    // Chemin du fichier source dans app.cacheDir
+    val sourceFile = File(app.cacheDir, "temp_liste_sites_patrimoniaux.csv")
+
+    // Copier le fichier temporaire dans le dossier de fichiers internes
+    val internalDirectory = File(app.filesDir, "copied_files")
+    if (!internalDirectory.exists()) {
+        internalDirectory.mkdirs()
+    }
+
+    val copiedFile = File(internalDirectory, "liste_sites_patrimoniaux.csv")
+    sourceFile.copyTo(copiedFile, overwrite = true)
+
+    // Afficher le contenu de internalDirectory
+    internalDirectory.listFiles()?.forEach {
+        Log.d("AndroidUtils", "copyFileToInternalDirectory: $it")
+    }
+}

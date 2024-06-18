@@ -36,7 +36,7 @@ private const val TAG = "Settings"
 object Settings {
 
     private var defaultBubbleSpeechColor = Color.Blue
-    private var defaultFontColor = Color(136, 227, 160)
+    private var defaultBackgroundColor = Color(136, 227, 160)
     private var defaultBotName = "Rob"
 
     var textSize: TextUnit by mutableStateOf(40.sp)
@@ -47,7 +47,7 @@ object Settings {
     var userImage: Uri? by mutableStateOf(null)
     var bubbleSpeechBotColor: Color by mutableStateOf(defaultBubbleSpeechColor)
     var bubbleSpeechUserColor: Color by mutableStateOf(defaultBubbleSpeechColor)
-    var fontColor: Color by mutableStateOf(defaultFontColor)
+    var backgroundColor: Color by mutableStateOf(defaultBackgroundColor)
     var botName: String by mutableStateOf(defaultBotName)
 
     val iconsAvailable = with(Icons.Default) {
@@ -74,7 +74,7 @@ object Settings {
         userImage = null
         bubbleSpeechBotColor = defaultBubbleSpeechColor
         bubbleSpeechUserColor = defaultBubbleSpeechColor
-        fontColor = defaultFontColor
+        backgroundColor = defaultBackgroundColor
         botName = defaultBotName
 
     }
@@ -92,7 +92,7 @@ object Settings {
         )
         getColor(::bubbleSpeechBotColor, defaultBubbleSpeechColor.value.toInt())
         getColor(::bubbleSpeechUserColor, defaultBubbleSpeechColor.value.toInt())
-        getColor(::fontColor, defaultFontColor.value.toInt())
+        getColor(::backgroundColor, defaultBackgroundColor.value.toInt())
         getString(::botName, defaultBotName)
 
         Log.i(TAG, "Settings loaded: ${this@Settings}")
@@ -110,7 +110,7 @@ object Settings {
             saveImage(::userImage, context)
             putColor(::bubbleSpeechBotColor)
             putColor(::bubbleSpeechUserColor)
-            putColor(::fontColor)
+            putColor(::backgroundColor)
             putString(::botName)
 
             Log.i(TAG, "Settings saved : ${this@Settings}")

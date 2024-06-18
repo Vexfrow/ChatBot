@@ -85,7 +85,7 @@ fun SettingsComp() {
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .background(Settings.fontColor),
+            .background(Settings.backgroundColor),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -300,7 +300,7 @@ fun SettingsComp() {
                                     .clickable {
                                         when {
                                             botColorPicker -> Settings.bubbleSpeechBotColor = color
-                                            fontColorPicker -> Settings.fontColor = color
+                                            fontColorPicker -> Settings.backgroundColor = color
                                             else -> Settings.bubbleSpeechUserColor = color
                                         }
 

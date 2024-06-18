@@ -1,0 +1,320 @@
+{
+  "robot": [
+    {
+      "id": 0,
+      "text": "Bonjour, content de vous voir !"
+    },
+    {
+      "id": 1,
+      "text": "Quelle date serait idéale pour vous ?"
+    },
+    {
+      "id": 2,
+      "text": "Où êtes-vous situé ?"
+    },
+    {
+      "id": 3,
+      "text": "Quel est votre rayon d'activité ? (en km)"
+    },
+    {
+      "id": 4,
+      "text": "Quelle type d'activité souhaitez-vous faire ?"
+    },
+    {
+      "id": 5,
+      "text": "Un activité sportive vous conviendrait-elle ?"
+    },
+    {
+      "id": 6,
+      "text": "Je peux vous proposer des activités pour rencontrer d'autres personnes, est-ce que ça vous intéresse ?"
+    },
+    {
+      "id": 7,
+      "text": "Avez-vous des centres d'interet particuliers ?"
+    },
+    {
+      "id": 8,
+      "text": "Vous pouvez écrire un nom d'association ou un lieu."
+    },
+    {
+      "id": 9,
+      "text": "Comment puis-je vous aider ?"
+    },
+    {
+      "id": 10,
+      "text": "Quelle(s) notification(s) voulez-vous désactiver ?"
+    },
+    {
+      "id": 11,
+      "text": "C'est fait ! j'ai désactivé les rappels.\n Vous pouvez les réactiver à tout moment si vous changez d'avis.",
+      "action": "SupprimerRappels"
+    },
+    {
+      "id": 12,
+      "text": "Je comprends que vous ne soyez pas intéressés, j'ai désactivé les suggestions",
+      "action": "SupprimerSuggestions"
+    },
+    {
+      "id": 13,
+      "text": "**Indication pour voir l'historique de recherche**"
+    },
+    {
+      "id": 14,
+      "text": "Essayons de la retrouver ensemble, si vous vous en souvenez, tapez le nom de l'activité.\n Sinon vous pouvez regarder dans :\n- L'historique de recherche\n- Les activités enregistrées"
+    },
+    {
+      "id": 15,
+      "text": "Je suis désolé je ne peux pas effectuer cette action pour le moment"
+    },
+    {
+      "id": 16,
+      "text": "Super, je vous propose d'aller voir les activités disponibles dans l'onglet 'Résultats'",
+      "action": "AfficherResultat"
+    },
+    {
+      "id": 17,
+      "text": "Très bien, j'ai fait un peu de ménage dans vos notifications",
+      "action": "supprimerNotifs"
+    }
+  ],
+  "humain": [
+    {
+      "id": 1000,
+      "text": "Bonjour, je souhaite faire une activité"
+    },
+    {
+      "id": 1001,
+      "text": "Choisir une date",
+      "action": "EntrerDate"
+    },
+    {
+      "id": 1002,
+      "text": "Choisir une ville",
+      "action": "EntrerVille"
+    },
+    {
+      "id": 1003,
+      "text": "Rentrer une distance (en km)",
+      "action": "EntrerDistance"
+    },
+    {
+      "id": 1004,
+      "text": "Activité physique",
+        "action": "ActivitePhysique"
+    },
+    {
+      "id": 1005,
+      "text": "Activité Culturelle",
+        "action": "ActiviteCulturelle"
+    },
+    {
+      "id": 1006,
+      "text": "Utiliser la géolocalisation",
+      "action": "Geolocalisation"
+    },
+    {
+      "id": 1007,
+      "text": "Je souhaite la faire à distance"
+    },
+    {
+      "id": 1008,
+      "text": "Oui"
+    },
+    {
+      "id": 1009,
+      "text": "Non"
+    },
+    {
+      "id": 1010,
+      "text": "N'importe"
+    },
+    {
+      "id": 1011,
+      "text": "Bonjour, je souhaite trouver une association"
+    },
+    {
+      "id": 1012,
+      "text": "Bonjour, j'ai besoin d'aide"
+    },
+    {
+      "id": 1013,
+      "text": "Comment désactiver les notifications/alertes ?"
+    },
+    {
+      "id": 1014,
+      "text": "Les rappels"
+    },
+    {
+      "id": 1015,
+      "text": "Les suggestions"
+    },
+    {
+      "id": 1016,
+      "text": "Je souhaite accéder à mon historique de recherche ?"
+    },
+    {
+      "id": 1017,
+      "text": "Je ne trouve plus d'activité intéressante"
+    },
+    {
+      "id": 1018,
+      "text": "Je souhaite proposer de nouvelles activités"
+    },
+    {
+      "id": 1019,
+      "text": "Choisir passions",
+      "actions": "ChoisirPassions"
+    },
+    {
+      "id": 1020,
+      "text": "Passer à la suite",
+      "action": "Skip"
+    },
+    {
+      "id": 1021,
+      "text": "Je souhaite désactiver toutes les notifications"
+    },
+    {
+      "id": -1,
+      "text": "Retour",
+      "action": "Retour"
+    },
+    {
+      "id": -2,
+      "text": "Recommencer conversation",
+      "action": "Recommencer"
+    },
+    {
+      "id": -3,
+      "text": "Afficher les filtres",
+      "action": "AfficherFiltres"
+    }
+  ],
+  "link": [
+    {
+      "from": 0,
+      "to": 1,
+      "answer": 1000
+    },
+    {
+      "from": 0,
+      "to": 8,
+      "answer": 1011
+    },
+    {
+      "from": 0,
+      "to": 9,
+      "answer": 1012
+    },
+    {
+      "from": 1,
+      "to": 2,
+      "answer": 1001
+    },
+    {
+      "from": 2,
+      "to": 3,
+      "answer": 1002
+    },
+    {
+      "from": 2,
+      "to": 3,
+      "answer": 1006
+    },
+    {
+      "from": 2,
+      "to": 4,
+      "answer": 1007
+    },
+    {
+      "from": 3,
+      "to": 4,
+      "answer": 1003
+    },
+    {
+      "from": 4,
+      "to": 5,
+      "answer": 1004
+    },
+    {
+      "from": 4,
+      "to": 7,
+      "answer": 1005
+    },
+    {
+      "from": 5,
+      "to": 6,
+      "answer": 1008
+    },
+    {
+      "from": 5,
+      "to": 6,
+      "answer": 1009
+    },
+    {
+      "from": 7,
+      "to": 6,
+      "answer": 1019
+    },
+    {
+      "from": 6,
+      "to": 16,
+      "answer": 1008
+    },
+    {
+      "from": 6,
+      "to": 16,
+      "answer": 1009
+    },
+    {
+      "from": 6,
+      "to": 16,
+      "answer": 1010
+    },
+    {
+      "from": 8,
+      "to": 16,
+      "answer": 1006
+    },
+    {
+      "from": 8,
+      "to": 16,
+      "answer": 1002
+    },
+    {
+      "from": 9,
+      "to": 10,
+      "answer": 1013
+    },
+    {
+      "from": 10,
+      "to": 11,
+      "answer": 1014
+    },
+    {
+      "from": 10,
+      "to": 12,
+      "answer": 1015
+    },
+    {
+      "from": 10,
+      "to": 17,
+      "answer": 1021
+    },
+    {
+      "from": 9,
+      "to": 13,
+      "answer": 1016
+    },
+    {
+      "from": 9,
+      "to": 14,
+      "answer": 1017
+    },
+    {
+      "from": 9,
+      "to": 15,
+      "answer": 1018
+    }
+  ]
+}

@@ -1,15 +1,15 @@
 package fr.c1.chatbot.model.activity
 
-class Expositions(
+class Exposition(
     val region: String,
-    val departement: String,
-    val identifiant: String,
-    val commune: String,
-    val nom: String,
+    val department: String,
+    val id: String,
+    commune: String,
+    val name: String,
     val url: String,
     val accessible: Boolean,
 
-    ) : AbstractActivity() {
+    ) : AbstractActivity(commune) {
     companion object {
         val passions: List<String> = listOf(
             "exposition", "musée", "peinture", "sculpture",
@@ -20,6 +20,6 @@ class Expositions(
     }
 
     override fun toString(): String {
-        return "Exposition (region='$region', departement='$departement', identifiant='$identifiant', commune='$commune', nom='$nom', url='$url', accessible='$accessible')"
+        return "Exposition (region='$region', departement='$department', identifiant='$id', commune='$commune', nom='$name', url='$url', accessible='$accessible')"
     }
 }

@@ -1,14 +1,14 @@
 package fr.c1.chatbot.model.activity
 
-class Associations(
-    val departement: String,
-    val identifiant: String,
-    val commune: String,
-    val nom: String,
-    val adresse: String,
-    val codePostal: String,
+class Association(
+    val department: String,
+    val id: String,
+    commune: String,
+    val name: String,
+    val address: String,
+    val postalCode: String,
     val accessible: Boolean,
-) : AbstractActivity() {
+) : AbstractActivity(commune) {
     companion object {
         val passions: List<String> = listOf(
             "association", "bénévolat", "engagement", "solidarité",
@@ -27,6 +27,6 @@ class Associations(
     }
 
     override fun toString(): String {
-        return "Association (departement='$departement', identifiant='$identifiant', commune='$commune', nom='$nom', adresse='$adresse', codePostal='$codePostal', accessible='$accessible')"
+        return "Association (departement='$department', identifiant='$id', commune='$commune', nom='$name', adresse='$address', codePostal='$postalCode', accessible='$accessible')"
     }
 }

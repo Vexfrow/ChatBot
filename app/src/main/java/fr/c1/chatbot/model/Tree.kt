@@ -1,8 +1,8 @@
 package fr.c1.chatbot.model
 
-import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import android.util.Log
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
@@ -59,37 +59,39 @@ class Tree {
     }
 
     //Return the question ask by the bot
-    fun getQuestion(): String {
-        return data?.robot?.get(questionsHistory.last())?.text ?: ""
-    }
+    val question: String
+        get() {
+            return data?.robot?.get(questionsHistory.last())?.text ?: ""
+        }
 
     //Return the list of all the answers possible
-    fun getAnswersId(): ArrayList<Int> {
-        val currentAnswers = ArrayList<Int>()
-        if (questionsHistory.size != 1) {
-            currentAnswers.add(recommencerConversation)
-            currentAnswers.add(retour)
-        }
-
-        for (r in data?.link!!) {
-            if (r.from == questionsHistory.last()) {
-                currentAnswers.add(r.answer)
+    val answersId: ArrayList<Int>
+        get() {
+            val currentAnswers = ArrayList<Int>()
+            if (questionsHistory.size != 1) {
+                currentAnswers.add(recommencerConversation)
+                currentAnswers.add(retour)
             }
+
+            for (r in data?.link!!) {
+                if (r.from == questionsHistory.last()) {
+                    currentAnswers.add(r.answer)
+                }
+            }
+            currentAnswers.add(afficherFiltre)
+            return currentAnswers
         }
-        currentAnswers.add(afficherFiltre)
-        return currentAnswers
-    }
 
 
     //Update the current question and execute the action link to the answer chosen
-    fun selectAnswer(idAnswer: Int, user: ProfilUtilisateur) {
+    fun selectAnswer(idAnswer: Int, user: User) {
         if (idAnswer == retour && questionsHistory.size > 1) questionsHistory.removeLast()
         else if (idAnswer == recommencerConversation) { //Clear previous messages ?
             questionsHistory.removeAll(questionsHistory.toSet())
             questionsHistory.add(0)
         } else if (idAnswer == afficherFiltre) {
             //val text = "Voici les filtres utilisés pour le moment : \nVilles : ${user.getVilles()}\nTypes d'activités : ${user.getTypes()}\n Distance préféré : ${getDistance()}\n Date voulue : ${app.getDate()}"
-           //val saveText = getQuestion()
+            //val saveText = getQuestion()
 
             Log.d(TAG, "selectAnswer: afficherFiltre")
         } else {
@@ -103,7 +105,7 @@ class Tree {
 
                 }
             }
-            Log.d(TAG, "selectAnswer: new type : ${user.getTypes()}")
+            Log.d(TAG, "selectAnswer: new type : ${user.types}")
         }
     }
 
@@ -117,8 +119,9 @@ class Tree {
         return if (actionStr == null) TypeAction.None else enumValueOf<TypeAction>(actionStr)
     }
 
-    fun getBotAction(): TypeAction {
-        val actionStr = data?.robot!!.first { h -> h.id == questionsHistory.last() }.action
-        return if (actionStr == null) TypeAction.None else enumValueOf<TypeAction>(actionStr)
-    }
+    val botAction: TypeAction
+        get() {
+            val actionStr = data?.robot!!.first { h -> h.id == questionsHistory.last() }.action
+            return if (actionStr == null) TypeAction.None else enumValueOf<TypeAction>(actionStr)
+        }
 }

@@ -1,14 +1,14 @@
 package fr.c1.chatbot.model.activity
 
-class Edifices(
+class Building(
     val region: String,
-    val departement: String,
-    val commune: String,
-    val nom: String,
-    val adresse: String,
+    val department: String,
+    commune: String,
+    val name: String,
+    val address: String,
     val accessible: Boolean,
 
-    ) : AbstractActivity() {
+    ) : AbstractActivity(commune) {
     companion object {
         val passions: List<String> = listOf(
             "architecture", "contemporaine", "édifices",
@@ -19,6 +19,6 @@ class Edifices(
     }
 
     override fun toString(): String {
-        return "Edifice avec architecture contemporaine (region='$region', departement='$departement', commune='$commune', nom='$nom', adresse='$adresse', accessible='$accessible')"
+        return "Edifice avec architecture contemporaine (region='$region', departement='$department', commune='$commune', nom='$name', adresse='$address', accessible='$accessible')"
     }
 }

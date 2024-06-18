@@ -1,12 +1,12 @@
 package fr.c1.chatbot.model.activity
 
-class Sites(
+class Site(
     val region: String,
-    val departement: String,
-    val commune: String,
+    val department: String,
+    commune: String,
     val accessible: Boolean,
 
-    ) : AbstractActivity() {
+    ) : AbstractActivity(commune) {
     companion object {
         val passions: List<String> = listOf(
             "site", "monument", "patrimoine",
@@ -17,6 +17,6 @@ class Sites(
     }
 
     override fun toString(): String {
-        return "Site patrimonial (region='$region', departement='$departement', commune='$commune', accessible='$accessible')"
+        return "Site patrimonial (region='$region', departement='$department', commune='$commune', accessible='$accessible')"
     }
 }

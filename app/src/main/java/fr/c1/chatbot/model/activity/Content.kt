@@ -1,16 +1,16 @@
 package fr.c1.chatbot.model.activity
 
-class Contenus(
-    val identifiant: String,
-    val commune: String,
-    val nom: String,
-    val adresse: String,
-    val lieu: String,
-    val codePostal: String,
+class Content(
+    val id: String,
+    commune: String,
+    val name: String,
+    val address: String,
+    val location: String,
+    val postalCode: String,
     val url: String,
     val accessible: Boolean,
 
-    ) : AbstractActivity() {
+    ) : AbstractActivity(commune) {
     companion object {
         val passions: List<String> = listOf(
             "culture", "art", "archives", "bibliothèque",
@@ -22,6 +22,6 @@ class Contenus(
 
 
     override fun toString(): String {
-        return "Contenu Culturel (identifiant='$identifiant', commune='$commune', nom='$nom', adresse='$adresse', lieu='$lieu', codePostal='$codePostal', url='$url', accessible='$accessible')"
+        return "Contenu Culturel (identifiant='$id', commune='$commune', nom='$name', adresse='$address', lieu='$location', codePostal='$postalCode', url='$url', accessible='$accessible')"
     }
 }

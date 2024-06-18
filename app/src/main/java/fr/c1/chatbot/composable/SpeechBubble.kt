@@ -3,6 +3,7 @@ package fr.c1.chatbot.composable
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -42,13 +43,11 @@ import coil.request.ImageRequest
 import fr.c1.chatbot.model.Settings
 import fr.c1.chatbot.ui.shape.SpeechBubbleShape
 import fr.c1.chatbot.ui.theme.ChatBotPrev
-import fr.c1.chatbot.ui.theme.LocalColorSchemeExtension
 
 @Composable
 fun SpeechBubble(
     text: String,
     modifier: Modifier = Modifier,
-    color: Color = LocalColorSchemeExtension.current.bot,
     cornerRadius: Dp = 15.dp,
     tipSize: Dp = 15.dp,
     isUser: Boolean = false
@@ -63,11 +62,14 @@ fun SpeechBubble(
     if (isUser)
         mod = mod.graphicsLayer(rotationY = 180f)
 
-    mod = mod.clip(SpeechBubbleShape(cornerRadius, tipSize, textSize.toSize()))
+    val shapeB = SpeechBubbleShape(cornerRadius, tipSize, textSize.toSize())
+
+    mod = mod.clip(shapeB).border(width = 4.dp, color = Color.Black, shape = shapeB)
 
     if (isUser)
         mod = mod.graphicsLayer(rotationY = -180f)
 
+    val color = if (isUser) Settings.bubbleSpeechUserColor else Settings.bubbleSpeechBotColor
     mod = mod.background(color)
 
     Box(modifier = mod.fillMaxWidth()) {
@@ -110,7 +112,6 @@ fun SpeechBubble(
 fun Message(
     text: String,
     modifier: Modifier = Modifier,
-    color: Color = LocalColorSchemeExtension.current.bot,
     isUser: Boolean = false
 ) {
     Box(
@@ -131,7 +132,6 @@ fun Message(
         ) {
             SpeechBubble(
                 text = text,
-                color = color,
                 isUser = isUser
             )
         }
@@ -188,12 +188,10 @@ fun Message(
 
 
 @Preview(device = Devices.PIXEL_TABLET)
-//@Preview(device = Devices.PIXEL_TABLET, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun Prev() = ChatBotPrev {
     Message(
         "Oui",
         Modifier.align(Alignment.TopStart), isUser = true
     )
-    //SpeechBubble(text = "bllllllllllllllllllllllbblblblblblblblblblblblblblblbllblblblb",modifier = Modifier.align(Alignment.TopStart),isUser = true)
 }

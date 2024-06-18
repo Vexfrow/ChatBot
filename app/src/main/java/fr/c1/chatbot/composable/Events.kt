@@ -15,18 +15,18 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun EventList(events: List<Event>, modifier: Modifier = Modifier) {
+fun Events(events: List<Event>, modifier: Modifier = Modifier) {
     LazyColumn(modifier = modifier) {
         items(events) { event ->
-            if(event.dtStart > System.currentTimeMillis()) {
-                EventItem(event = event)
+            if (event.dtStart > System.currentTimeMillis()) {
+                Event(event = event)
             }
         }
     }
 }
 
 @Composable
-fun EventItem(event: Event) {
+private fun Event(event: Event) {
     val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
     val startTime = dateFormat.format(Date(event.dtStart))
     val endTime = dateFormat.format(Date(event.dtEnd))
@@ -36,8 +36,4 @@ fun EventItem(event: Event) {
         Text(text = "Début : $startTime", style = MaterialTheme.typography.bodyMedium)
         Text(text = "Fin : $endTime", style = MaterialTheme.typography.bodyMedium)
     }
-}
-
-fun getNewID(events: List<Event>): Long {
-    return events.maxOfOrNull { it.id }?.plus(1) ?: 0
 }

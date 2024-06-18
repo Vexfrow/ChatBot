@@ -1,5 +1,8 @@
 package fr.c1.chatbot.model.activity
 
+/**
+ * Enumerate the different types of activities that can be proposed to the user.
+ */
 enum class Type {
     ALL,
     SPORT,
@@ -8,5 +11,5 @@ enum class Type {
     CINEMA,
     LITTERATURE,
     ASSOCIATION,
-    OTHER // Tout ce qui n'est pas dans les autres catégories
+    OTHER // Everything that does not fit in the previous categories
 }

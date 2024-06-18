@@ -29,86 +29,100 @@ import java.util.concurrent.TimeUnit
 
 private const val TAG = "ActivitiesRepository"
 
-// Fichiers CSV venant du site data.gouv.fr
+/**
+ * Repository of activities
+ */
 class ActivitiesRepository {
     companion object {
+        /**
+         * Interests list
+         */
         val passionList: Set<String>
             get() = Association.passions union Content.passions union Site.passions union Museum.passions union Garden.passions union Festival.passions union Exposition.passions union SportEquipment.passions union Building.passions
     }
 
+    /**
+     * Cities list
+     */
     private val cityList = sortedSetOf<String>()
     val cities: Set<String> get() = cityList
 
-
+    /**
+     * Date choosen by the user
+     */
     var date: String = null.toString()
 
-    var distance = 10 // 10 km par défaut
+    /**
+     * Distance choosen by the user (in km)
+     * Default value is 10 km
+     */
+    var distance = 10
 
+    /**
+     * Location of the terminal
+     */
     var location: Location = Location("")
 
     /**
-     * Liste des musées
+     * Museums list
      */
     private val museumList = mutableListOf<Museum>()
     val museums: List<Museum> get() = museumList
 
     /**
-     * Liste des sites patrimoniaux
+     * Patrimonials sites list
      */
     private val siteList = mutableListOf<Site>()
     val sites: List<Site> get() = siteList
 
     /**
-     * Liste des expositions
+     * Expositions list
      */
     private val expositionList = mutableListOf<Exposition>()
     val expositions: List<Exposition> get() = expositionList
 
     /**
-     * Liste des contenus culturels
+     * Cultural contents list
      */
     private val contentList = mutableListOf<Content>()
     val contents: List<Content> get() = contentList
 
     /**
-     * Liste des édifices
+     * Buildings with contemporary design list
      */
     private val buildingList = mutableListOf<Building>()
     val buildings: List<Building> get() = buildingList
 
     /**
-     * Liste des jardins
+     * Remarkable gardens list
      */
     private val gardenList = mutableListOf<Garden>()
     val gardens: List<Garden> get() = gardenList
 
     /**
-     * Liste des festivals
+     * Festivals list
      */
     private val festivalList = mutableListOf<Festival>()
     val festivals: List<Festival> get() = festivalList
 
     /**
-     * Liste des équipements sportifs
+     * Sport equipments list
      */
     private val sportEquipmentList = mutableListOf<SportEquipment>()
     val sportEquipments: List<SportEquipment> get() = sportEquipmentList
 
     /**
-     * Liste des associations
+     * Associations list
      */
     private val associationList = mutableListOf<Association>()
 
-    /**
-     * Récupérer la liste des associations
-     */
     val associations: List<Association> get() = associationList
 
     val all: List<AbstractActivity>
         get() = museumList + siteList + expositionList + contentList + buildingList + gardenList + festivalList + sportEquipmentList + associationList
 
     /**
-     * Ajouter une ville à la liste des villes disponibles
+     * Add a city to the list
      */
     private fun addCity(str: String) {
         if (str.isBlank())
@@ -130,7 +144,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Initialiser les musées
+     * Initialise the museums list
      */
     fun initMuseums(app: Application) {
         // Lire le fichier csv
@@ -173,7 +187,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Initialiser les sites patrimoniaux
+     * Initialise the patrimonial sites list
      */
     fun initSites(app: Application) {
         // Lire le fichier csv
@@ -203,7 +217,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Initialiser les expositions
+     * Initialise the expositions list
      */
     fun initExpositions(app: Application) {
         // Lire le fichier csv
@@ -239,7 +253,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Initialiser les contenus culturels
+     * Initialise the cultural contents list
      */
     fun initContents(app: Application) {
         // Lire le fichier csv
@@ -277,7 +291,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Initialiser les édifices
+     * Initialise the buildings list
      */
     fun initBuildings(app: Application) {
         // Lire le fichier csv
@@ -320,7 +334,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Initialiser les jardins
+     * Initialise the remarkable gardens list
      */
     fun initGardens(app: Application) {
         // Lire le fichier csv
@@ -357,7 +371,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Initialiser les festivals
+     * Initialise the festivals list
      */
     fun initFestivals(app: Application) {
         // Lire le fichier csv
@@ -403,7 +417,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Initialiser les équipements sportifs
+     * Initialise the sport equipments list
      */
     fun initSportEquipments(app: Application) {
         // Lire le fichier csv
@@ -423,15 +437,15 @@ class ActivitiesRepository {
             val nom = strings[1]
             val adresse = strings[2]
             val codePostal = strings[3]
-            if (strings[6].isNotEmpty()) {
-                latitude = strings[6].toDouble()
+            latitude = if (strings[6].isNotEmpty()) {
+                strings[6].toDouble()
             } else {
-                latitude = -1.0
+                -1.0
             }
-            if (strings[7].isNotEmpty()) {
-                longitude = strings[7].toDouble()
+            longitude = if (strings[7].isNotEmpty()) {
+                strings[7].toDouble()
             } else {
-                longitude = -1.0
+                -1.0
             }
             val activity = SportEquipment(
                 departement,
@@ -449,7 +463,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Initialiser les associations
+     * Initialise the associations list
      */
     fun initAssociations(app: Application) {
         // Lire le fichier csv
@@ -502,7 +516,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Initialiser toutes les listes
+     * Initialise all the lists
      */
     fun initAll(app: Application) {
         initMuseums(app)
@@ -517,14 +531,14 @@ class ActivitiesRepository {
     }
 
     /**
-     * Afficher une liste
+     * Display a list
      */
     fun <T> displayList(list: List<T>) {
         list.forEach { println(it) }
     }
 
     /**
-     * Afficher toutes les listes
+     * Display all the lists
      */
     fun displayAll() {
         displayMuseum()
@@ -539,70 +553,70 @@ class ActivitiesRepository {
     }
 
     /**
-     * Afficher la liste des musées
+     * Display the museums list
      */
     fun displayMuseum() {
         displayList(museumList)
     }
 
     /**
-     * Afficher la liste des sites patrimoniaux
+     * Display the patrimonial sites list
      */
     fun displaySites() {
         displayList(siteList)
     }
 
     /**
-     * Afficher la liste des expositions
+     * Display the expositions list
      */
     fun displayExpositions() {
         displayList(expositionList)
     }
 
     /**
-     * Afficher la liste des contenus culturels
+     * Display the cultural contents list
      */
     fun displayContents() {
         displayList(contentList)
     }
 
     /**
-     * Afficher la liste des édifices
+     * Display the buildings list
      */
     fun displayBuildings() {
         displayList(buildingList)
     }
 
     /**
-     * Afficher la liste des jardins
+     * Display the remarkable gardens list
      */
     fun displayGardens() {
         displayList(gardenList)
     }
 
     /**
-     * Afficher la liste des festivals
+     * Display the festivals list
      */
     fun displayFestivals() {
         displayList(festivalList)
     }
 
     /**
-     * Afficher la liste des équipements sportifs
+     * Display the sport equipments list
      */
     fun displaySportEquipments() {
         displayList(sportEquipmentList)
     }
 
     /**
-     * Afficher la liste des associations
+     * Display the associations list
      */
     fun displayAssociations() {
         displayList(associationList)
     }
 
     /**
-     * Trier la liste par région (si le critère région est présent)
+     * Sort the list by region (if the region criterion is present)
      */
     fun <T> sortByRegion(list: List<T>): List<T> {
         val clazz = list.first()!!::class
@@ -618,7 +632,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Sélectionner les éléments par région (si le critère région est présent)
+     * Select the elements by region (if the region criterion is present)
      */
     fun <T> selectByRegion(list: List<T>, region: String): List<T> {
         val clazz = list.first()!!::class
@@ -652,7 +666,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Trier la liste par département (si le critère département est présent)
+     * Sort the list by department (if the department criterion is present)
      */
     fun <T> sortByDepartement(list: List<T>): List<T> {
         val clazz = list.first()!!::class
@@ -670,7 +684,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Sélectionner les éléments par département (si le critère département est présent)
+     * Select the elements by department (if the department criterion is present)
      */
     fun <T> selectByDepartement(list: List<T>, departement: String): List<T> {
         val clazz = list.first()!!::class
@@ -712,7 +726,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Trier la liste par commune (si le critère commune est présent)
+     * Sort the list by commune (if the commune criterion is present)
      */
     fun <T> sortByCommune(list: List<T>): List<T> {
         val clazz = list.first()!!::class
@@ -731,7 +745,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Sélectionner les éléments par commune (si le critère commune est présent)
+     * Select the elements by commune (if the commune criterion is present)
      */
     fun <T> selectByCommune(list: List<T>, commune: String): List<T> {
         val clazz = list.first()!!::class
@@ -777,7 +791,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Trier la liste par nom (si le critère nom est présent)
+     * Sort the list by name (if the name criterion is present)
      */
     fun <T> sortByName(list: List<T>): List<T> {
         val clazz = list.first()!!::class
@@ -795,7 +809,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Sélectionner les éléments par nom (si le critère nom est présent)
+     * Select the elements by name (if the name criterion is present)
      */
     fun <T> selectByName(list: List<T>, nom: String): List<T> {
         val clazz = list.first()!!::class
@@ -837,7 +851,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Trier la liste par lieu (si le critère lieu est présent)
+     * Sort the list by location (if the location criterion is present)
      */
     fun <T> sortByLocation(list: List<T>): List<T> {
         val clazz = list.first()!!::class
@@ -849,7 +863,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Sélectionner les éléments par lieu (si le critère lieu est présent)
+     * Select the elements by location (if the location criterion is present)
      */
     fun <T> selectByLocation(list: List<T>, lieu: String): List<T> {
         val clazz = list.first()!!::class
@@ -867,7 +881,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Trier la liste par code postal (si le critère code postal est présent)
+     * Sort the list by postal code (if the postal code criterion is present)
      */
     fun <T> sortByPostalCode(list: List<T>): List<T> {
         val clazz = list.first()!!::class
@@ -883,7 +897,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Sélectionner les éléments par code postal (si le critère code postal est présent)
+     * Select the elements by postal code (if the postal code criterion is present)
      */
     fun <T> selectByPostalCode(list: List<T>, codePostal: String): List<T> {
         val clazz = list.first()!!::class
@@ -917,7 +931,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Sélectionner les éléments par accessibilité (si le critère accessibilité est présent)
+     * Sort the list by accessibility (if the accessibility criterion is present)
      */
     fun <T> selectByAccessible(list: List<T>, accessible: Boolean): List<T> {
         val clazz = list.first()!!::class
@@ -936,7 +950,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Trier la liste par identifiant (si le critère identifiant est présent)
+     * Sort the list by identifiant
      */
     fun <T> sortByIdentifiant(list: List<T>): List<T> {
         val clazz = list.first()!!::class
@@ -950,7 +964,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Sélectionner par passion
+     * Select the elements by interest
      */
     private fun selectByPassion(
         list: List<AbstractActivity>,
@@ -961,7 +975,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Obtenir la localisation d'une commune
+     * Get the coordinates of a city
      */
 
     suspend fun getCoordinates(commune: String): Pair<Double, Double>? {
@@ -994,7 +1008,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Sélectionner par distance (km)
+     * Select the activities by distance
      */
     suspend fun selectByDistance(
         list: List<AbstractActivity>,
@@ -1030,7 +1044,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Obtenir les résultats de la recherche
+     * Get the final result
      */
     fun getResults(app: ChatBot): List<AbstractActivity> {
         val user = app.currentUser
@@ -1103,6 +1117,9 @@ class ActivitiesRepository {
         return list.flatten()
     }
 
+    /**
+     * Select the activities by type
+     */
     private fun selectByType(
         it: List<AbstractActivity>,
         type: Type

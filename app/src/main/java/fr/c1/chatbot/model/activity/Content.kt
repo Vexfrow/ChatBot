@@ -1,5 +1,22 @@
 package fr.c1.chatbot.model.activity
 
+/**
+ * Represents a cultural content.
+ * A content can be a museum, a library, a cinema, a concert hall, etc.
+ * It is a place where cultural activities take place.
+ * @param id the unique identifier of the content
+ * @param commune the commune where the content is located
+ * @param name the name of the content
+ * @param address the address of the content
+ * @param location the location of the content
+ * @param postalCode the postal code of the content
+ * @param url the URL of the content
+ * @param accessible true if the content is accessible, false otherwise
+ * @param latitude the latitude of the content
+ * @param longitude the longitude of the content
+ * @constructor creates a cultural content
+ * @see AbstractActivity
+ */
 class Content(
     val id: String,
     commune: String,

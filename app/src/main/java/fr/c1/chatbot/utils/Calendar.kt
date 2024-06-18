@@ -21,27 +21,20 @@ object Calendar {
         const val REQUEST_CODE = 100
 
         /**
-         * Vérifie si l'application a la permission de lire le calendrier
+         * Check if the application has the permission to read the calendar
          */
         fun hasReadCalendarPermission(context: Context): Boolean =
             context.hasPermission(Manifest.permission.READ_CALENDAR)
 
         /**
-         * Vérifie si l'application a la permission d'écrire dans le calendrier
+         * Check if the application has the permission to write in the calendar
          */
         fun hasWriteCalendarPermission(context: Context): Boolean =
             context.hasPermission(Manifest.permission.WRITE_CALENDAR)
-
-        fun requestCalendarPermissions(activity: Activity) {
-            activity.requestPermissions(
-                arrayOf(Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR),
-                REQUEST_CODE
-            )
-        }
     }
 
     /**
-     * Récupère les événements du calendrier
+     * Fetch the events from the calendar
      */
     fun fetchCalendarEvents(context: Context): List<Event> {
         if (!hasReadCalendarPermission(context)) {
@@ -58,13 +51,13 @@ object Calendar {
         )
         val selection =
             "${CalendarContract.Events.DELETED} = ? AND ${CalendarContract.Events.CALENDAR_ID} = ?"
-        // Vérifier que le calendrier d'id 99 existe
+        // Check if the calendar of id 99 exists
         val calendarId = getCalendarId(context)
         if (calendarId == -1L) {
             Log.e(TAG, "fetchCalendarEvents: No ChatBot calendar !")
-//            createCalendar(context)
+            createCalendar(context)
         }
-        // Récupérer uniquement les événements non supprimés du calendrier ChatBot
+        // Fetch only the non-deleted events from the ChatBot calendar
         val selectionArgs = arrayOf("0", "99")
         val sortOrder = "${CalendarContract.Events.DTSTART} ASC"
         val uri: Uri = CalendarContract.Events.CONTENT_URI
@@ -91,7 +84,7 @@ object Calendar {
     }
 
     /**
-     * Ecrit un événement dans le calendrier
+     * Write an event in the calendar
      */
     private fun writeEvent(context: Context, event: Event) {
         if (!hasWriteCalendarPermission(context)) {
@@ -102,7 +95,7 @@ object Calendar {
         val endTime = event.dtEnd
         val title = event.title
 
-        // Récupérer l'ide du calendrier
+        // Get the id of the ChatBot calendar
         val calendarId = getCalendarId(context)
 
         if (calendarId == -1L) {
@@ -124,6 +117,14 @@ object Calendar {
         Log.i(TAG, "writeEvent: Event added to calendar $calendarId")
     }
 
+    /**
+     * Write an event in the calendar
+     * @param context The context
+     * @param title The title of the event
+     * @param startMillis The start time of the event
+     * @param endMillis The end time of the event
+     * @param events The list of events
+     */
     fun writeEvent(
         context: Context,
         title: String,
@@ -137,7 +138,8 @@ object Calendar {
     }
 
     /**
-     * Créer un calendrier avec id = 99
+     * Create a calendar of id 99
+     * @param context The context
      */
     fun createCalendar(context: Context): Long? {
         val accountName = "ChatBot"
@@ -167,7 +169,9 @@ object Calendar {
     }
 
     /**
-     * Supprimer calendrier en utilisant l'id
+     * Delete a calendar
+     * @param context The context
+     * @param id The id of the calendar to delete
      */
     fun deleteCalendar(context: Context, id: Long) {
         val uri = CalendarContract.Calendars.CONTENT_URI
@@ -177,7 +181,7 @@ object Calendar {
     }
 
     /**
-     * Récupérer l'id des calendriers
+     * Get the id of the ChatBot calendar
      */
     private fun getCalendarId(context: Context): Long {
         val projection = arrayOf(
@@ -187,13 +191,13 @@ object Calendar {
         )
         val uri: Uri = CalendarContract.Calendars.CONTENT_URI
         val cursor = context.contentResolver.query(uri, projection, null, null, null)
-        // Récupérer l'id des calendriers disponibles
+        // Get the id of the ChatBot calendar
         cursor?.use {
             val idIndex = it.getColumnIndexOrThrow(CalendarContract.Calendars._ID)
             val nameIndex =
                 it.getColumnIndexOrThrow(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME)
             val primaryIndex = it.getColumnIndexOrThrow(CalendarContract.Calendars.IS_PRIMARY)
-            // Choisir le calendrier "primaire"
+            // Chooses the ChatBot calendar if it exists
             while (it.moveToNext()) {
                 val id = it.getLong(idIndex)
                 val name = it.getString(nameIndex)
@@ -209,6 +213,10 @@ object Calendar {
         return -1L
     }
 
+    /**
+     * Delete all the all-day events of the calendar
+     * @param context The context
+     */
     fun deleteAllDayEvents(context: Context) {
         val projection = arrayOf(
             CalendarContract.Events._ID,
@@ -232,7 +240,7 @@ object Calendar {
                 val id = it.getLong(idIndex)
                 val dtStart = it.getLong(dtStartIndex)
                 val deleted = it.getInt(deletedIndex)
-                if (deleted == 0) { // Vérifie que l'événement n'est pas marqué comme supprimé
+                if (deleted == 0) { // Check if the event is not marked as deleted
                     if (isAllDayEvent(dtStart)) {
                         deleteEvent(context, id)
                     }
@@ -241,13 +249,22 @@ object Calendar {
         }
     }
 
+    /**
+     * Check if the event is an all-day event
+     */
     private fun isAllDayEvent(dtStart: Long): Boolean {
         val date = dtStart.toDate()
         Log.d(TAG, "isAllDayEvent: ${date.substring(0, 10)}")
-        val res = date.substring(0, 10) == "06/06/2024"
-        return res
+        // Date of the day
+        val today = System.currentTimeMillis().toDate().substring(0, 10)
+        return date.substring(0, 10) == today
     }
 
+    /**
+     * Delete an event from the calendar
+     * @param context The context
+     * @param eventId The id of the event to delete
+     */
     private fun deleteEvent(context: Context, eventId: Long) {
         val uri = CalendarContract.Events.CONTENT_URI
         val selection = "${CalendarContract.Events._ID} = ?"
@@ -255,6 +272,9 @@ object Calendar {
         context.contentResolver.delete(uri, selection, selectionArgs)
     }
 
+    /**
+     * Get a new id for an event
+     */
     private fun getNewID(events: List<Event>): Long {
         return events.maxOfOrNull { it.id }?.plus(1) ?: 0
     }

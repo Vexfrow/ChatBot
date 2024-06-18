@@ -1,5 +1,20 @@
 package fr.c1.chatbot.model.activity
 
+/**
+ * Represents an association.
+ * @param department the department where the association is located
+ * @param id the unique identifier of the association
+ * @param commune the commune where the association is located
+ * @param name the name of the association
+ * @param address the address of the association
+ * @param postalCode the postal code of the association
+ * @param accessible true if the association is accessible, false otherwise
+ * @param latitude the latitude of the association
+ * @param longitude the longitude of the association
+ * @param url the URL of the association
+ * @constructor creates an association
+ * @see AbstractActivity
+ */
 class Association(
     val department: String,
     val id: String,

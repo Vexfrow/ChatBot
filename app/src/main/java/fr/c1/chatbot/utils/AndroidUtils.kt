@@ -176,10 +176,12 @@ fun SharedPreferences.Editor.putUri(
     value: Uri
 ) = putString(key, value.toString())
 
+/**
+ * Parse a CSV file
+ */
 fun parseCsv(csvIS: InputStream): List<List<String>> {
     val csvParser = CSVParserBuilder()
         .withSeparator(';')
-        //.withQuoteChar('"')
         .withIgnoreQuotations(false)
         .withEscapeChar('\\')
         .build()

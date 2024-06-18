@@ -1,5 +1,19 @@
 package fr.c1.chatbot.model.activity
 
+/**
+ * Represents an exposition.
+ * @param region the region of the exposition
+ * @param department the department of the exposition
+ * @param id the id of the exposition
+ * @param commune the commune of the exposition
+ * @param name the name of the exposition
+ * @param url the url of the exposition
+ * @param accessible true if the exposition is accessible, false otherwise
+ * @param latitude the latitude of the exposition
+ * @param longitude the longitude of the exposition
+ * @constructor creates an exposition activity
+ * @see AbstractActivity
+ */
 class Exposition(
     val region: String,
     val department: String,

@@ -1,5 +1,19 @@
 package fr.c1.chatbot.model.activity
 
+/**
+ * Garden class represents a garden activity.
+ * @param region the region of the garden
+ * @param department the department of the garden
+ * @param commune the commune of the garden
+ * @param name the name of the garden
+ * @param address the address of the garden
+ * @param postalCode the postal code of the garden
+ * @param accessible the accessibility of the garden
+ * @param latitude the latitude of the garden
+ * @param longitude the longitude of the garden
+ * @constructor creates a garden activity
+ * @see AbstractActivity
+ */
 class Garden(
     val region: String,
     val department: String,

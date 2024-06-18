@@ -175,7 +175,7 @@ fun SettingsComp() {
 
         Spacer(modifier = Modifier.height(50.dp))
         Text(
-            text = "Aperçu de la taille du texte",
+            text = "Faîte glisser le curseur pour changer la taille du texte",
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(16.dp)
         )

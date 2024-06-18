@@ -1,6 +1,7 @@
 package fr.c1.chatbot.utils
 
-import android.app.Application
+import com.opencsv.CSVParserBuilder
+import com.opencsv.CSVReaderBuilder
 import fr.c1.chatbot.ChatBot
 import kotlinx.coroutines.CoroutineScope
 import androidx.activity.ComponentActivity
@@ -31,17 +32,12 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.util.Log
-import com.opencsv.CSVParserBuilder
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.InputStreamReader
 import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KProperty0
-import com.opencsv.CSVReader
-import com.opencsv.CSVReaderBuilder
-import fr.c1.chatbot.R
 
 val application: ChatBot
     @Composable
@@ -186,9 +182,9 @@ fun parseCsv(csvIS: InputStream): List<List<String>> {
         //.withQuoteChar('"')
         .withIgnoreQuotations(false)
         .withEscapeChar('\\')
-            .build()
+        .build()
 
-            val csvReader = CSVReaderBuilder(InputStreamReader(csvIS))
+    val csvReader = CSVReaderBuilder(InputStreamReader(csvIS))
         .withCSVParser(csvParser)
         .build()
 

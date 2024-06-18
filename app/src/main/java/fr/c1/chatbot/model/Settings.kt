@@ -38,6 +38,7 @@ object Settings {
     private var defaultBubbleSpeechColor = Color.Blue
     private var defaultBackgroundColor = Color(136, 227, 160)
     private var defaultBotName = "Rob"
+    private var defaultBotPersonality = "default"
 
     var textSize: TextUnit by mutableStateOf(40.sp)
     var tts: Boolean by mutableStateOf(false)
@@ -49,6 +50,7 @@ object Settings {
     var bubbleSpeechUserColor: Color by mutableStateOf(defaultBubbleSpeechColor)
     var backgroundColor: Color by mutableStateOf(defaultBackgroundColor)
     var botName: String by mutableStateOf(defaultBotName)
+    var botPersonality: String by mutableStateOf(defaultBotPersonality)
 
     val iconsAvailable = with(Icons.Default) {
         listOf(
@@ -76,6 +78,7 @@ object Settings {
         bubbleSpeechUserColor = defaultBubbleSpeechColor
         backgroundColor = defaultBackgroundColor
         botName = defaultBotName
+        botPersonality = defaultBotPersonality
 
     }
 
@@ -94,6 +97,7 @@ object Settings {
         getColor(::bubbleSpeechUserColor, defaultBubbleSpeechColor.value.toInt())
         getColor(::backgroundColor, defaultBackgroundColor.value.toInt())
         getString(::botName, defaultBotName)
+        getString(::botPersonality, defaultBotPersonality)
 
         Log.i(TAG, "Settings loaded: ${this@Settings}")
     }
@@ -112,6 +116,7 @@ object Settings {
             putColor(::bubbleSpeechUserColor)
             putColor(::backgroundColor)
             putString(::botName)
+            putString(::botPersonality)
 
             Log.i(TAG, "Settings saved : ${this@Settings}")
         }

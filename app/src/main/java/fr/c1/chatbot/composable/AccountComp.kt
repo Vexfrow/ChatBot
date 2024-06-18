@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import java.text.Collator
 import java.util.Locale
 
 private const val TAG = "AccountComp"
@@ -102,10 +103,11 @@ object AccountComp {
         val selection = remember { list.map { it to selected(it) }.toMutableStateMap() }
 
         LazyVerticalGrid(
-            columns = GridCells.Fixed(6),
+            columns = GridCells.Fixed(5),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            items(list) {
+            val coll = Collator.getInstance(Locale.FRENCH).apply { strength = Collator.PRIMARY }
+            items(list.sortedWith { left, right -> coll.compare(left, right) }) {
                 FilterChip(
                     selected = selection[it]!!,
                     onClick = {

@@ -16,14 +16,25 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import android.os.Build
+import fr.c1.chatbot.model.Settings
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80, secondary = PurpleGrey80, tertiary = Pink80
-)
+private val DarkColorScheme: ColorScheme
+    get() = darkColorScheme(
+        primary = Purple80,
+        secondary = PurpleGrey80,
+        tertiary = Pink80,
+        background = Settings.backgroundColor,
+        surface = Settings.backgroundColor
+    )
 
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40, secondary = PurpleGrey40, tertiary = Pink40
-)
+private val LightColorScheme: ColorScheme
+    get() = lightColorScheme(
+        primary = Purple40,
+        secondary = PurpleGrey40,
+        tertiary = Pink40,
+        background = Settings.backgroundColor,
+        surface = Settings.backgroundColor
+    )
 
 
 @Composable

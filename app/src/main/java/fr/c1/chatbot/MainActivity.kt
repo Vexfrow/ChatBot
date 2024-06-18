@@ -84,7 +84,7 @@ class MainActivity : ComponentActivity() {
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxSize()
-                    .background(Settings.fontColor)
+                    .background(Settings.backgroundColor)
             ) {
                 val messages =
                     rememberMutableStateListOf((application as ChatBot).chatbotTree.question)

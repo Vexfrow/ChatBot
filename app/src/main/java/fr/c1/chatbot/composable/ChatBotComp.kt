@@ -62,13 +62,13 @@ object ChatBotComp {
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .background(Settings.fontColor)
+                .background(Settings.backgroundColor)
         ) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
-                    .background(Settings.fontColor),
+                    .background(Settings.backgroundColor),
                 state = lazyListState
             ) {
                 itemsIndexed(messages) { i, message ->
@@ -149,7 +149,7 @@ object ChatBotComp {
             }
 
             Proposals(
-                modifier = Modifier.background(Settings.fontColor),
+                modifier = Modifier.background(Settings.backgroundColor),
                 proposals = answers,
             ) {
                 answers = emptyList()
@@ -236,7 +236,7 @@ object ChatBotComp {
             }
 
             MySearchBar(
-                modifier = Modifier.background(Settings.fontColor),
+                modifier = Modifier.background(Settings.backgroundColor),
                 placeholder = sbState.text,
                 enabled = sbState.enabled,
                 action = sbState.action,

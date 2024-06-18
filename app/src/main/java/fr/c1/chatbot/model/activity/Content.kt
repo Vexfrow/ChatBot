@@ -1,12 +1,12 @@
 package fr.c1.chatbot.model.activity
 
-class Contenus(
-    val identifiant: String,
+class Content(
+    val id: String,
     commune: String,
-    val nom: String,
-    val adresse: String,
-    val lieu: String,
-    val codePostal: String,
+    val name: String,
+    val address: String,
+    val location: String,
+    val postalCode: String,
     val url: String,
     val accessible: Boolean,
     latitude: Double,
@@ -21,8 +21,7 @@ class Contenus(
         )
     }
 
-
     override fun toString(): String {
-        return "Contenu Culturel (identifiant='$identifiant', commune='$commune', nom='$nom', adresse='$adresse', lieu='$lieu', codePostal='$codePostal', url='$url', accessible='$accessible', latitude='$latitude', longitude='$longitude')"
+        return "Content(id='$id', name='$name', address='$address', location='$location', postalCode='$postalCode', url='$url', accessible=$accessible)"
     }
 }

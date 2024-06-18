@@ -5,37 +5,38 @@ enum class TypeAction {
     None,
 
     /** Date picker */
-    EntrerDate,
+    DateInput,
 
     /** Int */
-    EntrerDistance,
+    DistanceInput,
 
     /** Dropdown with auto completion */
-    EntrerVille,
+    CityInput,
 
     /** Result Tab */
-    AfficherResultat,
+    ShowResults,
 
     /** ToDo: city ? */
-    Geolocalisation,
+    Geolocate,
 
     /** Dropdown with multiple choices */
-    ChoisirPassions,
+    ChoosePassions,
 
     /** Just a suggestion */
-    ActivitePhysique,
+    PhysicalActivity,
 
     /** Just a suggestion */
-    ActiviteCulturelle,
+    CulturalActivity,
 
-    SupprimerRappels,
+    DeleteRecalls,
 
-    SupprimerSuggestions,
+    DeleteSuggestions,
 
-    SupprimerNotifs,
+    DeletNotifs,
 
     /** Just a suggestion */
-    Retour,
-    Recommencer,
-    AfficherFiltres
+    Back,
+    Restart,
+    ShowFilters,
+    Skip
 }

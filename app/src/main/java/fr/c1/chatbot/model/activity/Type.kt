@@ -4,9 +4,9 @@ enum class Type {
     ALL,
     SPORT,
     CULTURE,
-    MUSIQUE,
+    MUSIC,
     CINEMA,
     LITTERATURE,
     ASSOCIATION,
-    AUTRE // Tout ce qui n'est pas dans les autres catégories
+    OTHER // Tout ce qui n'est pas dans les autres catégories
 }

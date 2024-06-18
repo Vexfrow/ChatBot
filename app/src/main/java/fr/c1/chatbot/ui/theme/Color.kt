@@ -1,6 +1,5 @@
 package fr.c1.chatbot.ui.theme
 
-import androidx.compose.animation.VectorConverter
 import androidx.compose.ui.graphics.Color
 
 val Purple80 = Color(0xFFD0BCFF)
@@ -14,3 +13,14 @@ val Pink40 = Color(0xFF7D5260)
 
 val Gray400 = Color(0xFFBDBDBD)
 val Gray600 = Color(0xFF757575)
+
+
+val pickColorList = listOf(
+    Color.Blue,
+    Color(140, 204, 219),
+    Color(136, 227, 160),
+    Color(198, 138, 209),
+    Color(222, 138, 177),
+    Color(217, 141, 126),
+    Color(214, 197, 111)
+)

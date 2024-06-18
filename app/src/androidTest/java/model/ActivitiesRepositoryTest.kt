@@ -1,13 +1,13 @@
 package model
 
-import androidx.test.core.app.ApplicationProvider
 import fr.c1.chatbot.ChatBot
-import fr.c1.chatbot.model.activity.Musees
 import fr.c1.chatbot.model.ActivitiesRepository
+import fr.c1.chatbot.model.activity.Museum
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
+import androidx.test.core.app.ApplicationProvider
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 
@@ -32,8 +32,8 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun initMuseesTest() {
-        activitiesRepository.initMusees(app)
-        val musees = activitiesRepository.getMuseesList()
+        activitiesRepository.initMuseums(app)
+        val musees = activitiesRepository.museums
         val sizeExpected = 1222
         Assert.assertEquals(
             "Le nombre de musées attendu est $sizeExpected, la taille de la liste est ${musees.size}",
@@ -45,7 +45,7 @@ class ActivitiesRepositoryTest {
     @Test
     fun initSitesTest() {
         activitiesRepository.initSites(app)
-        val sites = activitiesRepository.getSitesList()
+        val sites = activitiesRepository.sites
         val sizeExpected = 1134
         Assert.assertEquals(
             "Le nombre de sites attendu est $sizeExpected, la taille de la liste est ${sites.size}",
@@ -57,7 +57,7 @@ class ActivitiesRepositoryTest {
     @Test
     fun initExpositionsTest() {
         activitiesRepository.initExpositions(app)
-        val expositions = activitiesRepository.getExpositionsList()
+        val expositions = activitiesRepository.expositions
         val sizeExpected = 243
         Assert.assertEquals(
             "Le nombre d'expositions attendu est $sizeExpected, la taille de la liste est ${expositions.size}",
@@ -68,8 +68,8 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun initContenusTest() {
-        activitiesRepository.initContenus(app)
-        val contenus = activitiesRepository.getContenusList()
+        activitiesRepository.initContents(app)
+        val contenus = activitiesRepository.contents
         val sizeExpected = 1108
         Assert.assertEquals(
             "Le nombre de contenus culturels attendu est $sizeExpected, la taille de la liste est ${contenus.size}",
@@ -80,8 +80,8 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun initEdificesTest() {
-        activitiesRepository.initEdifices(app)
-        val edifices = activitiesRepository.getEdificesList()
+        activitiesRepository.initBuildings(app)
+        val edifices = activitiesRepository.buildings
         val sizeExpected = 1657
         Assert.assertEquals(
             "Le nombre d'édifices attendu est $sizeExpected, la taille de la liste est ${edifices.size}",
@@ -92,8 +92,8 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun initJardinsTest() {
-        activitiesRepository.initJardins(app)
-        val jardins = activitiesRepository.getJardinsList()
+        activitiesRepository.initGardens(app)
+        val jardins = activitiesRepository.gardens
         val sizeExpected = 413
         Assert.assertEquals(
             "Le nombre de jardins attendu est $sizeExpected, la taille de la liste est ${jardins.size}",
@@ -105,7 +105,7 @@ class ActivitiesRepositoryTest {
     @Test
     fun initFestivalsTest() {
         activitiesRepository.initFestivals(app)
-        val festivals = activitiesRepository.getFestivalsList()
+        val festivals = activitiesRepository.festivals
         val sizeExpected = 7283
         Assert.assertEquals(
             "Le nombre de festivals attendu est $sizeExpected, la taille de la liste est ${festivals.size}",
@@ -116,8 +116,8 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun initEquipementsSportTest() {
-        activitiesRepository.initEquipementsSport(app)
-        val equipementsSport = activitiesRepository.getEquipementsSportList()
+        activitiesRepository.initSportEquipments(app)
+        val equipementsSport = activitiesRepository.sportEquipments
         val sizeExpected = 159463
         Assert.assertEquals(
             "Le nombre d'équipements sportifs attendu est $sizeExpected, la taille de la liste est ${equipementsSport.size}",
@@ -128,8 +128,8 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun initAssociationsTest() {
-        activitiesRepository.initAsso(app)
-        val asso = activitiesRepository.getAssociationsList()
+        activitiesRepository.initAssociations(app)
+        val asso = activitiesRepository.associations
         val sizeExpected = 23837
         Assert.assertEquals(
             "Le nombre d'associations attendu est $sizeExpected, la taille de la liste est ${asso.size}",
@@ -141,15 +141,15 @@ class ActivitiesRepositoryTest {
     @Test
     fun initAllTest() {
         activitiesRepository.initAll(app)
-        val musees = activitiesRepository.getMuseesList()
-        val sites = activitiesRepository.getSitesList()
-        val expositions = activitiesRepository.getExpositionsList()
-        val contenus = activitiesRepository.getContenusList()
-        val edifices = activitiesRepository.getEdificesList()
-        val jardins = activitiesRepository.getJardinsList()
-        val festivals = activitiesRepository.getFestivalsList()
-        val equipementsSport = activitiesRepository.getEquipementsSportList()
-        val associations = activitiesRepository.getAssociationsList()
+        val musees = activitiesRepository.museums
+        val sites = activitiesRepository.sites
+        val expositions = activitiesRepository.expositions
+        val contenus = activitiesRepository.contents
+        val edifices = activitiesRepository.buildings
+        val jardins = activitiesRepository.gardens
+        val festivals = activitiesRepository.festivals
+        val equipementsSport = activitiesRepository.sportEquipments
+        val associations = activitiesRepository.associations
         val sizeExpected = 1222 + 1134 + 243 + 1108 + 1657 + 413 + 7283 + 159463 + 23837
         val sizeActual =
             musees.size + sites.size + expositions.size + contenus.size + edifices.size + jardins.size + festivals.size + equipementsSport.size + associations.size
@@ -162,8 +162,8 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun getMuseesListTest() {
-        activitiesRepository.initMusees(app)
-        val musees = activitiesRepository.getMuseesList()
+        activitiesRepository.initMuseums(app)
+        val musees = activitiesRepository.museums
         val sizeExpected = 1222
         Assert.assertEquals(
             "Le nombre de musées attendu est $sizeExpected, la taille de la liste est ${musees.size}",
@@ -175,7 +175,7 @@ class ActivitiesRepositoryTest {
     @Test
     fun getSitesListTest() {
         activitiesRepository.initSites(app)
-        val sites = activitiesRepository.getSitesList()
+        val sites = activitiesRepository.sites
         val sizeExpected = 1134
         Assert.assertEquals(
             "Le nombre de sites attendu est $sizeExpected, la taille de la liste est ${sites.size}",
@@ -187,7 +187,7 @@ class ActivitiesRepositoryTest {
     @Test
     fun getExpositionsListTest() {
         activitiesRepository.initExpositions(app)
-        val expositions = activitiesRepository.getExpositionsList()
+        val expositions = activitiesRepository.expositions
         val sizeExpected = 243
         Assert.assertEquals(
             "Le nombre d'expositions attendu est $sizeExpected, la taille de la liste est ${expositions.size}",
@@ -198,8 +198,8 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun getContenusListTest() {
-        activitiesRepository.initContenus(app)
-        val contenus = activitiesRepository.getContenusList()
+        activitiesRepository.initContents(app)
+        val contenus = activitiesRepository.contents
         val sizeExpected = 1108
         Assert.assertEquals(
             "Le nombre de contenus culturels attendu est $sizeExpected, la taille de la liste est ${contenus.size}",
@@ -210,8 +210,8 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun getEdificesListTest() {
-        activitiesRepository.initEdifices(app)
-        val edifices = activitiesRepository.getEdificesList()
+        activitiesRepository.initBuildings(app)
+        val edifices = activitiesRepository.buildings
         val sizeExpected = 1657
         Assert.assertEquals(
             "Le nombre d'édifices attendu est $sizeExpected, la taille de la liste est ${edifices.size}",
@@ -222,8 +222,8 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun getJardinsListTest() {
-        activitiesRepository.initJardins(app)
-        val jardins = activitiesRepository.getJardinsList()
+        activitiesRepository.initGardens(app)
+        val jardins = activitiesRepository.gardens
         val sizeExpected = 413
         Assert.assertEquals(
             "Le nombre de jardins attendu est $sizeExpected, la taille de la liste est ${jardins.size}",
@@ -235,7 +235,7 @@ class ActivitiesRepositoryTest {
     @Test
     fun getFestivalsListTest() {
         activitiesRepository.initFestivals(app)
-        val festivals = activitiesRepository.getFestivalsList()
+        val festivals = activitiesRepository.festivals
         val sizeExpected = 7283
         Assert.assertEquals(
             "Le nombre de festivals attendu est $sizeExpected, la taille de la liste est ${festivals.size}",
@@ -246,8 +246,8 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun getEquipementsSportListTest() {
-        activitiesRepository.initEquipementsSport(app)
-        val equipementsSport = activitiesRepository.getEquipementsSportList()
+        activitiesRepository.initSportEquipments(app)
+        val equipementsSport = activitiesRepository.sportEquipments
         val sizeExpected = 159463
         Assert.assertEquals(
             "Le nombre d'équipements sportifs attendu est $sizeExpected, la taille de la liste est ${equipementsSport.size}",
@@ -258,8 +258,8 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun getAssociationsListTest() {
-        activitiesRepository.initAsso(app)
-        val asso = activitiesRepository.getAssociationsList()
+        activitiesRepository.initAssociations(app)
+        val asso = activitiesRepository.associations
         val sizeExpected = 23837
         Assert.assertEquals(
             "Le nombre d'associations attendu est $sizeExpected, la taille de la liste est ${asso.size}",
@@ -271,14 +271,14 @@ class ActivitiesRepositoryTest {
     @Test
     fun displayEmptyListTest() {
         // Liste vide
-        val emptyList = emptyList<Musees>()
+        val emptyList = emptyList<Museum>()
         activitiesRepository.displayList(emptyList)
     }
 
     @Test
     fun displayListTest() {
         // Liste activities non vide
-        val activity1 = Musees(
+        val activity1 = Museum(
             "region1",
             "departement1",
             "identifiant1",
@@ -291,7 +291,7 @@ class ActivitiesRepositoryTest {
             "url1",
             true
         )
-        val activity2 = Musees(
+        val activity2 = Museum(
             "region2",
             "departement2",
             "identifiant2",
@@ -323,7 +323,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun trierParRegionTest() {
-        val activity1 = Musees(
+        val activity1 = Museum(
             "region1",
             "departement1",
             "identifiant1",
@@ -337,7 +337,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Musees(
+        val activity2 = Museum(
             "region2",
             "departement2",
             "identifiant2",
@@ -351,7 +351,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Musees(
+        val activity3 = Museum(
             "region1",
             "departement3",
             "identifiant3",
@@ -367,7 +367,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val sortedList = activitiesRepository.trierParRegion(list)
+        val sortedList = activitiesRepository.sortByRegion(list)
 
         val expectedList = listOf(activity1, activity3, activity2)
 
@@ -376,7 +376,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun selectionnerParRegionTest() {
-        val activity1 = Musees(
+        val activity1 = Museum(
             "region1",
             "departement1",
             "identifiant1",
@@ -390,7 +390,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Musees(
+        val activity2 = Museum(
             "region2",
             "departement2",
             "identifiant2",
@@ -404,7 +404,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Musees(
+        val activity3 = Museum(
             "region1",
             "departement3",
             "identifiant3",
@@ -420,7 +420,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val selectedList = activitiesRepository.selectionnerParRegion(list, "region1")
+        val selectedList = activitiesRepository.selectByRegion(list, "region1")
 
         val expectedList = listOf(activity1, activity3)
 
@@ -429,7 +429,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun trierParDepartementTest() {
-        val activity1 = Musees(
+        val activity1 = Museum(
             "region1",
             "departement3",
             "identifiant1",
@@ -443,7 +443,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Musees(
+        val activity2 = Museum(
             "region2",
             "departement2",
             "identifiant2",
@@ -457,7 +457,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Musees(
+        val activity3 = Museum(
             "region1",
             "departement1",
             "identifiant3",
@@ -473,7 +473,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val sortedList = activitiesRepository.trierParDepartement(list)
+        val sortedList = activitiesRepository.sortByDepartement(list)
 
         val expectedList = listOf(activity3, activity2, activity1)
 
@@ -482,7 +482,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun selectionnerParDepartementTest() {
-        val activity1 = Musees(
+        val activity1 = Museum(
             "region1",
             "departement3",
             "identifiant1",
@@ -496,7 +496,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Musees(
+        val activity2 = Museum(
             "region2",
             "departement2",
             "identifiant2",
@@ -510,7 +510,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Musees(
+        val activity3 = Museum(
             "region1",
             "departement1",
             "identifiant3",
@@ -526,7 +526,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val selectedList = activitiesRepository.selectionnerParDepartement(list, "departement3")
+        val selectedList = activitiesRepository.selectByDepartement(list, "departement3")
 
         val expectedList = listOf(activity1)
 
@@ -535,7 +535,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun trierParCommuneTest() {
-        val activity1 = Musees(
+        val activity1 = Museum(
             "region1",
             "departement1",
             "identifiant1",
@@ -549,7 +549,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Musees(
+        val activity2 = Museum(
             "region2",
             "departement2",
             "identifiant2",
@@ -563,7 +563,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Musees(
+        val activity3 = Museum(
             "region1",
             "departement3",
             "identifiant3",
@@ -579,7 +579,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val sortedList = activitiesRepository.trierParCommune(list)
+        val sortedList = activitiesRepository.sortByCommune(list)
 
         val expectedList = listOf(activity3, activity2, activity1)
 
@@ -588,7 +588,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun selectionnerParCommuneTest() {
-        val activity1 = Musees(
+        val activity1 = Museum(
             "region1",
             "departement1",
             "identifiant1",
@@ -602,7 +602,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Musees(
+        val activity2 = Museum(
             "region2",
             "departement2",
             "identifiant2",
@@ -616,7 +616,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Musees(
+        val activity3 = Museum(
             "region1",
             "departement3",
             "identifiant3",
@@ -632,7 +632,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val selectedList = activitiesRepository.selectionnerParCommune(list, "commune1")
+        val selectedList = activitiesRepository.selectByCommune(list, "commune1")
 
         val expectedList = listOf(activity3)
 
@@ -641,7 +641,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun trierParNomTest() {
-        val activity1 = Musees(
+        val activity1 = Museum(
             "region1",
             "departement1",
             "identifiant1",
@@ -655,7 +655,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Musees(
+        val activity2 = Museum(
             "region2",
             "departement2",
             "identifiant2",
@@ -669,7 +669,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Musees(
+        val activity3 = Museum(
             "region1",
             "departement3",
             "identifiant3",
@@ -685,7 +685,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val sortedList = activitiesRepository.trierParNom(list)
+        val sortedList = activitiesRepository.sortByName(list)
 
         val expectedList = listOf(activity3, activity2, activity1)
 
@@ -694,7 +694,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun selectionnerParNomTest() {
-        val activity1 = Musees(
+        val activity1 = Museum(
             "region1",
             "departement1",
             "identifiant1",
@@ -708,7 +708,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Musees(
+        val activity2 = Museum(
             "region2",
             "departement2",
             "identifiant2",
@@ -722,7 +722,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Musees(
+        val activity3 = Museum(
             "region1",
             "departement3",
             "identifiant3",
@@ -738,7 +738,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val selectedList = activitiesRepository.selectionnerParNom(list, "nom1")
+        val selectedList = activitiesRepository.selectByName(list, "nom1")
 
         val expectedList = listOf(activity3)
 
@@ -747,7 +747,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun trierParLieuTest() {
-        val activity1 = Musees(
+        val activity1 = Museum(
             "region1",
             "departement1",
             "identifiant1",
@@ -761,7 +761,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Musees(
+        val activity2 = Museum(
             "region2",
             "departement2",
             "identifiant2",
@@ -775,7 +775,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Musees(
+        val activity3 = Museum(
             "region1",
             "departement3",
             "identifiant3",
@@ -791,7 +791,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val sortedList = activitiesRepository.trierParLieu(list)
+        val sortedList = activitiesRepository.sortByLocation(list)
 
         val expectedList = listOf(activity3, activity2, activity1)
 
@@ -800,7 +800,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun selectionnerParLieuTest() {
-        val activity1 = Musees(
+        val activity1 = Museum(
             "region1",
             "departement1",
             "identifiant1",
@@ -814,7 +814,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Musees(
+        val activity2 = Museum(
             "region2",
             "departement2",
             "identifiant2",
@@ -828,7 +828,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Musees(
+        val activity3 = Museum(
             "region1",
             "departement3",
             "identifiant3",
@@ -844,7 +844,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val selectedList = activitiesRepository.selectionnerParLieu(list, "lieu1")
+        val selectedList = activitiesRepository.selectByLocation(list, "lieu1")
 
         val expectedList = listOf(activity3)
 
@@ -853,7 +853,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun trierParCodePostalTest() {
-        val activity1 = Musees(
+        val activity1 = Museum(
             "region1",
             "departement1",
             "identifiant1",
@@ -867,7 +867,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Musees(
+        val activity2 = Museum(
             "region2",
             "departement2",
             "identifiant2",
@@ -881,7 +881,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Musees(
+        val activity3 = Museum(
             "region1",
             "departement3",
             "identifiant3",
@@ -897,7 +897,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val sortedList = activitiesRepository.trierParCodePostal(list)
+        val sortedList = activitiesRepository.sortByPostalCode(list)
 
         val expectedList = listOf(activity3, activity2, activity1)
 
@@ -906,7 +906,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun selectionnerParCodePostalTest() {
-        val activity1 = Musees(
+        val activity1 = Museum(
             "region1",
             "departement1",
             "identifiant1",
@@ -920,7 +920,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Musees(
+        val activity2 = Museum(
             "region2",
             "departement2",
             "identifiant2",
@@ -934,7 +934,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Musees(
+        val activity3 = Museum(
             "region1",
             "departement3",
             "identifiant3",
@@ -950,7 +950,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val selectedList = activitiesRepository.selectionnerParCodePostal(list, "codePostal1")
+        val selectedList = activitiesRepository.selectByPostalCode(list, "codePostal1")
 
         val expectedList = listOf(activity3)
 
@@ -959,7 +959,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun selectionnerParAccessibleTest() {
-        val activity1 = Musees(
+        val activity1 = Museum(
             "region1",
             "departement1",
             "identifiant1",
@@ -973,7 +973,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Musees(
+        val activity2 = Museum(
             "region2",
             "departement2",
             "identifiant2",
@@ -987,7 +987,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Musees(
+        val activity3 = Museum(
             "region1",
             "departement3",
             "identifiant3",
@@ -1003,7 +1003,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val selectedList = activitiesRepository.selectionnerParAccessible(list, true)
+        val selectedList = activitiesRepository.selectByAccessible(list, true)
 
         val expectedList = listOf(activity1, activity3)
 
@@ -1012,7 +1012,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun trierParIdentifiantTest() {
-        val activity1 = Musees(
+        val activity1 = Museum(
             "region1",
             "departement1",
             "identifiant3",
@@ -1026,7 +1026,7 @@ class ActivitiesRepositoryTest {
             true
         )
 
-        val activity2 = Musees(
+        val activity2 = Museum(
             "region2",
             "departement2",
             "identifiant2",
@@ -1040,7 +1040,7 @@ class ActivitiesRepositoryTest {
             false
         )
 
-        val activity3 = Musees(
+        val activity3 = Museum(
             "region1",
             "departement3",
             "identifiant1",
@@ -1056,7 +1056,7 @@ class ActivitiesRepositoryTest {
 
         val list = listOf(activity1, activity2, activity3)
 
-        val sortedList = activitiesRepository.trierParIdentifiant(list)
+        val sortedList = activitiesRepository.sortByIdentifiant(list)
 
         val expectedList = listOf(activity3, activity2, activity1)
 

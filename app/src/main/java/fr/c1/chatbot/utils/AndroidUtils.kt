@@ -154,6 +154,14 @@ fun SharedPreferences.getBool(
     defaultValue: Boolean
 ) = ref.set(getBoolean(ref.name, defaultValue))
 
+fun SharedPreferences.Editor.putString(ref: KMutableProperty0<String>) =
+    putString(ref.name, ref.get())
+
+fun SharedPreferences.getString(
+    ref: KMutableProperty0<String>,
+    defaultValue: String
+) = getString(ref.name, defaultValue)?.let { ref.set(it) }
+
 fun SharedPreferences.Editor.putBool(ref: KMutableProperty0<Boolean>) =
     putBoolean(ref.name, ref.get())
 
@@ -188,21 +196,11 @@ fun parseCsv(csvIS: InputStream): List<List<String>> {
     return allRows.map { it.toList() }
 }
 
-fun copyFileToInternalDirectory(app: Application) {
-    // Chemin du fichier source dans app.cacheDir
-    val sourceFile = File(app.cacheDir, "temp_liste_sites_patrimoniaux.csv")
+fun SharedPreferences.Editor.putColor(
+    ref: KMutableProperty0<Color>
+): SharedPreferences.Editor = putInt(ref.name, ref.get().value.toInt())
 
-    // Copier le fichier temporaire dans le dossier de fichiers internes
-    val internalDirectory = File(app.filesDir, "copied_files")
-    if (!internalDirectory.exists()) {
-        internalDirectory.mkdirs()
-    }
-
-    val copiedFile = File(internalDirectory, "liste_sites_patrimoniaux.csv")
-    sourceFile.copyTo(copiedFile, overwrite = true)
-
-    // Afficher le contenu de internalDirectory
-    internalDirectory.listFiles()?.forEach {
-        Log.d("AndroidUtils", "copyFileToInternalDirectory: $it")
-    }
-}
+fun SharedPreferences.getColor(
+    ref: KMutableProperty0<Color>,
+    defaultValue: Int
+) = getInt(ref.name, defaultValue)

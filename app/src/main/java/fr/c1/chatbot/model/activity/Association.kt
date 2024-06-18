@@ -1,12 +1,12 @@
 package fr.c1.chatbot.model.activity
 
-class Associations(
-    val departement: String,
-    val identifiant: String,
+class Association(
+    val department: String,
+    val id: String,
     commune: String,
-    val nom: String,
-    val adresse: String,
-    val codePostal: String,
+    val name: String,
+    val address: String,
+    val postalCode: String,
     val accessible: Boolean,
     latitude: Double,
     longitude: Double,
@@ -30,6 +30,6 @@ class Associations(
     }
 
     override fun toString(): String {
-        return "Association (departement='$departement', identifiant='$identifiant', commune='$commune', nom='$nom', adresse='$adresse', codePostal='$codePostal', accessible='$accessible', latitude='$latitude', longitude='$longitude', url='$url')"
+        return "Association(department='$department', id='$id', name='$name', address='$address', postalCode='$postalCode', accessible=$accessible, url='$url')"
     }
 }

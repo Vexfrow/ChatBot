@@ -22,6 +22,9 @@ fun Typography() = Typography(
     ),
     titleMedium = TextStyle(
         fontSize = Settings.textSize
+    ),
+    titleLarge = TextStyle(
+        fontSize = 30.sp
     )
     /* Other default text styles to override
     titleLarge = TextStyle(

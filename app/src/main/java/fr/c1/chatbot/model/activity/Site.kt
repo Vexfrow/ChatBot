@@ -1,8 +1,8 @@
 package fr.c1.chatbot.model.activity
 
-class Sites(
+class Site(
     val region: String,
-    val departement: String,
+    val department: String,
     commune: String,
     val accessible: Boolean,
     latitude: Double,
@@ -18,6 +18,6 @@ class Sites(
     }
 
     override fun toString(): String {
-        return "Site patrimonial (region='$region', departement='$departement', commune='$commune', accessible='$accessible', latitude='$latitude', longitude='$longitude')"
+        return "Site(region='$region', department='$department', accessible=$accessible)"
     }
 }

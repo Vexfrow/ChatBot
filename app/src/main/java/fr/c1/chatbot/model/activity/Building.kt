@@ -1,11 +1,11 @@
 package fr.c1.chatbot.model.activity
 
-class Edifices(
+class Building(
     val region: String,
-    val departement: String,
+    val department: String,
     commune: String,
-    val nom: String,
-    val adresse: String,
+    val name: String,
+    val address: String,
     val accessible: Boolean,
     latitude: Double,
     longitude: Double
@@ -20,6 +20,6 @@ class Edifices(
     }
 
     override fun toString(): String {
-        return "Edifice avec architecture contemporaine (region='$region', departement='$departement', commune='$commune', nom='$nom', adresse='$adresse', accessible='$accessible', latitude='$latitude', longitude='$longitude')"
+        return "Building(region='$region', department='$department', name='$name', address='$address', accessible=$accessible)"
     }
 }

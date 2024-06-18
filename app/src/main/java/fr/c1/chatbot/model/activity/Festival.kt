@@ -1,12 +1,12 @@
 package fr.c1.chatbot.model.activity
 
-class Festivals(
+class Festival(
     val region: String,
-    val departement: String,
+    val department: String,
     commune: String,
-    val nom: String,
-    val adresse: String,
-    val codePostal: String,
+    val name: String,
+    val address: String,
+    val postalCode: String,
     val discipline: String,
     val accessible: Boolean,
     latitude: Double,
@@ -21,6 +21,6 @@ class Festivals(
     }
 
     override fun toString(): String {
-        return "Festival (region='$region', departement='$departement', commune='$commune', nom='$nom', adresse='$adresse', codePostal='$codePostal', accessible='$accessible', discipline='$discipline', latitude=$latitude, longitude=$longitude)"
+        return "Festival(region='$region', department='$department', name='$name', address='$address', postalCode='$postalCode', discipline='$discipline', accessible=$accessible)"
     }
 }

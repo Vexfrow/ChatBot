@@ -1,15 +1,15 @@
 package fr.c1.chatbot.model.activity
 
-class Musees(
+class Museum(
     val region: String,
-    val departement: String,
-    val identifiant: String,
+    val department: String,
+    val id: String,
     commune: String,
-    val nom: String,
-    val adresse: String,
-    val lieu: String,
-    val codePostal: String,
-    val telephone: String,
+    val name: String,
+    val address: String,
+    val location: String,
+    val postalCode: String,
+    val phone: String,
     val url: String,
     val accessible: Boolean,
     latitude: Double,
@@ -28,6 +28,6 @@ class Musees(
     }
 
     override fun toString(): String {
-        return "Musée (region='$region', departement='$departement', identifiant='$identifiant', commune='$commune', nom='$nom', adresse='$adresse', lieu='$lieu', codePostal='$codePostal', telephone='$telephone', url='$url', accessible='$accessible', latitude='$latitude', longitude='$longitude')"
+        return "Museum(region='$region', department='$department', id='$id', name='$name', address='$address', location='$location', postalCode='$postalCode', phone='$phone', url='$url', accessible=$accessible)"
     }
 }

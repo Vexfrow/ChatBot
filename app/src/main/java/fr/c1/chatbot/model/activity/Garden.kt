@@ -1,12 +1,12 @@
 package fr.c1.chatbot.model.activity
 
-class Jardins(
+class Garden(
     val region: String,
-    val departement: String,
+    val department: String,
     commune: String,
-    val nom: String,
-    val adresse: String,
-    val codePostal: String,
+    val name: String,
+    val address: String,
+    val postalCode: String,
     val accessible: Boolean,
     latitude: Double,
     longitude: Double
@@ -23,6 +23,6 @@ class Jardins(
     }
 
     override fun toString(): String {
-        return "Jardin remarquable (region='$region', departement='$departement', commune='$commune', nom='$nom', adresse='$adresse', codePostal='$codePostal', accessible='$accessible', latitude=$latitude, longitude=$longitude)"
+        return "Garden(region='$region', department='$department', name='$name', address='$address', postalCode='$postalCode', accessible=$accessible)"
     }
 }

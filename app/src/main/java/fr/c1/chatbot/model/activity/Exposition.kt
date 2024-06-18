@@ -1,11 +1,11 @@
 package fr.c1.chatbot.model.activity
 
-class Expositions(
+class Exposition(
     val region: String,
-    val departement: String,
-    val identifiant: String,
+    val department: String,
+    val id: String,
     commune: String,
-    val nom: String,
+    val name: String,
     val url: String,
     val accessible: Boolean,
     latitude: Double,
@@ -21,6 +21,6 @@ class Expositions(
     }
 
     override fun toString(): String {
-        return "Exposition (region='$region', departement='$departement', identifiant='$identifiant', commune='$commune', nom='$nom', url='$url', accessible='$accessible', latitude='$latitude', longitude='$longitude')"
+        return "Exposition(region='$region', department='$department', id='$id', name='$name', url='$url', accessible=$accessible)"
     }
 }

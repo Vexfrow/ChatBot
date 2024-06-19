@@ -19,6 +19,9 @@ import android.util.Log
 
 private const val TAG = "PermissionComponent"
 
+/**
+ * Composable that handles permissions requests
+ */
 @Composable
 fun PermissionsContent(context: ComponentActivity) {
     var hasReadPermission by remember { mutableStateOf(false) }
@@ -86,15 +89,6 @@ fun PermissionsContent(context: ComponentActivity) {
         if (hasReadPermission && hasWritePermission) {
             events = Calendar.fetchCalendarEvents(context)
             Event.Notifs.addNotification(events, context)
-            // 1 ajout unique d'un événement
-            /*writeEvent(
-                context,
-                "Test nouveau calendrier",
-                System.currentTimeMillis(),
-                System.currentTimeMillis() + 1000 * 60 * 60,
-                events
-            )*/
-            //EventList(events, Modifier.padding(innerPadding))
         } else {
             Log.d(TAG, "PermissionsContent: Calendar permissions not granted")
         }

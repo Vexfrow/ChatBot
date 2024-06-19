@@ -60,6 +60,7 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private operator fun invoke() = ChatBotTheme {
+        // Request all needed permissions
         PermissionsContent(this)
 
         var tab by rememberMutableStateOf(value = Tab.ChatBot.finalTab)

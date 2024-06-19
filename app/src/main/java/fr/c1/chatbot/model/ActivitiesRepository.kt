@@ -13,6 +13,7 @@ import fr.c1.chatbot.model.activity.Museum
 import fr.c1.chatbot.model.activity.Site
 import fr.c1.chatbot.model.activity.SportEquipment
 import fr.c1.chatbot.model.activity.Type
+import fr.c1.chatbot.utils.parseCsv
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -24,89 +25,104 @@ import android.util.Log
 import java.io.BufferedInputStream
 import java.io.InputStream
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 private const val TAG = "ActivitiesRepository"
 
-// Fichiers CSV venant du site data.gouv.fr
+/**
+ * Repository of activities
+ */
 class ActivitiesRepository {
     companion object {
+        /**
+         * Interests list
+         */
         val passionList: Set<String>
             get() = Association.passions union Content.passions union Site.passions union Museum.passions union Garden.passions union Festival.passions union Exposition.passions union SportEquipment.passions union Building.passions
     }
 
+    /**
+     * Cities list
+     */
     private val cityList = sortedSetOf<String>()
     val cities: Set<String> get() = cityList
 
-
+    /**
+     * Date choosen by the user
+     */
     var date: String = null.toString()
 
-    var distance = 10 // 10 km par défaut
+    /**
+     * Distance choosen by the user (in km)
+     * Default value is 10 km
+     */
+    var distance = 10
 
+    /**
+     * Location of the terminal
+     */
     var location: Location = Location("")
 
     /**
-     * Liste des musées
+     * Museums list
      */
     private val museumList = mutableListOf<Museum>()
     val museums: List<Museum> get() = museumList
 
     /**
-     * Liste des sites patrimoniaux
+     * Patrimonials sites list
      */
     private val siteList = mutableListOf<Site>()
     val sites: List<Site> get() = siteList
 
     /**
-     * Liste des expositions
+     * Expositions list
      */
     private val expositionList = mutableListOf<Exposition>()
     val expositions: List<Exposition> get() = expositionList
 
     /**
-     * Liste des contenus culturels
+     * Cultural contents list
      */
     private val contentList = mutableListOf<Content>()
     val contents: List<Content> get() = contentList
 
     /**
-     * Liste des édifices
+     * Buildings with contemporary design list
      */
     private val buildingList = mutableListOf<Building>()
     val buildings: List<Building> get() = buildingList
 
     /**
-     * Liste des jardins
+     * Remarkable gardens list
      */
     private val gardenList = mutableListOf<Garden>()
     val gardens: List<Garden> get() = gardenList
 
     /**
-     * Liste des festivals
+     * Festivals list
      */
     private val festivalList = mutableListOf<Festival>()
     val festivals: List<Festival> get() = festivalList
 
     /**
-     * Liste des équipements sportifs
+     * Sport equipments list
      */
     private val sportEquipmentList = mutableListOf<SportEquipment>()
     val sportEquipments: List<SportEquipment> get() = sportEquipmentList
 
     /**
-     * Liste des associations
+     * Associations list
      */
     private val associationList = mutableListOf<Association>()
 
-    /**
-     * Récupérer la liste des associations
-     */
     val associations: List<Association> get() = associationList
 
     val all: List<AbstractActivity>
         get() = museumList + siteList + expositionList + contentList + buildingList + gardenList + festivalList + sportEquipmentList + associationList
 
     /**
-     * Ajouter une ville à la liste des villes disponibles
+     * Add a city to the list
      */
     private fun addCity(str: String) {
         if (str.isBlank())
@@ -128,26 +144,28 @@ class ActivitiesRepository {
     }
 
     /**
-     * Initialiser les musées
+     * Initialise the museums list
      */
     fun initMuseums(app: Application) {
         // Lire le fichier csv
         val csvIS: InputStream =
             BufferedInputStream(app.resources.openRawResource(R.raw.liste_musees_france))
-        val csvParser = csvIS.bufferedReader().lineSequence().map { it.split(";") }
-
+        // Parser le fichier csv avec des ; comme séparateur (attention, ceux entre guillemets ne sont pas pris en compte)
+        val csvData = parseCsv(csvIS)
         // Créer la liste des sites patrimoniaux
-        csvParser.drop(1).forEach { csvRecord ->
-            val region = csvRecord[0]
-            val departement = csvRecord[1]
-            val identifiant = csvRecord[2]
-            val commune = csvRecord[3]
-            val nom = csvRecord[4]
-            val adresse = csvRecord[5]
-            val lieu = csvRecord[6]
-            val codePostal = csvRecord[7]
-            val telephone = csvRecord[8]
-            val url = csvRecord[9]
+        for (strings in csvData.drop(1)) {
+            val region = strings[0]
+            val departement = strings[1]
+            val identifiant = strings[2]
+            val commune = strings[3]
+            val nom = strings[4]
+            val adresse = strings[5]
+            val lieu = strings[6]
+            val codePostal = strings[7]
+            val telephone = strings[8]
+            val url = strings[9]
+            val latitude = strings[10].toDouble()
+            val longitude = strings[11].toDouble()
             val activity = Museum(
                 region,
                 departement,
@@ -159,7 +177,9 @@ class ActivitiesRepository {
                 codePostal,
                 telephone,
                 url,
-                true
+                true,
+                latitude,
+                longitude
             )
             museumList.add(activity)
             addCity(commune)
@@ -167,25 +187,29 @@ class ActivitiesRepository {
     }
 
     /**
-     * Initialiser les sites patrimoniaux
+     * Initialise the patrimonial sites list
      */
     fun initSites(app: Application) {
         // Lire le fichier csv
-        // code_region;region;code_departement;departement;commune;autres_communes_dans_le_spr;code_insee;population;nombre_de_spr;numero_du_spr;spr_initial_regime_de_creation;spr_initial_date_de_creation;nombre_de_plans;type_de_plan_en_vigueur;evolution_du_type_de_plan;date_du_plan_en_vigueur
         val csvIS: InputStream =
             BufferedInputStream(app.resources.openRawResource(R.raw.liste_sites_patrimoniaux))
-        val csvParser = csvIS.bufferedReader().lineSequence().map { it.split(";") }
+
+        val csvData = parseCsv(csvIS)
 
         // Créer la liste des sites patrimoniaux
-        csvParser.drop(1).forEach { csvRecord ->
-            val region = csvRecord[1]
-            val departement = csvRecord[3]
-            val commune = csvRecord[4]
+        for (strings in csvData.drop(1)) {
+            val region = strings[1]
+            val departement = strings[3]
+            val commune = strings[4]
+            val latitude = strings[16].toDouble()
+            val longitude = strings[17].toDouble()
             val activity = Site(
                 region,
                 departement,
                 commune,
-                true
+                true,
+                latitude,
+                longitude
             )
             siteList.add(activity)
             addCity(commune)
@@ -193,23 +217,25 @@ class ActivitiesRepository {
     }
 
     /**
-     * Initialiser les expositions
+     * Initialise the expositions list
      */
     fun initExpositions(app: Application) {
         // Lire le fichier csv
-        // annee;id_museofile;region;commune;nom_du_musee;titre_de_l_exposition;departement;url;coordonnees
         val csvIS: InputStream =
             BufferedInputStream(app.resources.openRawResource(R.raw.liste_expositions))
-        val csvParser = csvIS.bufferedReader().lineSequence().map { it.split(";") }
+
+        val csvData = parseCsv(csvIS)
 
         // Créer la liste des sites patrimoniaux
-        csvParser.drop(1).forEach { csvRecord ->
-            val region = csvRecord[2]
-            val departement = csvRecord[6]
-            val commune = csvRecord[3]
-            val identifiant = csvRecord[1]
-            val nom = csvRecord[4]
-            val url = csvRecord[7]
+        for (strings in csvData.drop(1)) {
+            val region = strings[2]
+            val departement = strings[6]
+            val commune = strings[3]
+            val identifiant = strings[1]
+            val nom = strings[4]
+            val url = strings[7]
+            val latitude = strings[8].split(",")[0].toDouble()
+            val longitude = strings[8].split(",")[1].toDouble()
             val activity = Exposition(
                 region,
                 departement,
@@ -217,7 +243,9 @@ class ActivitiesRepository {
                 commune,
                 nom,
                 url,
-                true
+                true,
+                latitude,
+                longitude
             )
             expositionList.add(activity)
             addCity(commune)
@@ -225,24 +253,26 @@ class ActivitiesRepository {
     }
 
     /**
-     * Initialiser les contenus culturels
+     * Initialise the cultural contents list
      */
     fun initContents(app: Application) {
         // Lire le fichier csv
-        // identifiant_id;nom_de_l_organisme;adresse_de_l_organisme;code_postal;commune;lien_vers_la_ressource;description_des_contenus_et_de_l_experience_proposes_min_200_max_500_caracteres;si_enfants_merci_de_preciser_le_niveau_scolaire;titre_de_la_ressource;activite_proposee_apprendre_se_divertir_s_informer;public_cible;types_de_ressources_proposees;thematiques;contenus_adaptes_aux_types_de_handicap;temps_d_activite_estime_lecture_ecoute_visionnage_jeu;accessibilite_perennite_de_la_ressource;rattachement_de_l_organisme;autre_precisez;si_limite_dans_le_temps_precisez_jusqu_a_quelle_date;autres_precisez;geolocalisation_ban
         val csvIS: InputStream =
             BufferedInputStream(app.resources.openRawResource(R.raw.liste_culture))
-        val csvParser = csvIS.bufferedReader().lineSequence().map { it.split(";") }
+
+        val csvData = parseCsv(csvIS)
 
         // Créer la liste des sites patrimoniaux
-        csvParser.drop(1).forEach { csvRecord ->
-            val identifiant = csvRecord[0]
-            val commune = csvRecord[4]
-            val nom = csvRecord[1]
-            val adresse = csvRecord[2]
-            val lieu = csvRecord[6]
-            val codePostal = csvRecord[3]
-            val url = csvRecord[5]
+        for (strings in csvData.drop(1)) {
+            val identifiant = strings[0]
+            val commune = strings[4]
+            val nom = strings[1]
+            val adresse = strings[2]
+            val lieu = strings[6]
+            val codePostal = strings[3]
+            val url = strings[5]
+            val latitude = strings[20].split(",")[0].toDouble()
+            val longitude = strings[20].split(",")[1].toDouble()
             val activity = Content(
                 identifiant,
                 commune,
@@ -251,7 +281,9 @@ class ActivitiesRepository {
                 lieu,
                 codePostal,
                 url,
-                true
+                true,
+                latitude,
+                longitude
             )
             contentList.add(activity)
             addCity(commune)
@@ -259,29 +291,42 @@ class ActivitiesRepository {
     }
 
     /**
-     * Initialiser les édifices
+     * Initialise the buildings list
      */
     fun initBuildings(app: Application) {
         // Lire le fichier csv
-        // reference_de_la_notice;ancienne_reference_de_la_notice_renv;cadre_de_l_etude;region;numero_departement;commune;ancien_nom_commune;insee;lieudit;adresse_normalisee;adresse_forme_editoriale;references_cadastrales;coordonnees;titre_courant;departement_en_lettres;vocable_pour_les_edifices_cultuels;denominations;destination_actuelle_de_l_edifice;siecle_de_la_campagne_principale_de_construction;siecle_de_campagne_secondaire_de_construction;datation_de_l_edifice;description_historique;auteur_de_l_edifice;date_de_label;precisions_sur_l_interet;elements_remarquables_dans_l_edifice;observations;statut_juridique_du_proprietaire;etablissement_affectataire_de_l_edifice;auteur_de_la_photographie_autp;liens_externes;acces_memoire_web;materiaux_du_gros_oeuvre;type_de_couverture;partie_d_elevation_exterieure;materiaux_de_la_couverture;typologie_de_plan;technique_du_decor_porte_de_l_edifice;indexation_iconographique_normalisee;description_de_l_elevation_interieure;emplacement_forme_structure_escalier;etat_de_conservation;description_de_l_edifice;commune_forme_editoriale
+        // reference_de_la_notice;region;commune;adresse_forme_editoriale;coordonnees;titre_courant;departement_en_lettres
         val csvIS: InputStream =
             BufferedInputStream(app.resources.openRawResource(R.raw.liste_edifices_architecture_contemporaine))
-        val csvParser = csvIS.bufferedReader().lineSequence().map { it.split(";") }
 
-        // Créer la liste des sites patrimoniaux
-        csvParser.drop(1).forEach { csvRecord ->
-            val region = csvRecord[3]
-            val departement = csvRecord[14] + " (" + csvRecord[4] + ")"
-            val commune = csvRecord[5]
-            val adresse = csvRecord[9]
-            val nom = csvRecord[13]
+        val csvData = parseCsv(csvIS)
+
+        var latitude: Double
+        var longitude: Double
+
+        // Créer la liste des edifices d'architecture contemporaine
+        for (strings in csvData.drop(1)) {
+            val region = strings[1]
+            val departement = strings[6]
+            val commune = strings[2]
+            val adresse = strings[3]
+            val nom = strings[5]
+            if (strings[4].isNotEmpty()) {
+                latitude = strings[4].split(",")[0].toDouble()
+                longitude = strings[4].split(",")[1].toDouble()
+            } else {
+                latitude = -1.0
+                longitude = -1.0
+            }
             val activity = Building(
                 region,
                 departement,
                 commune,
                 nom,
                 adresse,
-                true
+                true,
+                latitude,
+                longitude
             )
             buildingList.add(activity)
             addCity(commune)
@@ -289,24 +334,26 @@ class ActivitiesRepository {
     }
 
     /**
-     * Initialiser les jardins
+     * Initialise the remarkable gardens list
      */
     fun initGardens(app: Application) {
         // Lire le fichier csv
-        // nom_du_jardin;code_postal;region;departement;adresse_complete;adresse_de_l_entree_du_public;numero_et_libelle_de_la_voie;complement_d_adresse;commune;code_insee;code_insee_departement;code_insee_region;latitude;longitude;site_internet_et_autres_liens;types;annee_d_obtention;description;auteur_nom_de_l_illustre;identifiant_deps;identifiant_origine;accessible_au_public;conditions_d_ouverture;equipement_precision;date_de_creation;date_de_maj;coordonnees_geographiques
         val csvIS: InputStream =
             BufferedInputStream(app.resources.openRawResource(R.raw.liste_jardins_remarquables))
-        val csvParser = csvIS.bufferedReader().lineSequence().map { it.split(";") }
+
+        val csvData = parseCsv(csvIS)
 
         // Créer la liste des jardins remarquables
-        csvParser.drop(1).forEach { csvRecord ->
-            val region = csvRecord[2]
-            val departement = csvRecord[3]
-            val commune = csvRecord[8]
-            val adresse = csvRecord[4]
-            val nom = csvRecord[0]
-            val codePostal = csvRecord[1]
-            val accessible = csvRecord[21].lowercase().contains("ouvert")
+        for (strings in csvData.drop(1)) {
+            val region = strings[2]
+            val departement = strings[3]
+            val commune = strings[8]
+            val nom = strings[0]
+            val adresse = strings[4]
+            val codePostal = strings[1]
+            val accessible = strings[21].lowercase().contains("ouvert")
+            val latitude = strings[12].toDouble()
+            val longitude = strings[13].toDouble()
             val activity = Garden(
                 region,
                 departement,
@@ -314,7 +361,9 @@ class ActivitiesRepository {
                 nom,
                 adresse,
                 codePostal,
-                accessible
+                accessible,
+                latitude,
+                longitude
             )
             gardenList.add(activity)
             addCity(commune)
@@ -322,24 +371,34 @@ class ActivitiesRepository {
     }
 
     /**
-     * Initialiser les festivals
+     * Initialise the festivals list
      */
     fun initFestivals(app: Application) {
         // Lire le fichier csv
-        // Nom du festival;Envergure territoriale;Région principale de déroulement;Département principal de déroulement;Commune principale de déroulement;Code postal (de la commune principale de déroulement);Code Insee commune;Code Insee EPCI;Libellé EPCI;Numéro de voie;Type de voie (rue, Avenue, boulevard, etc.);Nom de la voie;Adresse postale;Complément d'adresse (facultatif);Site internet du festival;Adresse e-mail;Décennie de création du festival;Année de création du festival;Discipline dominante;Sous-catégorie spectacle vivant;Sous-catégorie musique;Sous-catégorie Musique CNM;Sous-catégorie cinéma et audiovisuel;Sous-catégorie arts visuels et arts numériques;Sous-catégorie livre et littérature;Période principale de déroulement du festival;Identifiant Agence A;Identifiant;Géocodage xy;identifiant CNM
         val csvIS: InputStream =
             BufferedInputStream(app.resources.openRawResource(R.raw.liste_festivals))
-        val csvParser = csvIS.bufferedReader().lineSequence().map { it.split(";") }
+
+        val csvData = parseCsv(csvIS)
+
+        var latitude: Double
+        var longitude: Double
 
         // Créer la liste des festivals
-        csvParser.drop(1).forEach { csvRecord ->
-            val region = csvRecord[2]
-            val departement = csvRecord[3]
-            val commune = csvRecord[4]
-            val adresse = csvRecord[12]
-            val nom = csvRecord[0]
-            val codePostal = csvRecord[5]
-            val discipline = csvRecord[18]
+        for (strings in csvData.drop(1)) {
+            val region = strings[2]
+            val departement = strings[3]
+            val commune = strings[4]
+            val nom = strings[0]
+            val adresse = strings[12]
+            val codePostal = strings[5]
+            val discipline = strings[18]
+            if (strings[28].isNotEmpty()) {
+                latitude = strings[28].split(",")[0].toDouble()
+                longitude = strings[28].split(",")[1].toDouble()
+            } else {
+                latitude = -1.0
+                longitude = -1.0
+            }
             val activity = Festival(
                 region,
                 departement,
@@ -348,7 +407,9 @@ class ActivitiesRepository {
                 adresse,
                 codePostal,
                 discipline,
-                true
+                true,
+                latitude,
+                longitude
             )
             festivalList.add(activity)
             addCity(commune)
@@ -356,33 +417,45 @@ class ActivitiesRepository {
     }
 
     /**
-     * Initialiser les équipements sportifs
+     * Initialise the sport equipments list
      */
     fun initSportEquipments(app: Application) {
         // Lire le fichier csv
+        // numinstallation;nominstallation;adresse;codepostal;commune;typequipement;latitude;longitude
         val csvIS: InputStream =
             BufferedInputStream(app.resources.openRawResource(R.raw.liste_equipements_sportifs))
-        val csvParser = csvIS.bufferedReader().lineSequence().map { it.split(";") }
+
+        val csvData = parseCsv(csvIS)
+
+        var latitude: Double
+        var longitude: Double
 
         // Créer la liste des équipements sportifs
-        csvParser.drop(1).forEach { csvRecord ->
-            val departement = csvRecord[8]
-            val identifiant = csvRecord[0]
-            val commune = csvRecord[5]
-            val nom = csvRecord[1]
-            val adresse = csvRecord[2]
-            val codePostal = csvRecord[3]
-            val url = csvRecord[7]
-            val accessible = csvRecord[6].contains("True")
+        for (strings in csvData.drop(1)) {
+            val departement = strings[3].substring(0, 2)
+            val commune = strings[4]
+            val nom = strings[1]
+            val adresse = strings[2]
+            val codePostal = strings[3]
+            latitude = if (strings[6].isNotEmpty()) {
+                strings[6].toDouble()
+            } else {
+                -1.0
+            }
+            longitude = if (strings[7].isNotEmpty()) {
+                strings[7].toDouble()
+            } else {
+                -1.0
+            }
             val activity = SportEquipment(
                 departement,
-                identifiant,
                 commune,
                 nom,
                 adresse,
                 codePostal,
-                url,
-                accessible
+                true,
+                latitude,
+                longitude
             )
             sportEquipmentList.add(activity)
             addCity(commune)
@@ -390,25 +463,42 @@ class ActivitiesRepository {
     }
 
     /**
-     * Initialiser les associations
+     * Initialise the associations list
      */
     fun initAssociations(app: Application) {
         // Lire le fichier csv
-        // id, date_creation, titre, adresse1, code_postal, commune
+        // id;titre;adr1;adrs_codepostal;libcom;siteweb;latitude;longitude
         val csvIS: InputStream =
             BufferedInputStream(app.resources.openRawResource(R.raw.liste_asso))
 
-        val csvParser = csvIS.bufferedReader().lineSequence().map { it.split(",") }
+        val csvData = parseCsv(csvIS)
+
+        var latitude: Double
+        var longitude: Double
 
         // Créer la liste des associations
-        csvParser.drop(1).forEach { csvRecord ->
-            // Checker la taille du csvRecord[4] pour éviter les erreurs
-            val departement = if (csvRecord[4].length < 2) "" else csvRecord[4].substring(0, 2)
-            val identifiant = csvRecord[0]
-            val commune = csvRecord[5]
-            val nom = csvRecord[2]
-            val adresse = csvRecord[3]
-            val codePostal = csvRecord[4]
+        for (strings in csvData.drop(1)) {
+            var departement = ""
+            if (strings[3].length > 2) {
+                departement = strings[3].substring(0, 2)
+            }
+            val identifiant = strings[0]
+            val commune = strings[4]
+            val nom = strings[1]
+            val adresse = strings[2]
+            val codePostal = strings[3]
+            val accessible = true
+            val url = strings[5]
+            latitude = if (strings[6].isNotEmpty()) {
+                strings[6].toDouble()
+            } else {
+                -1.0
+            }
+            longitude = if (strings[7].isNotEmpty()) {
+                strings[7].toDouble()
+            } else {
+                -1.0
+            }
             val activity = Association(
                 departement,
                 identifiant,
@@ -416,15 +506,17 @@ class ActivitiesRepository {
                 nom,
                 adresse,
                 codePostal,
-                true
+                accessible,
+                latitude,
+                longitude,
+                url
             )
             associationList.add(activity)
-
         }
     }
 
     /**
-     * Initialiser toutes les listes
+     * Initialise all the lists
      */
     fun initAll(app: Application) {
         initMuseums(app)
@@ -439,14 +531,14 @@ class ActivitiesRepository {
     }
 
     /**
-     * Afficher une liste
+     * Display a list
      */
     fun <T> displayList(list: List<T>) {
         list.forEach { println(it) }
     }
 
     /**
-     * Afficher toutes les listes
+     * Display all the lists
      */
     fun displayAll() {
         displayMuseum()
@@ -461,70 +553,70 @@ class ActivitiesRepository {
     }
 
     /**
-     * Afficher la liste des musées
+     * Display the museums list
      */
     fun displayMuseum() {
         displayList(museumList)
     }
 
     /**
-     * Afficher la liste des sites patrimoniaux
+     * Display the patrimonial sites list
      */
     fun displaySites() {
         displayList(siteList)
     }
 
     /**
-     * Afficher la liste des expositions
+     * Display the expositions list
      */
     fun displayExpositions() {
         displayList(expositionList)
     }
 
     /**
-     * Afficher la liste des contenus culturels
+     * Display the cultural contents list
      */
     fun displayContents() {
         displayList(contentList)
     }
 
     /**
-     * Afficher la liste des édifices
+     * Display the buildings list
      */
     fun displayBuildings() {
         displayList(buildingList)
     }
 
     /**
-     * Afficher la liste des jardins
+     * Display the remarkable gardens list
      */
     fun displayGardens() {
         displayList(gardenList)
     }
 
     /**
-     * Afficher la liste des festivals
+     * Display the festivals list
      */
     fun displayFestivals() {
         displayList(festivalList)
     }
 
     /**
-     * Afficher la liste des équipements sportifs
+     * Display the sport equipments list
      */
     fun displaySportEquipments() {
         displayList(sportEquipmentList)
     }
 
     /**
-     * Afficher la liste des associations
+     * Display the associations list
      */
     fun displayAssociations() {
         displayList(associationList)
     }
 
     /**
-     * Trier la liste par région (si le critère région est présent)
+     * Sort the list by region (if the region criterion is present)
      */
     fun <T> sortByRegion(list: List<T>): List<T> {
         val clazz = list.first()!!::class
@@ -540,7 +632,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Sélectionner les éléments par région (si le critère région est présent)
+     * Select the elements by region (if the region criterion is present)
      */
     fun <T> selectByRegion(list: List<T>, region: String): List<T> {
         val clazz = list.first()!!::class
@@ -574,7 +666,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Trier la liste par département (si le critère département est présent)
+     * Sort the list by department (if the department criterion is present)
      */
     fun <T> sortByDepartement(list: List<T>): List<T> {
         val clazz = list.first()!!::class
@@ -592,7 +684,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Sélectionner les éléments par département (si le critère département est présent)
+     * Select the elements by department (if the department criterion is present)
      */
     fun <T> selectByDepartement(list: List<T>, departement: String): List<T> {
         val clazz = list.first()!!::class
@@ -634,7 +726,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Trier la liste par commune (si le critère commune est présent)
+     * Sort the list by commune (if the commune criterion is present)
      */
     fun <T> sortByCommune(list: List<T>): List<T> {
         val clazz = list.first()!!::class
@@ -653,7 +745,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Sélectionner les éléments par commune (si le critère commune est présent)
+     * Select the elements by commune (if the commune criterion is present)
      */
     fun <T> selectByCommune(list: List<T>, commune: String): List<T> {
         val clazz = list.first()!!::class
@@ -699,7 +791,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Trier la liste par nom (si le critère nom est présent)
+     * Sort the list by name (if the name criterion is present)
      */
     fun <T> sortByName(list: List<T>): List<T> {
         val clazz = list.first()!!::class
@@ -717,7 +809,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Sélectionner les éléments par nom (si le critère nom est présent)
+     * Select the elements by name (if the name criterion is present)
      */
     fun <T> selectByName(list: List<T>, nom: String): List<T> {
         val clazz = list.first()!!::class
@@ -759,7 +851,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Trier la liste par lieu (si le critère lieu est présent)
+     * Sort the list by location (if the location criterion is present)
      */
     fun <T> sortByLocation(list: List<T>): List<T> {
         val clazz = list.first()!!::class
@@ -771,7 +863,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Sélectionner les éléments par lieu (si le critère lieu est présent)
+     * Select the elements by location (if the location criterion is present)
      */
     fun <T> selectByLocation(list: List<T>, lieu: String): List<T> {
         val clazz = list.first()!!::class
@@ -789,7 +881,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Trier la liste par code postal (si le critère code postal est présent)
+     * Sort the list by postal code (if the postal code criterion is present)
      */
     fun <T> sortByPostalCode(list: List<T>): List<T> {
         val clazz = list.first()!!::class
@@ -805,7 +897,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Sélectionner les éléments par code postal (si le critère code postal est présent)
+     * Select the elements by postal code (if the postal code criterion is present)
      */
     fun <T> selectByPostalCode(list: List<T>, codePostal: String): List<T> {
         val clazz = list.first()!!::class
@@ -839,7 +931,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Sélectionner les éléments par accessibilité (si le critère accessibilité est présent)
+     * Sort the list by accessibility (if the accessibility criterion is present)
      */
     fun <T> selectByAccessible(list: List<T>, accessible: Boolean): List<T> {
         val clazz = list.first()!!::class
@@ -858,7 +950,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Trier la liste par identifiant (si le critère identifiant est présent)
+     * Sort the list by identifiant
      */
     fun <T> sortByIdentifiant(list: List<T>): List<T> {
         val clazz = list.first()!!::class
@@ -866,14 +958,13 @@ class ActivitiesRepository {
             Museum::class -> list.sortedBy { (it as Museum).id }
             Exposition::class -> list.sortedBy { (it as Exposition).id }
             Content::class -> list.sortedBy { (it as Content).id }
-            SportEquipment::class -> list.sortedBy { (it as SportEquipment).id }
             Association::class -> list.sortedBy { (it as Association).id }
             else -> list
         }
     }
 
     /**
-     * Sélectionner par passion
+     * Select the elements by interest
      */
     private fun selectByPassion(
         list: List<AbstractActivity>,
@@ -884,12 +975,13 @@ class ActivitiesRepository {
     }
 
     /**
-     * Obtenir la localisation d'une commune
+     * Get the coordinates of a city
      */
 
     suspend fun getCoordinates(commune: String): Pair<Double, Double>? {
         return withContext(Dispatchers.IO) {
-            val client = OkHttpClient()
+            val client = OkHttpClient().newBuilder().connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS).writeTimeout(30, TimeUnit.SECONDS).build()
             val url = "https://nominatim.openstreetmap.org/search?q=${
                 commune.replace(
                     " ",
@@ -916,7 +1008,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Sélectionner par distance (km)
+     * Select the activities by distance
      */
     suspend fun selectByDistance(
         list: List<AbstractActivity>,
@@ -952,7 +1044,7 @@ class ActivitiesRepository {
     }
 
     /**
-     * Obtenir les résultats de la recherche
+     * Get the final result
      */
     fun getResults(app: ChatBot): List<AbstractActivity> {
         val user = app.currentUser
@@ -1007,8 +1099,8 @@ class ActivitiesRepository {
         //val localisation =
         //if (localisation.latitude != 0.0 && localisation.longitude != 0.0) {
         // TODO : activités dans un rayon de 5km par rapport à la localisation actuelle
+        //list = runBlocking { list.map { selectionnerParDistance(it, 10, getLocation()) } }
         list = list
-            //.map { selectionnerParDistance(it, 10, getLocation()) }
             .filter(List<AbstractActivity>::isNotEmpty)
         //}
         // Tri par Passion
@@ -1025,6 +1117,9 @@ class ActivitiesRepository {
         return list.flatten()
     }
 
+    /**
+     * Select the activities by type
+     */
     private fun selectByType(
         it: List<AbstractActivity>,
         type: Type

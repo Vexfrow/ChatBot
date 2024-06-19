@@ -15,6 +15,9 @@ import java.util.concurrent.TimeUnit
 
 private const val TAG = "EventReminderWorker"
 
+/**
+ * Worker class for event reminders
+ */
 class EventReminderWorker(context: Context, params: WorkerParameters) :
     CoroutineWorker(context, params) {
 
@@ -22,6 +25,9 @@ class EventReminderWorker(context: Context, params: WorkerParameters) :
         const val NOTIFICATION_ID = 123
         const val CHANNEL_ID = "event_reminder"
 
+        /**
+         * Schedule event reminders
+         */
         fun scheduleEventReminders(context: Context, eventTitle: String, eventStartTime: Long) {
             val currentTime = System.currentTimeMillis()
             val oneDayBefore = eventStartTime - TimeUnit.HOURS.toMillis(24)
@@ -29,6 +35,7 @@ class EventReminderWorker(context: Context, params: WorkerParameters) :
             var oneDayBeforeWorkRequest: PeriodicWorkRequest
             var oneHourBeforeWorkRequest: PeriodicWorkRequest
 
+            // Notifying the user one day before the event
             if (oneDayBefore >= currentTime) {
                 val oneDayBeforeRequest = Data.Builder()
                     .putString("title", eventTitle)
@@ -45,6 +52,7 @@ class EventReminderWorker(context: Context, params: WorkerParameters) :
                 WorkManager.getInstance(context).enqueue(oneDayBeforeWorkRequest)
             }
 
+            // Notifying the user one hour before the event
             if (oneHourBefore >= currentTime) {
                 val oneHourBeforeRequest = Data.Builder()
                     .putString("title", eventTitle)
@@ -63,6 +71,9 @@ class EventReminderWorker(context: Context, params: WorkerParameters) :
         }
     }
 
+    /**
+     * Do the work
+     */
     override suspend fun doWork(): Result {
         val title = inputData.getString("title")
 

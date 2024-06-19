@@ -1,5 +1,18 @@
 package fr.c1.chatbot.model.activity
 
+/**
+ * Represents a building with a contemporary design.
+ * @param region the region where the building is located
+ * @param department the department where the building is located
+ * @param commune the commune where the building is located
+ * @param name the name of the building
+ * @param address the address of the building
+ * @param accessible true if the association is accessible, false otherwise
+ * @param latitude the latitude of the building
+ * @param longitude the longitude of the building
+ * @constructor creates a building activity
+ * @see AbstractActivity
+ */
 class Building(
     val region: String,
     val department: String,
@@ -7,8 +20,9 @@ class Building(
     val name: String,
     val address: String,
     val accessible: Boolean,
-
-    ) : AbstractActivity(commune) {
+    latitude: Double,
+    longitude: Double
+    ) : AbstractActivity(commune, latitude, longitude) {
     companion object {
         val passions: List<String> = listOf(
             "architecture", "contemporaine", "édifices",
@@ -19,6 +33,6 @@ class Building(
     }
 
     override fun toString(): String {
-        return "Edifice avec architecture contemporaine (region='$region', departement='$department', commune='$commune', nom='$name', adresse='$address', accessible='$accessible')"
+        return "Building(region='$region', department='$department', name='$name', address='$address', accessible=$accessible)"
     }
 }

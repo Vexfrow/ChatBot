@@ -1,5 +1,7 @@
 package fr.c1.chatbot.utils
 
+import com.opencsv.CSVParserBuilder
+import com.opencsv.CSVReaderBuilder
 import fr.c1.chatbot.ChatBot
 import kotlinx.coroutines.CoroutineScope
 import androidx.activity.ComponentActivity
@@ -32,6 +34,8 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import java.io.File
 import java.io.FileOutputStream
+import java.io.InputStream
+import java.io.InputStreamReader
 import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KProperty0
 
@@ -171,6 +175,24 @@ fun SharedPreferences.Editor.putUri(
     key: String,
     value: Uri
 ) = putString(key, value.toString())
+
+/**
+ * Parse a CSV file
+ */
+fun parseCsv(csvIS: InputStream): List<List<String>> {
+    val csvParser = CSVParserBuilder()
+        .withSeparator(';')
+        .withIgnoreQuotations(false)
+        .withEscapeChar('\\')
+        .build()
+
+    val csvReader = CSVReaderBuilder(InputStreamReader(csvIS))
+        .withCSVParser(csvParser)
+        .build()
+
+    val allRows = csvReader.readAll()
+    return allRows.map { it.toList() }
+}
 
 fun SharedPreferences.Editor.putColor(
     ref: KMutableProperty0<Color>

@@ -7,41 +7,31 @@ import android.util.Log
 import java.io.File
 import java.io.FileFilter
 
-private const val TAG = "ProfilUtilisateur"
+private const val TAG = "UserProfile"
 
+/**
+ * Represents a user
+ * @property lastName Name of the user
+ * @property firstName First name of the user
+ * @property age Age of the user
+ * @property _cities List of cities of the user
+ * @property _types List of activity types of the user
+ * @property _passions List of interests of the user
+ * @property _weeklyPreferences List of weekly preferences of the user
+ * @constructor Creates a user with the specified parameters
+ */
 class User(
-    /**
-     * Nom de l'utilisateur (utilisé, en plus du prénom, pour différencier les utilisateurs)
-     */
     var lastName: String = "",
-    /**
-     * Prénom de l'utilisateur (utilisé pour l'affichage)
-     */
     var firstName: String = "",
-    /**
-     * Age de l'utilisateur
-     */
     var age: Int = -1,
-    /**
-     * Lise de villes de l'utilisateur
-     */
     private val _cities: MutableList<String> = mutableListOf(),
-    /**
-     * Type d'activité souhaitée par l'utilisateur
-     */
     private var _types: MutableList<Type> = mutableListOf(),
-    /**
-     * Passions de l'utilisateur
-     */
     private val _passions: MutableList<String> = mutableListOf(),
-    /**
-     * Liste des préférences hebdomadaires de l'utilisateur
-     */
     private var _weeklyPreferences: MutableList<WeeklyPreference> = mutableListOf()
 ) {
 
     /**
-     * Constructeur secondaire
+     * 2nd constructor
      */
     constructor(lastName: String, firstName: String, age: Int) : this() {
         this.lastName = lastName
@@ -50,119 +40,119 @@ class User(
     }
 
     /**
-     * Ajouter une ville
+     * Add a city
      */
     fun addCity(city: String) {
         _cities.add(city)
     }
 
     /**
-     * Ajouter un type d'activité
+     * Add an activity type
      */
     fun addType(type: Type) {
         _types.add(type)
     }
 
     /**
-     * Ajouter une passion
+     * Add an interest
      */
     fun addPassion(passion: String) {
         _passions.add(passion)
     }
 
     /**
-     * Ajouter une préférence hebdomadaire
+     * Add a weekly preference
      */
     fun addWeeklyPreference(day: String, houe: String, duration: Int) {
         _weeklyPreferences.add(WeeklyPreference(day, houe, duration))
     }
 
     /**
-     * Supprimer une préférence hebdomadaire
+     * Delete a weekly preference
      */
     fun removeWeeklyPeference(day: String, hour: String, duration: Int) {
         _weeklyPreferences.remove(WeeklyPreference(day, hour, duration))
     }
 
     /**
-     * Supprimer toutes les préférences hebdomadaires
+     * Delete all weekly preferences
      */
     fun clearWeeklyPreferences() {
         _weeklyPreferences.clear()
     }
 
     /**
-     * Supprimer une ville
+     * Delete a city
      */
     fun removeCity(city: String) {
         _cities.remove(city)
     }
 
     /**
-     * Supprimer toutes les villes
+     * Delete all cities
      */
     fun clearCities() {
         _cities.clear()
     }
 
     /**
-     * Supprimer une passion
+     * Delete an interest
      */
     fun removePassion(passion: String) {
         _passions.remove(passion)
     }
 
     /**
-     * Supprimer toutes les passions
+     * Delete all interests
      */
     fun clearPassions() {
         _passions.clear()
     }
 
     /**
-     * Supprimer un type d'activité
+     * Delete an activity type
      */
     fun removeType(type: Type) {
         _types.remove(type)
     }
 
     /**
-     * Supprimer toutes les activités
+     * Delete all activity types
      */
     fun clearTypes() {
         _types.clear()
     }
 
     /**
-     * Récupérer les villes
+     * Get the list of cities
      */
     val cities: List<String> get() = _cities
 
     /**
-     * Récupérer les types d'activité
+     * Get the list of activity types
      */
     val types: List<Type> get() = _types
 
     fun hasPassion(passion: String): Boolean = passions.contains(passion)
 
     /**
-     * Récupérer les passions
+     * Get the list of interests
      */
     val passions: List<String>
         get() = _passions
 
     /**
-     * Récupérer les préférences hebdomadaires
+     * Get the list of weekly preferences
      */
     val weeklyPreferences: List<WeeklyPreference> get() = _weeklyPreferences
 
     /**
-     * Stocker les informations de l'utilisateur dans un fichier json
+     * Store the user information in a json file
      */
     fun storeUserInformation(context: Context) {
         val fileName = "${lastName.lowercase()}_${firstName.lowercase()}.json"
 
-        // Construire le contenu JSON
+        // Build the JSON content
         val jsonContent = """
         {
             "nom": "$lastName",
@@ -180,14 +170,14 @@ class User(
         }
     """.trimIndent()
 
-        // Ecrire le contenu JSON dans le fichier
+        // Write the JSON content to the file
         context.openFileOutput(fileName, Context.MODE_PRIVATE).use { output ->
             output.write(jsonContent.toByteArray())
         }
     }
 
     /**
-     * Charger les informations de l'utilisateur depuis un fichier json
+     * Load the user information from a json file
      */
     fun loadUserInformation(context: Context, firstName: String, lastName: String): User? {
         val gson = Gson()
@@ -209,7 +199,7 @@ class User(
 }
 
 /**
- * Charger toutes les informations des utilisateurs
+ * Load all users information
  */
 fun loadAllUsersInformation(context: Context): MutableList<User> {
     val gson = Gson()
@@ -234,7 +224,7 @@ fun loadAllUsersInformation(context: Context): MutableList<User> {
 }
 
 /**
- * Sauvegarder toute la liste des utilisateurs
+ * Store all users information
  */
 fun storeAllUsersInformation(context: Context, userList: MutableList<User>) {
     userList.forEach { user ->

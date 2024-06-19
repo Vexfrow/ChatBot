@@ -2,19 +2,18 @@ package fr.c1.chatbot.composable
 
 import fr.c1.chatbot.model.activity.AbstractActivity
 import fr.c1.chatbot.model.activity.Association
-import fr.c1.chatbot.model.activity.Content
 import fr.c1.chatbot.model.activity.Building
-import fr.c1.chatbot.model.activity.SportEquipment
+import fr.c1.chatbot.model.activity.Content
 import fr.c1.chatbot.model.activity.Exposition
 import fr.c1.chatbot.model.activity.Festival
 import fr.c1.chatbot.model.activity.Garden
 import fr.c1.chatbot.model.activity.Museum
 import fr.c1.chatbot.model.activity.Site
+import fr.c1.chatbot.model.activity.SportEquipment
 import fr.c1.chatbot.ui.icons.Deceased
 import fr.c1.chatbot.ui.icons.InteractiveSpace
 import fr.c1.chatbot.ui.theme.ChatBotPrev
 import fr.c1.chatbot.utils.backgroundIf
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -178,7 +177,7 @@ object ActivitiesComp {
     fun SportEquipment(
         equipementSport: SportEquipment,
         modifier: Modifier = Modifier
-    ) = MyColumn(equipementSport.accessible, modifier, equipementSport.url) {
+    ) = MyColumn(equipementSport.accessible, modifier, null) {
         Text(
             text = equipementSport.name,
             style = MaterialTheme.typography.bodyLarge
@@ -289,7 +288,10 @@ private fun Prev() = ChatBotPrev {
                 name = "Name",
                 address = "Addr",
                 postalCode = "38610",
-                accessible = true
+                accessible = true,
+                latitude = 0.0,
+                longitude = 0.0,
+                url = "www.google.fr"
             ),
 
             Content(
@@ -300,7 +302,9 @@ private fun Prev() = ChatBotPrev {
                 location = "Lieu",
                 postalCode = "38610",
                 url = "www.google.fr",
-                accessible = true
+                accessible = true,
+                latitude = 0.0,
+                longitude = 0.0
             ),
 
             Building(
@@ -309,18 +313,20 @@ private fun Prev() = ChatBotPrev {
                 commune = "comm",
                 name = "name",
                 address = "addr",
-                accessible = true
+                accessible = true,
+                latitude = 0.0,
+                longitude = 0.0
             ),
 
             SportEquipment(
-                id = UUID.randomUUID().toString(),
                 department = "dep",
                 commune = "comm",
                 name = "name",
                 address = "addr",
                 accessible = true,
                 postalCode = "cp",
-                url = "www.google.fr"
+                latitude = 0.0,
+                longitude = 0.0
             ),
 
             Exposition(
@@ -330,7 +336,9 @@ private fun Prev() = ChatBotPrev {
                 name = "name",
                 accessible = true,
                 url = "www.google.fr",
-                region = "reg"
+                region = "reg",
+                latitude = 0.0,
+                longitude = 0.0
             ),
 
             Festival(
@@ -341,7 +349,9 @@ private fun Prev() = ChatBotPrev {
                 region = "reg",
                 address = "addr",
                 postalCode = "cp",
-                discipline = "disc"
+                discipline = "disc",
+                latitude = 0.0,
+                longitude = 0.0
             ),
 
             Garden(
@@ -351,7 +361,9 @@ private fun Prev() = ChatBotPrev {
                 accessible = true,
                 region = "reg",
                 address = "addr",
-                postalCode = "cp"
+                postalCode = "cp",
+                latitude = 0.0,
+                longitude = 0.0
             ),
 
 
@@ -366,7 +378,9 @@ private fun Prev() = ChatBotPrev {
                 postalCode = "cp",
                 location = "lieu2",
                 phone = "tel",
-                url = "www.google.fr"
+                url = "www.google.fr",
+                latitude = 0.0,
+                longitude = 0.0
             ),
 
             Site(
@@ -374,6 +388,8 @@ private fun Prev() = ChatBotPrev {
                 commune = "comm",
                 accessible = true,
                 region = "reg",
+                latitude = 0.0,
+                longitude = 0.0
             )
         )
     )

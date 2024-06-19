@@ -28,10 +28,14 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import android.app.Activity
+import android.app.NotificationManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
+import androidx.activity.ComponentActivity
+import androidx.work.WorkManager
+import fr.c1.chatbot.model.Event
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -204,3 +208,13 @@ fun SharedPreferences.getColor(
     ref: KMutableProperty0<Color>,
     defaultValue: Int
 ) = getInt(ref.name, defaultValue)
+
+fun disableNotification(context: Context) {
+    val workManager = WorkManager.getInstance(context)
+    workManager.cancelAllWorkByTag("EventReminderWorker")
+}
+
+fun enableNotification(context: Context) {
+    val events = Calendar.fetchCalendarEvents(context)
+    Event.Notifs.addNotification(events, context as ComponentActivity)
+}

@@ -2,7 +2,6 @@ package fr.c1.chatbot.utils
 
 import fr.c1.chatbot.ChatBot
 import kotlinx.coroutines.CoroutineScope
-import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -26,6 +25,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -37,7 +37,9 @@ import kotlin.reflect.KProperty0
 
 val application: ChatBot
     @Composable
-    get() = (LocalContext.current as ComponentActivity).application as ChatBot
+    get() = (LocalContext.current as Activity).application as ChatBot
+
+val Activity.app: ChatBot get() = application as ChatBot
 
 @Composable
 fun UnitLaunchedEffect(block: suspend CoroutineScope.() -> Unit) = LaunchedEffect(Unit, block)

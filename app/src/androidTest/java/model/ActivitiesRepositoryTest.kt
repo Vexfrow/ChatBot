@@ -32,7 +32,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun initMuseesTest() {
-        activitiesRepository.initMuseums(app)
+        activitiesRepository.getMuseums(app)
         val musees = activitiesRepository.museums
         val sizeExpected = 1222
         Assert.assertEquals(
@@ -162,7 +162,7 @@ class ActivitiesRepositoryTest {
 
     @Test
     fun getMuseesListTest() {
-        activitiesRepository.initMuseums(app)
+        activitiesRepository.getMuseums(app)
         val musees = activitiesRepository.museums
         val sizeExpected = 1222
         Assert.assertEquals(

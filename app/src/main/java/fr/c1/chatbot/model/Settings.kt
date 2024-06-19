@@ -51,7 +51,7 @@ object Settings {
     var backgroundColor: Color by mutableStateOf(defaultBackgroundColor)
     var botName: String by mutableStateOf(defaultBotName)
     var botPersonality: String by mutableStateOf(defaultBotPersonality)
-    var notifs : Boolean by mutableStateOf(true)
+    var notifications: Boolean by mutableStateOf(true)
 
     val iconsAvailable = with(Icons.Default) {
         listOf(
@@ -80,7 +80,7 @@ object Settings {
         backgroundColor = defaultBackgroundColor
         botName = defaultBotName
         botPersonality = defaultBotPersonality
-        notifs = true
+        notifications = true
 
     }
 
@@ -100,7 +100,7 @@ object Settings {
         getColor(::backgroundColor, defaultBackgroundColor.value.toInt())
         getString(::botName, defaultBotName)
         getString(::botPersonality, defaultBotPersonality)
-        getBool(::notifs, false)
+        getBool(::notifications, false)
 
         Log.i(TAG, "Settings loaded: ${this@Settings}")
     }
@@ -120,7 +120,7 @@ object Settings {
             putColor(::backgroundColor)
             putString(::botName)
             putString(::botPersonality)
-            putBool(::notifs)
+            putBool(::notifications)
 
             Log.i(TAG, "Settings saved : ${this@Settings}")
         }

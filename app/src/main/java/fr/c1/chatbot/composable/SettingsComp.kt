@@ -210,11 +210,13 @@ fun SettingsComp() {
                 onClick = {
                     Settings.tts = !Settings.tts
                 }) { Text(text = "Lecture Audio : ${if (Settings.tts) "Activé" else "Désactivé"}") }
-            Button(colors = ButtonDefaults.buttonColors(containerColor = with(Color) { if (Settings.notifs) Green else Red }),
+            Button(colors = ButtonDefaults.buttonColors(containerColor = with(Color) { if (Settings.notifications) Green else Red }),
                 onClick = {
-                    Settings.notifs = !Settings.notifs
-                    if(Settings.notifs) enableNotification(context) else disableNotification(context)
-                }) { Text(text = "Notifications : ${if (Settings.notifs) "Activé" else "Désactivé"}") }
+                    Settings.notifications = !Settings.notifications
+                    if (Settings.notifications) enableNotification(context) else disableNotification(
+                        context
+                    )
+                }) { Text(text = "Notifications : ${if (Settings.notifications) "Activé" else "Désactivé"}") }
 
         }
     }
@@ -374,7 +376,7 @@ fun SettingsComp() {
                         style = MaterialTheme.typography.titleLarge
                     )
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                        val list : List<String> = listOf("Amy", "Georges", "Rob")
+                        val list: List<String> = listOf("Amy", "Georges", "Rob")
                         items(list) { name ->
                             Box(
                                 modifier = Modifier

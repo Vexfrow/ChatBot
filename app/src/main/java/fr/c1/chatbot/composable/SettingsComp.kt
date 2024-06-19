@@ -288,6 +288,7 @@ fun SettingsComp() {
                             Box(
                                 modifier = Modifier
                                     .background(color)
+                                    .border(4.dp, Color.Black)
                                     .size(100.dp)
                                     .clickable {
                                         when {
@@ -361,7 +362,23 @@ fun SettingsComp() {
                                 "Attention, vous devrait recommencer la conversation depuis le début en cas de changement de personnalité",
                         style = MaterialTheme.typography.titleLarge
                     )
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        val list : List<String> = listOf("Amy", "Georges", "Rob")
+                        items(list) { name ->
+                            Box(
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .clickable {
+                                        Settings.botName = name
+                                        Settings.botPersonality = name
 
+                                        isBotPersonalityChooserOpen = false
+                                    },
+                            ) {
+                                Text(text = name)
+                            }
+                        }
+                    }
                     Button(onClick = { isBotPersonalityChooserOpen = false }) {
                         Text("Valider")
                     }

@@ -3,6 +3,7 @@ package fr.c1.chatbot.model
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import android.util.Log
+import fr.c1.chatbot.R
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
@@ -41,27 +42,38 @@ class Data {
 
 class Tree {
 
-    var data: Data? = null
+    private var dataList = mutableMapOf<String, Data>()
+
     private var questionsHistory: ArrayList<Int> = ArrayList()
+    private var currentScript = "Rob"
+    private var currentData: Data? = null
 
     //Take a json file in parameter
-    fun initTree(fileIS: InputStream) {
+    fun initTree(mapScript: Map<String, InputStream>) {
         val gson = Gson()
         try {
-            BufferedReader(InputStreamReader(fileIS)).use { bufferedReader ->
-                val dataType: Type = object : TypeToken<Data?>() {}.type
-                data = gson.fromJson(bufferedReader, dataType)
+            mapScript.entries
+            mapScript.forEach { entry ->
+                BufferedReader(InputStreamReader(entry.value)).use { bufferedReader ->
+                    val dataType: Type = object : TypeToken<Data?>() {}.type
+                    dataList[entry.key] = gson.fromJson(bufferedReader, dataType)
+                }
             }
+
             questionsHistory.add(0)
+            currentScript = Settings.botPersonality
+            currentData = dataList[currentScript]
         } catch (e: IOException) {
             e.printStackTrace()
         }
     }
 
+
     //Return the question ask by the bot
     val question: String
         get() {
-            return data?.robot?.get(questionsHistory.last())?.text ?: ""
+            return currentData?.robot?.get(questionsHistory.last())?.text + "${currentScript}" ?: ""
+            //return currentData?.robot?.get(questionsHistory.last())?.text ?: ""
         }
 
     //Return the list of all the answers possible
@@ -73,7 +85,7 @@ class Tree {
                 currentAnswers.add(retour)
             }
 
-            for (r in data?.link!!) {
+            for (r in currentData?.link!!) {
                 if (r.from == questionsHistory.last()) {
                     currentAnswers.add(r.answer)
                 }
@@ -85,6 +97,12 @@ class Tree {
 
     //Update the current question and execute the action link to the answer chosen
     fun selectAnswer(idAnswer: Int, user: User) {
+
+        if (currentScript != Settings.botPersonality) {
+            currentScript = Settings.botPersonality
+            currentData = dataList[currentScript]
+        }
+
         if (idAnswer == retour && questionsHistory.size > 1) questionsHistory.removeLast()
         else if (idAnswer == recommencerConversation) { //Clear previous messages ?
             questionsHistory.removeAll(questionsHistory.toSet())
@@ -95,7 +113,7 @@ class Tree {
 
             Log.d(TAG, "selectAnswer: afficherFiltre")
         } else {
-            for (r in data?.link!!) {
+            for (r in currentData?.link!!) {
                 if (r.from == questionsHistory.last() && r.answer == idAnswer) {
                     questionsHistory.add(r.to)
                     // Print the answer's text
@@ -111,17 +129,18 @@ class Tree {
 
 
     fun getAnswerText(idAnswer: Int): String {
-        return data?.humain!!.first { h -> h.id == idAnswer }.text
+        return currentData?.humain!!.first { h -> h.id == idAnswer }.text
     }
 
     fun getUserAction(idAnswer: Int): TypeAction {
-        val actionStr = data?.humain!!.first { h -> h.id == idAnswer }.action
+        val actionStr = currentData?.humain!!.first { h -> h.id == idAnswer }.action
         return if (actionStr == null) TypeAction.None else enumValueOf<TypeAction>(actionStr)
     }
 
     val botAction: TypeAction
         get() {
-            val actionStr = data?.robot!!.first { h -> h.id == questionsHistory.last() }.action
+            val actionStr =
+                currentData?.robot!!.first { h -> h.id == questionsHistory.last() }.action
             return if (actionStr == null) TypeAction.None else enumValueOf<TypeAction>(actionStr)
         }
 }

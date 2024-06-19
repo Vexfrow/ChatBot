@@ -859,34 +859,27 @@ class ActivitiesRepository {
     /**
      * Select the activities by distance
      */
-    suspend fun selectByDistance(
+    fun selectByDistance(
         list: List<AbstractActivity>,
         distanceMax: Int,
-        localisation: Location
     ): List<AbstractActivity> {
-        if (list.isEmpty() || localisation.latitude == 0.0 || localisation.longitude == 0.0) {
+        if (list.isEmpty() || location.latitude == 0.0 || location.longitude == 0.0) {
             return emptyList()
         }
 
         val resultList = mutableListOf<AbstractActivity>()
 
         for (activity in list) {
-            val coordinates = getCoordinates(activity.commune)
-            Log.d(TAG, "selectionnerParDistance: coordinates = $coordinates)")
-            if (coordinates != null) {
-                val latitude = coordinates.first
-                val longitude = coordinates.second
-                val distance = FloatArray(1)
-                Location.distanceBetween(
-                    localisation.latitude,
-                    localisation.longitude,
-                    latitude,
-                    longitude,
-                    distance
-                )
-                if (distance[0] <= distanceMax * 1000) {
-                    resultList.add(activity)
-                }
+            val distance = FloatArray(1)
+            Location.distanceBetween(
+                location.latitude,
+                location.longitude,
+                activity.latitude,
+                activity.longitude,
+                distance
+            )
+            if (distance[0] <= distanceMax * 1000) {
+                resultList.add(activity)
             }
         }
         return resultList

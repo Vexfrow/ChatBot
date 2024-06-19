@@ -199,7 +199,7 @@ class ActivitiesVM(
             // ToDo: Filter from distance
             updateResult {
                 Log.i(TAG, "addType: Filter by distance started")
-                val result = it
+                val result = repo.selectByDistance(it, value)
                 Log.i(TAG, "addType: Filter by distance finished")
                 result
             }

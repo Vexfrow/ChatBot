@@ -198,7 +198,7 @@ fun SettingsComp() {
                 botColorPicker = false
                 fontColorPicker = true
                 isColorPickerOpen = true
-            }) { Text(text = "Changer la couleur du background") }
+            }) { Text(text = "Changer la couleur du fond d'écran") }
             Button(onClick = {
                 isBotNameOpen = true
             }) { Text(text = "Changer le nom du robot") }
@@ -248,7 +248,7 @@ fun SettingsComp() {
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    "Ajouter une Photo de la galerie",
+                                    "Ajouter une photo de la galerie",
                                     style = MaterialTheme.typography.bodySmall
                                 )
                             }

@@ -163,7 +163,7 @@
     {
       "id": 1019,
       "text": "Choisir passions",
-      "actions": "ChoisirPassions"
+      "actions": "ChoosePassions"
     },
     {
       "id": 1020,

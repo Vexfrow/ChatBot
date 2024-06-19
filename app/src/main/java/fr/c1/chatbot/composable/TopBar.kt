@@ -28,6 +28,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.ui.graphics.Color
 
 enum class Tab(
     val value: Number,
@@ -63,7 +65,7 @@ fun TopBar(
         onTabSelected(state)
     }
 
-    Column(modifier = Modifier.statusBarsPadding()) {
+    Column(modifier = Modifier.statusBarsPadding().background(Color.White)) {
         TabRow(selectedTabIndex = state.value.toInt()) {
             Tab.entries.filter { it.value is Int }.forEach { tab ->
                 Tab(

@@ -38,7 +38,7 @@ object Settings {
     private var defaultBubbleSpeechColor = Color.Blue
     private var defaultBackgroundColor = Color(136, 227, 160)
     private var defaultBotName = "Rob"
-    private var defaultBotPersonality = "default"
+    private var defaultBotPersonality = "Rob"
 
     var textSize: TextUnit by mutableStateOf(40.sp)
     var tts: Boolean by mutableStateOf(false)

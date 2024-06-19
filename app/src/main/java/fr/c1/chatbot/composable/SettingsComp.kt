@@ -198,7 +198,7 @@ fun SettingsComp() {
                 botColorPicker = false
                 fontColorPicker = true
                 isColorPickerOpen = true
-            }) { Text(text = "Changer la couleur du background") }
+            }) { Text(text = "Changer la couleur du fond d'écran") }
             Button(onClick = {
                 isBotNameOpen = true
             }) { Text(text = "Changer le nom du robot") }
@@ -248,7 +248,7 @@ fun SettingsComp() {
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    "Ajouter une Photo de la galerie",
+                                    "Ajouter une photo de la galerie",
                                     style = MaterialTheme.typography.bodySmall
                                 )
                             }
@@ -288,6 +288,7 @@ fun SettingsComp() {
                             Box(
                                 modifier = Modifier
                                     .background(color)
+                                    .border(4.dp, Color.Black)
                                     .size(100.dp)
                                     .clickable {
                                         when {
@@ -361,7 +362,23 @@ fun SettingsComp() {
                                 "Attention, vous devrait recommencer la conversation depuis le début en cas de changement de personnalité",
                         style = MaterialTheme.typography.titleLarge
                     )
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        val list : List<String> = listOf("Amy", "Georges", "Rob")
+                        items(list) { name ->
+                            Box(
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .clickable {
+                                        Settings.botName = name
+                                        Settings.botPersonality = name
 
+                                        isBotPersonalityChooserOpen = false
+                                    },
+                            ) {
+                                Text(text = name)
+                            }
+                        }
+                    }
                     Button(onClick = { isBotPersonalityChooserOpen = false }) {
                         Text("Valider")
                     }

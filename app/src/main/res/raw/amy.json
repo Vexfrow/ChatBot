@@ -47,12 +47,12 @@
     {
       "id": 11,
       "text": "C'est fait ! j'ai désactivé les rappels.\n Vous pouvez les réactiver à tout moment si vous changez d'avis.",
-      "action": "SupprimerRappels"
+      "action": "DeleteRecalls"
     },
     {
       "id": 12,
       "text": "Je comprends que vous ne soyez pas intéressés, j'ai désactivé les suggestions",
-      "action": "SupprimerSuggestions"
+      "action": "DeleteSuggestions"
     },
     {
       "id": 13,
@@ -69,12 +69,12 @@
     {
       "id": 16,
       "text": "Super, je vous propose d'aller voir les activités disponibles dans l'onglet 'Résultats'",
-      "action": "AfficherResultat"
+      "action": "ShowResults"
     },
     {
       "id": 17,
       "text": "Très bien, j'ai fait un peu de ménage dans vos notifications",
-      "action": "supprimerNotifs"
+      "action": "DeletNotifs"
     }
   ],
   "humain": [
@@ -85,32 +85,32 @@
     {
       "id": 1001,
       "text": "Choisir une date",
-      "action": "EntrerDate"
+      "action": "DateInput"
     },
     {
       "id": 1002,
       "text": "Choisir une ville",
-      "action": "EntrerVille"
+      "action": "CityInput"
     },
     {
       "id": 1003,
       "text": "Rentrer une distance (en km)",
-      "action": "EntrerDistance"
+      "action": "DistanceInput"
     },
     {
       "id": 1004,
       "text": "Activité physique",
-        "action": "ActivitePhysique"
+        "action": "PhysicalActivity"
     },
     {
       "id": 1005,
       "text": "Activité Culturelle",
-        "action": "ActiviteCulturelle"
+        "action": "CulturalActivity"
     },
     {
       "id": 1006,
       "text": "Utiliser la géolocalisation",
-      "action": "Geolocalisation"
+      "action": "Geolocate"
     },
     {
       "id": 1007,
@@ -177,17 +177,17 @@
     {
       "id": -1,
       "text": "Retour",
-      "action": "Retour"
+      "action": "Back"
     },
     {
       "id": -2,
       "text": "Recommencer conversation",
-      "action": "Recommencer"
+      "action": "Restart"
     },
     {
       "id": -3,
       "text": "Afficher les filtres",
-      "action": "AfficherFiltres"
+      "action": "ShowFilters"
     }
   ],
   "link": [

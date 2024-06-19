@@ -47,12 +47,12 @@
     {
       "id": 11,
       "text": "C'est fait ! j'ai désactivé les rappels.\n Tu pourras toujours les réactiver si tu veux, et compter sur ma mémoire d'éléphant",
-      "action": "SupprimerRappels"
+      "action": "DeleteRecalls"
     },
     {
       "id": 12,
       "text": "Je comprends je ne ferais plus de suggestions, si mes idées ne plaisent pas je me tais.",
-      "action": "SupprimerSuggestions"
+      "action": "DeleteSuggestions"
     },
     {
       "id": 13,
@@ -69,12 +69,12 @@
     {
       "id": 16,
       "text": "Super, tu peux voir les activités disponibles dans l'onglet 'Résultats', j'espère que ça te plaira !",
-      "action": "AfficherResultat"
+      "action": "ShowResults"
     },
     {
       "id": 17,
       "text": "Hop là, j'ai fait un peu de ménage ! Un peu d'exercice ça fait pas de mal.",
-      "action": "supprimerNotifs"
+      "action": "DeletNotifs"
     }
   ],
   "humain": [
@@ -85,32 +85,32 @@
     {
       "id": 1001,
       "text": "Choisir une date",
-      "action": "EntrerDate"
+      "action": "DateInput"
     },
     {
       "id": 1002,
       "text": "Choisir une ville",
-      "action": "EntrerVille"
+      "action": "CityInput"
     },
     {
       "id": 1003,
       "text": "Rentrer une distance (en km)",
-      "action": "EntrerDistance"
+      "action": "DistanceInput"
     },
     {
       "id": 1004,
       "text": "Activité physique",
-        "action": "ActivitePhysique"
+        "action": "PhysicalActivity"
     },
     {
       "id": 1005,
       "text": "Activité Culturelle",
-        "action": "ActiviteCulturelle"
+        "action": "CulturalActivity"
     },
     {
       "id": 1006,
       "text": "Utiliser la géolocalisation",
-      "action": "Geolocalisation"
+      "action": "Geolocate"
     },
     {
       "id": 1007,
@@ -177,17 +177,17 @@
     {
       "id": -1,
       "text": "Retour",
-      "action": "Retour"
+      "action": "Back"
     },
     {
       "id": -2,
       "text": "Recommencer conversation",
-      "action": "Recommencer"
+      "action": "Restart"
     },
     {
       "id": -3,
       "text": "Afficher les filtres",
-      "action": "AfficherFiltres"
+      "action": "ShowFilters"
     }
   ],
   "link": [

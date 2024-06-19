@@ -8,6 +8,7 @@ import fr.c1.chatbot.model.loadAllUsersInformation
 import fr.c1.chatbot.model.storeAllUsersInformation
 import fr.c1.chatbot.utils.TTS
 import android.app.Application
+import java.io.InputStream
 
 private const val TAG = "ChatBot"
 
@@ -22,13 +23,14 @@ class ChatBot : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        val fileIS = resources.openRawResource(R.raw.flow_chart)
+        Settings.init(this)
 
-        chatbotTree.initTree(fileIS)
+        val mapScript : Map<String, InputStream> = mapOf("Rob" to resources.openRawResource(R.raw.rob), "Amy" to resources.openRawResource(R.raw.amy), "Georges" to resources.openRawResource(R.raw.georges))
+
+        chatbotTree.initTree(mapScript)
 
         tts = TTS(this)
 
-        Settings.init(this)
 
         // Load user list
         userList = loadAllUsersInformation(this)

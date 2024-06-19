@@ -5,7 +5,6 @@ import coil.request.ImageRequest
 import fr.c1.chatbot.model.Settings
 import fr.c1.chatbot.ui.shape.SpeechBubbleShape
 import fr.c1.chatbot.ui.theme.ChatBotPrev
-import fr.c1.chatbot.ui.theme.pickColorList
 import fr.c1.chatbot.utils.rememberMutableStateOf
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -52,6 +51,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import android.net.Uri
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
+import fr.c1.chatbot.ui.theme.pickDarkColorList
+import fr.c1.chatbot.ui.theme.pickLightColorList
+import fr.c1.chatbot.utils.disableNotification
+import fr.c1.chatbot.utils.enableNotification
 
 @Composable
 fun SettingsComp() {
@@ -68,15 +73,15 @@ fun SettingsComp() {
 
     //Vars to manage bot name's changes
     var isBotNameOpen by rememberMutableStateOf(false)
-    var botName by rememberMutableStateOf(false)
+
+    //Vars to manage bot personality's changes
+    var isBotPersonalityChooserOpen by rememberMutableStateOf(false)
 
 
     val selectImageLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
-            if (botDialog)
-                Settings.botImage = uri
-            else
-                Settings.userImage = uri
+            if (botDialog) Settings.botImage = uri
+            else Settings.userImage = uri
 
             isDialogOpen = false
         }
@@ -91,99 +96,87 @@ fun SettingsComp() {
     ) {
         //First Row with parameter for both user and bot
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
+            modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             val mod = Modifier.size(100.dp)
 
             @Composable
             fun MyIcon(icon: ImageVector) = Icon(
-                modifier = mod,
-                imageVector = icon,
-                contentDescription = null
+                modifier = mod, imageVector = icon, contentDescription = null
             )
 
             @Composable
             fun MyImage(img: Uri) = Image(
-                modifier = mod,
-                painter = rememberAsyncImagePainter(
+                modifier = mod, painter = rememberAsyncImagePainter(
                     ImageRequest.Builder(context).data(img).build()
-                ),
-                contentDescription = null
+                ), contentDescription = null
             )
 
             //Colum for Bot
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                if (Settings.botImage == null)
-                    MyIcon(icon = Settings.botIcon)
-                else
-                    MyImage(img = Settings.botImage!!)
+                if (Settings.botImage == null) MyIcon(icon = Settings.botIcon)
+                else MyImage(img = Settings.botImage!!)
 
-                Button(
-                    onClick = {
-                        botDialog = true
-                        isDialogOpen = true
-                    }
-                ) { Text(text = "Changer l'icône du Robot") }
+                Button(onClick = {
+                    botDialog = true
+                    isDialogOpen = true
+                }) { Text(text = "Changer l'icône du Robot") }
 
                 Spacer(modifier = Modifier.height(20.dp))
-                //val mod2 = Modifier.clip(SpeechBubbleShape(15.dp, 15.dp, Size(50f, 50f))).background(Settings.bubbleSpeechBotColor)
+                val shapeB = SpeechBubbleShape(15.dp, 15.dp, Size(350f, 170f))
                 Box(
                     modifier = Modifier
                         .size(250.dp, 100.dp)
-                        .clip(SpeechBubbleShape(15.dp, 15.dp, Size(350f, 170f)))
+                        .clip(shapeB)
                         .background(Settings.bubbleSpeechBotColor)
+                        .border(width = 4.dp, color = Color.Black, shape = shapeB)
                 )
                 Spacer(modifier = Modifier.height(5.dp))
 
-                Button(
-                    onClick = {
-                        botColorPicker = true
-                        fontColorPicker = false
-                        isColorPickerOpen = true
-                    }
-                ) { Text(text = "Changer la couleur des bulles du robot") }
+                Button(onClick = {
+                    botColorPicker = true
+                    fontColorPicker = false
+                    isColorPickerOpen = true
+                }) { Text(text = "Changer la couleur des bulles du robot") }
             }
 
 
             //Colum for User
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                if (Settings.userImage == null)
-                    MyIcon(icon = Settings.userIcon)
-                else
-                    MyImage(img = Settings.userImage!!)
+                if (Settings.userImage == null) MyIcon(icon = Settings.userIcon)
+                else MyImage(img = Settings.userImage!!)
 
-                Button(
-                    onClick = {
-                        botDialog = false
-                        isDialogOpen = true
-                    }
-                ) { Text(text = "Changer l'icône de l'utilisateur") }
+                Button(onClick = {
+                    botDialog = false
+                    isDialogOpen = true
+                }) { Text(text = "Changer l'icône de l'utilisateur") }
 
                 Spacer(modifier = Modifier.height(20.dp))
+                val shapeB = SpeechBubbleShape(15.dp, 15.dp, Size(350f, 170f))
+
                 Box(
                     modifier = Modifier
                         .size(250.dp, 100.dp)
                         .graphicsLayer(rotationY = 180f)
-                        .clip(SpeechBubbleShape(15.dp, 15.dp, Size(350f, 170f)))
+                        .clip(shapeB)
                         .background(Settings.bubbleSpeechUserColor)
+                        .border(width = 4.dp, color = Color.Black, shape = shapeB)
+
                 )
                 Spacer(modifier = Modifier.height(5.dp))
 
-                Button(
-                    onClick = {
-                        botColorPicker = false
-                        fontColorPicker = false
-                        isColorPickerOpen = true
-                    }
-                ) { Text(text = "Changer la couleur des bulles de l'utilisateur") }
+                Button(onClick = {
+                    botColorPicker = false
+                    fontColorPicker = false
+                    isColorPickerOpen = true
+                }) { Text(text = "Changer la couleur des bulles de l'utilisateur") }
             }
 
         }
 
         Spacer(modifier = Modifier.height(50.dp))
         Text(
-            text = "Aperçu de la taille du texte",
+            text = "Faîte glisser le curseur pour changer la taille du texte",
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(16.dp)
         )
@@ -198,23 +191,31 @@ fun SettingsComp() {
 
         Spacer(modifier = Modifier.height(50.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            Button(
-                colors = ButtonDefaults.buttonColors(containerColor = with(Color) { if (Settings.tts) Green else Red }),
-                onClick = { Settings.tts = !Settings.tts }
-            ) { Text(text = "Lecture Audio: ${if (Settings.tts) "ON" else "OFF"}") }
-            Button(
+            Button(onClick = {
+                botColorPicker = false
+                fontColorPicker = true
+                isColorPickerOpen = true
+            }) { Text(text = "Changer la couleur du fond d'écran") }
+            Button(onClick = {
+                isBotNameOpen = true
+            }) { Text(text = "Changer le nom du robot") }
+            Button(onClick = {
+                isBotPersonalityChooserOpen = true
+            }) { Text(text = "Changer la personnalité du robot") }
+        }
+
+        Spacer(modifier = Modifier.height(25.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            Button(colors = ButtonDefaults.buttonColors(containerColor = with(Color) { if (Settings.tts) Green else Red }),
                 onClick = {
-                    botColorPicker = false
-                    fontColorPicker = true
-                    isColorPickerOpen = true
-                }
-            ) { Text(text = "Changer la couleur du background") }
-            Button(
+                    Settings.tts = !Settings.tts
+                }) { Text(text = "Lecture Audio : ${if (Settings.tts) "Activé" else "Désactivé"}") }
+            Button(colors = ButtonDefaults.buttonColors(containerColor = with(Color) { if (Settings.notifs) Green else Red }),
                 onClick = {
-                    botName = true
-                    isBotNameOpen = true
-                }
-            ) { Text(text = "Changer le nom du robot") }
+                    Settings.notifs = !Settings.notifs
+                    if(Settings.notifs) enableNotification(context) else disableNotification(context)
+                }) { Text(text = "Notifications : ${if (Settings.notifs) "Activé" else "Désactivé"}") }
+
         }
     }
     if (isDialogOpen) {
@@ -258,7 +259,7 @@ fun SettingsComp() {
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    "Ajouter une Photo de la galerie",
+                                    "Ajouter une photo de la galerie",
                                     style = MaterialTheme.typography.bodySmall
                                 )
                             }
@@ -291,11 +292,14 @@ fun SettingsComp() {
                         text = "Veuillez choisir une couleur",
                         style = MaterialTheme.typography.titleLarge
                     )
+                    val colorList =
+                        if (isSystemInDarkTheme()) pickDarkColorList else pickLightColorList
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                        items(pickColorList) { color ->
+                        items(colorList) { color ->
                             Box(
                                 modifier = Modifier
                                     .background(color)
+                                    .border(4.dp, Color.Black)
                                     .size(100.dp)
                                     .clickable {
                                         when {
@@ -320,7 +324,7 @@ fun SettingsComp() {
         }
     }
     if (isBotNameOpen) {
-        Dialog(onDismissRequest = { isColorPickerOpen = false }) {
+        Dialog(onDismissRequest = { isBotNameOpen = false }) {
             Surface(
                 shape = MaterialTheme.shapes.medium,
                 color = MaterialTheme.colorScheme.surface,
@@ -349,12 +353,55 @@ fun SettingsComp() {
             }
         }
     }
+    if (isBotPersonalityChooserOpen) {
+        Dialog(onDismissRequest = { isBotPersonalityChooserOpen = false }) {
+            Surface(
+                shape = MaterialTheme.shapes.medium,
+                color = MaterialTheme.colorScheme.surface,
+                modifier = Modifier.padding(16.dp)
+            ) {
+
+                Column(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .wrapContentSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Text(
+                        text = "Quelle personnalité voulez-vous que le robot ait ?\n" +
+                                "Attention, vous devrait recommencer la conversation depuis le début en cas de changement de personnalité",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        val list : List<String> = listOf("Amy", "Georges", "Rob")
+                        items(list) { name ->
+                            Box(
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .clickable {
+                                        Settings.botName = name
+                                        Settings.botPersonality = name
+
+                                        isBotPersonalityChooserOpen = false
+                                    },
+                            ) {
+                                Text(text = name)
+                            }
+                        }
+                    }
+                    Button(onClick = { isBotPersonalityChooserOpen = false }) {
+                        Text("Valider")
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable
 fun IconOption(imageVector: ImageVector, size: Dp = 100.dp, onClick: () -> Unit) = IconButton(
-    modifier = Modifier.size(size),
-    onClick = onClick
+    modifier = Modifier.size(size), onClick = onClick
 ) {
     Icon(
         modifier = Modifier.fillMaxSize(),

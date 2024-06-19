@@ -28,6 +28,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.ui.graphics.Color
 
 enum class Tab(
     val value: Number,
@@ -36,14 +38,14 @@ enum class Tab(
 ) {
     ChatBot(0, "Chatbot", Icons.Default.Robot),
     ChatBotChat(0.0f, "Conversation", Icons.Default.Forum),
-    ChatBotResults(0.1f, "Resultats", Icons.Default.ContentPasteSearch),
+    ChatBotResults(0.1f, "Résultats", Icons.Default.ContentPasteSearch),
     ChatBotMap(0.2f, "Carte", Icons.Default.Map),
     Suggestion(1, "Suggestion", Icons.Default.Lightbulb),
     History(2, "Historique", Icons.Default.History),
     Account(3, "Compte", Icons.Default.AccountCircle),
     AccountData(3.0f, "Données", Icons.Default.AccountCircle),
     AccountPreferences(3.1f, "Préférences hebdomadaire", Icons.Default.DateRange),
-    AccountPassions(3.2f, "Passions", Icons.Default.SentimentVerySatisfied),
+    AccountPassions(3.2f, "Centres d'intérêt", Icons.Default.SentimentVerySatisfied),
     Settings(4, "Paramètres", Icons.Default.Settings);
 
     val subTabs: List<Tab> get() = entries.filter { it.value !is Int && it.value.toInt() == value.toInt() }
@@ -63,7 +65,7 @@ fun TopBar(
         onTabSelected(state)
     }
 
-    Column(modifier = Modifier.statusBarsPadding()) {
+    Column(modifier = Modifier.statusBarsPadding().background(Color.White)) {
         TabRow(selectedTabIndex = state.value.toInt()) {
             Tab.entries.filter { it.value is Int }.forEach { tab ->
                 Tab(

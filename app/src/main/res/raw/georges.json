@@ -2,11 +2,11 @@
   "robot": [
     {
       "id": 0,
-      "text": "Bonjour, que puis-je faire pour vous ?"
+      "text": "Bonjour, quel bon vent t'amène ?"
     },
     {
       "id": 1,
-      "text": "Quand est-ce que vous souhaitez la faire ?"
+      "text": "Quelle date te conviendrait ?"
     },
     {
       "id": 2,
@@ -14,44 +14,44 @@
     },
     {
       "id": 3,
-      "text": "Jusqu'à quelle distance (en km) pouvez-vous vous déplacer ?"
+      "text": "Pas trop loin j'imagine, combien de km au max ?"
     },
     {
       "id": 4,
-      "text": "Quelle type d'activité souhaitez-vous faire ?"
+      "text": "Quelle type d'activité tu préfères ?\nMoi c'est le cirque"
     },
     {
       "id": 5,
-      "text": "Êtes vous sportif ?"
+      "text": "Plutot physique ou le sport c'est pas pour toi ?"
     },
     {
       "id": 6,
-      "text": "Souhaitez-vous rencontrer d'autres personnes ?"
+      "text": "Une activité en groupe ça te dirait ? \nPlus on est de fous plus on rit"
     },
     {
       "id": 7,
-      "text": "Quelles sont vos passions ?"
+      "text": "Quel est le type d'activité qui te plait le plus ?"
     },
     {
       "id": 8,
-      "text": "Veuillez écrire un nom d'association ou un lieu"
+      "text": "Tu peux écrire un nom d'association, un lieu, ou bien me raconter une blague."
     },
     {
       "id": 9,
-      "text": "Comment puis-je vous aider ?"
+      "text": "Dis-moi ton souci, je peux peut-être t'aider ?"
     },
     {
       "id": 10,
-      "text": "Quelle(s) notification(s) voulez-vous désactiver ?"
+      "text": "Quelles notifications veux-tu désactiver ?"
     },
     {
       "id": 11,
-      "text": "Les rappels ont été désactivées",
+      "text": "C'est fait ! j'ai désactivé les rappels.\n Tu pourras toujours les réactiver si tu veux, et compter sur ma mémoire d'éléphant",
       "action": "DeleteRecalls"
     },
     {
       "id": 12,
-      "text": "Les suggestions ont été désactivées",
+      "text": "Je comprends je ne ferais plus de suggestions, si mes idées ne plaisent pas je me tais.",
       "action": "DeleteSuggestions"
     },
     {
@@ -60,20 +60,20 @@
     },
     {
       "id": 14,
-      "text": "Si vous ne trouvez plus une activité qui vous intéresse regardez dans :\n- L'historique de recherche\n- Les activités enregistrées"
+      "text": "Je vais retrouver ça en un clin d'oeil, tape le nom de l'activité si tu t'en souviens.\n Sinon tu peux regarder dans :\n- L'historique de recherche\n- Les activités enregistrées"
     },
     {
       "id": 15,
-      "text": "Cette action n'est pas possible pour le moment"
+      "text": "Je suis désolé je ne peux pas effectuer cette action pour le moment, problème de dos."
     },
     {
       "id": 16,
-      "text": "Très bien, les activités que je vous propose sont disponibles dans l'onglet 'Résultats'",
+      "text": "Super, tu peux voir les activités disponibles dans l'onglet 'Résultats', j'espère que ça te plaira !",
       "action": "ShowResults"
     },
     {
       "id": 17,
-      "text": "Toutes les notifications ont été supprimées",
+      "text": "Hop là, j'ai fait un peu de ménage ! Un peu d'exercice ça fait pas de mal.",
       "action": "DeletNotifs"
     }
   ],

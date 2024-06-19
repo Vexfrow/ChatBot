@@ -28,8 +28,6 @@ class ChatBot : Application() {
         val mapScript : Map<String, InputStream> = mapOf("Rob" to resources.openRawResource(R.raw.rob), "Amy" to resources.openRawResource(R.raw.amy), "Georges" to resources.openRawResource(R.raw.georges))
 
         chatbotTree.initTree(mapScript)
-        val activitiesRepository = ActivitiesRepository()
-        activitiesRepository.initAll(this)
 
         tts = TTS(this)
 

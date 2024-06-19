@@ -56,6 +56,8 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.unit.toSize
 import fr.c1.chatbot.ui.theme.pickDarkColorList
 import fr.c1.chatbot.ui.theme.pickLightColorList
+import fr.c1.chatbot.utils.disableNotification
+import fr.c1.chatbot.utils.enableNotification
 
 @Composable
 fun SettingsComp() {
@@ -190,10 +192,6 @@ fun SettingsComp() {
 
         Spacer(modifier = Modifier.height(50.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            Button(colors = ButtonDefaults.buttonColors(containerColor = with(Color) { if (Settings.tts) Green else Red }),
-                onClick = {
-                    Settings.tts = !Settings.tts
-                }) { Text(text = "Lecture Audio: ${if (Settings.tts) "ON" else "OFF"}") }
             Button(onClick = {
                 botColorPicker = false
                 fontColorPicker = true
@@ -205,6 +203,20 @@ fun SettingsComp() {
             Button(onClick = {
                 isBotPersonalityChooserOpen = true
             }) { Text(text = "Changer la personnalité du robot") }
+        }
+
+        Spacer(modifier = Modifier.height(25.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            Button(colors = ButtonDefaults.buttonColors(containerColor = with(Color) { if (Settings.tts) Green else Red }),
+                onClick = {
+                    Settings.tts = !Settings.tts
+                }) { Text(text = "Lecture Audio : ${if (Settings.tts) "Activé" else "Désactivé"}") }
+            Button(colors = ButtonDefaults.buttonColors(containerColor = with(Color) { if (Settings.notifs) Green else Red }),
+                onClick = {
+                    Settings.notifs = !Settings.notifs
+                    if(Settings.notifs) enableNotification(context) else disableNotification(context)
+                }) { Text(text = "Notifications : ${if (Settings.notifs) "Activé" else "Désactivé"}") }
+
         }
     }
     if (isDialogOpen) {

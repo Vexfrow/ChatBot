@@ -53,7 +53,6 @@ import androidx.compose.ui.window.Dialog
 import android.net.Uri
 import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.ui.unit.toSize
 import fr.c1.chatbot.ui.theme.pickDarkColorList
 import fr.c1.chatbot.ui.theme.pickLightColorList
 import fr.c1.chatbot.utils.disableNotification

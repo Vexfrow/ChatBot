@@ -9,14 +9,15 @@ import fr.c1.chatbot.composable.SettingsComp
 import fr.c1.chatbot.composable.Suggestion
 import fr.c1.chatbot.composable.Tab
 import fr.c1.chatbot.composable.TopBar
-import fr.c1.chatbot.model.ActivitiesRepository
 import fr.c1.chatbot.model.Settings
 import fr.c1.chatbot.model.storeAllUsersInformation
 import fr.c1.chatbot.ui.theme.ChatBotTheme
+import fr.c1.chatbot.utils.UnitLaunchedEffect
+import fr.c1.chatbot.utils.app
 import fr.c1.chatbot.utils.rememberMutableStateListOf
 import fr.c1.chatbot.utils.rememberMutableStateOf
+import fr.c1.chatbot.viewModel.ActivitiesVM
 import org.osmdroid.config.Configuration
-import org.osmdroid.views.MapView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -30,23 +31,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.preference.PreferenceManager
-import androidx.work.WorkManager
 import android.os.Bundle
 
 private const val TAG = "MainActivity"
 
 class MainActivity : ComponentActivity() {
-    private lateinit var workManager: WorkManager
-    private lateinit var app: ChatBot
-    private lateinit var activitiesRepository: ActivitiesRepository
-    private var requestingLocationUpdates: Boolean = false
-    private lateinit var myOpenMapView: MapView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        workManager = WorkManager.getInstance(this)
-        app = application as ChatBot
-        activitiesRepository = app.activitiesRepository
-        activitiesRepository.initAll(application)
         enableEdgeToEdge()
         //handle permissions first, before map is created. not depicted here
 
@@ -62,6 +53,11 @@ class MainActivity : ComponentActivity() {
     private operator fun invoke() = ChatBotTheme {
         // Request all needed permissions
         PermissionsContent(this)
+        val activitiesVM = ActivitiesVM(app.currentUser, app.activitiesRepository)
+
+        UnitLaunchedEffect {
+            activitiesVM.load(app)
+        }
 
         var tab by rememberMutableStateOf(value = Tab.ChatBot.finalTab)
 
@@ -88,16 +84,17 @@ class MainActivity : ComponentActivity() {
                     .background(Settings.backgroundColor)
             ) {
                 val messages =
-                    rememberMutableStateListOf((application as ChatBot).chatbotTree.question)
+                    rememberMutableStateListOf(app.chatbotTree.question)
                 val animated = rememberMutableStateListOf<Boolean>()
 
                 when (tab) {
                     Tab.ChatBotChat -> ChatBotComp.Chat(
                         messages = messages,
-                        animated = animated
+                        animated = animated,
+                        activitiesVM = activitiesVM
                     ) { tab = Tab.ChatBotResults }
 
-                    Tab.ChatBotResults -> ChatBotComp.Result()
+                    Tab.ChatBotResults -> ChatBotComp.Result(activitiesVM)
                     Tab.Settings -> SettingsComp()
 
                     Tab.AccountPassions -> AccountComp.PassionsList(

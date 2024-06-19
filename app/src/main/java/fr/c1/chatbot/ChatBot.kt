@@ -9,6 +9,8 @@ import fr.c1.chatbot.model.storeAllUsersInformation
 import fr.c1.chatbot.utils.TTS
 import android.app.Application
 
+private const val TAG = "ChatBot"
+
 class ChatBot : Application() {
     val activitiesRepository: ActivitiesRepository = ActivitiesRepository()
     val chatbotTree = Tree()
@@ -23,8 +25,6 @@ class ChatBot : Application() {
         val fileIS = resources.openRawResource(R.raw.flow_chart)
 
         chatbotTree.initTree(fileIS)
-        val activitiesRepository = ActivitiesRepository()
-        activitiesRepository.initAll(this)
 
         tts = TTS(this)
 

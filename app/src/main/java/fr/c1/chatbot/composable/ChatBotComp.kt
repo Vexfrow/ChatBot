@@ -6,8 +6,10 @@ import fr.c1.chatbot.model.TypeAction
 import fr.c1.chatbot.model.activity.Type.CULTURE
 import fr.c1.chatbot.model.activity.Type.SPORT
 import fr.c1.chatbot.utils.LocationHandler
+import fr.c1.chatbot.utils.Resource
 import fr.c1.chatbot.utils.application
 import fr.c1.chatbot.utils.rememberMutableStateOf
+import fr.c1.chatbot.viewModel.ActivitiesVM
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import androidx.compose.animation.core.Animatable
@@ -42,6 +44,7 @@ object ChatBotComp {
     fun Chat(
         messages: SnapshotStateList<String>,
         animated: SnapshotStateList<Boolean>,
+        activitiesVM: ActivitiesVM,
         modifier: Modifier = Modifier,
         onResult: () -> Unit
     ) {
@@ -50,7 +53,6 @@ object ChatBotComp {
         val crtScope = rememberCoroutineScope()
         val lazyListState = rememberLazyListState()
         val user = app.currentUser
-        val activitiesRepository = application.activitiesRepository
 
         val tts = application.tts
 
@@ -192,9 +194,8 @@ object ChatBotComp {
 
 //                TypeAction.ChoisirPassions -> TODO()
 
-                    TypeAction.PhysicalActivity -> user.addType(SPORT)
-
-                    TypeAction.CulturalActivity -> user.addType(CULTURE)
+                    TypeAction.PhysicalActivity -> activitiesVM.addType(SPORT)
+                    TypeAction.CulturalActivity -> activitiesVM.addType(CULTURE)
 
                     TypeAction.ChoosePassions -> {
                         val passions = ActivitiesRepository.passionList
@@ -212,16 +213,16 @@ object ChatBotComp {
                 when (sbState.action) {
                     TypeAction.DateInput -> {
                         addAnswer(sbState.answerId, "Je veux y aller le $value")
-                        activitiesRepository.date = value
+                        activitiesVM.date = value
                     }
 
                     TypeAction.DistanceInput -> {
                         addAnswer(sbState.answerId, "Je veux une distance de $value km")
-                        activitiesRepository.distance = value.toInt()
+                        activitiesVM.distance = value.toInt()
                     }
 
                     TypeAction.CityInput -> {
-                        user.addCity(value)
+                        activitiesVM.city = value
                         val text =
                             if ("AEIOUaeiou".indexOf(value.first()) != -1) "d'$value" else "de $value"
                         addAnswer(
@@ -247,9 +248,14 @@ object ChatBotComp {
     }
 
     @Composable
-    fun Result() {
+    fun Result(activitiesVM: ActivitiesVM) {
         val app = application
-        ActivitiesComp(list = app.activitiesRepository.getResults(app))
+        when (val result = activitiesVM.result) {
+            is Resource.Loading -> ToDo(name = "Loading...")
+            is Resource.Success -> ActivitiesComp(list = result.data!!)
+            is Resource.Failed -> ToDo(name = "Failed: ${result.error}")
+            else -> throw NotImplementedError()
+        }
     }
 }
 

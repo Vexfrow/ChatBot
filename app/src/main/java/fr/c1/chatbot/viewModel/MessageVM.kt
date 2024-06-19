@@ -8,11 +8,13 @@ import fr.c1.chatbot.model.messageManager.Tree
 import fr.c1.chatbot.model.messageManager.TypeAction
 import java.io.InputStream
 
-class MessageVM {
+class MessageVM(
+    context : Context
+) {
 
     private val chatBotTree = Tree()
     private var mapScript: Map<String, InputStream> = mapOf()
-    private val messageHistory : SnapshotStateList<Message> = TODO()
+    val messageHistory : SnapshotStateList<Message> = TODO()
 
 
     fun initMessageManager(context: Context) {

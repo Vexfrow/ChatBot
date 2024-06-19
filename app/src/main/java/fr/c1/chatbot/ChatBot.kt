@@ -16,7 +16,6 @@ private const val TAG = "ChatBot"
 
 class ChatBot : Application() {
     val activitiesRepository: ActivitiesRepository = ActivitiesRepository()
-    val messageManager = MessageVM()
     var userList = mutableListOf<User>()
     lateinit var currentUser: User
 
@@ -26,7 +25,6 @@ class ChatBot : Application() {
     override fun onCreate() {
         super.onCreate()
         Settings.init(this)
-        messageManager.initMessageManager(this)
 
         tts = TTS(this)
 

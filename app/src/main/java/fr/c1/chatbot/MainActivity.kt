@@ -32,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.preference.PreferenceManager
 import android.os.Bundle
+import fr.c1.chatbot.viewModel.MessageVM
 
 private const val TAG = "MainActivity"
 
@@ -54,6 +55,7 @@ class MainActivity : ComponentActivity() {
         // Request all needed permissions
         PermissionsContent(this)
         val activitiesVM = ActivitiesVM(app.currentUser, app.activitiesRepository)
+        val messageManager = MessageVM(this)
 
         UnitLaunchedEffect {
             activitiesVM.load(app)
@@ -84,7 +86,7 @@ class MainActivity : ComponentActivity() {
                     .background(Settings.backgroundColor)
             ) {
                 val messages =
-                    rememberMutableStateListOf(app.chatbotTree.question)
+                    rememberMutableStateListOf(messageManager.messageHistory)
                 val animated = rememberMutableStateListOf<Boolean>()
 
                 when (tab) {

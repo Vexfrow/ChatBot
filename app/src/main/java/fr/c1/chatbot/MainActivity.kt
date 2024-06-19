@@ -3,6 +3,7 @@ package fr.c1.chatbot
 import fr.c1.chatbot.composable.AccountComp
 import fr.c1.chatbot.composable.ChatBotComp
 import fr.c1.chatbot.composable.History
+import fr.c1.chatbot.composable.HomeLoading
 import fr.c1.chatbot.composable.OsmdroidMapView
 import fr.c1.chatbot.composable.PermissionsContent
 import fr.c1.chatbot.composable.SettingsComp
@@ -52,12 +53,18 @@ class MainActivity : ComponentActivity() {
     @Composable
     private operator fun invoke() = ChatBotTheme {
         // Request all needed permissions
-        PermissionsContent(this)
+        if (!app.inited) {
+            HomeLoading()
+            PermissionsContent(context = this)
+            return@ChatBotTheme
+        }
+
         val activitiesVM = ActivitiesVM(app.currentUser, app.activitiesRepository)
 
         UnitLaunchedEffect {
             activitiesVM.load(app)
         }
+
 
         var tab by rememberMutableStateOf(value = Tab.ChatBot.finalTab)
 

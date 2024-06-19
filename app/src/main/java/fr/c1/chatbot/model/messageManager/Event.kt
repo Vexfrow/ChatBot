@@ -1,4 +1,4 @@
-package fr.c1.chatbot.model
+package fr.c1.chatbot.model.messageManager
 
 import fr.c1.chatbot.utils.EventReminderWorker
 import fr.c1.chatbot.utils.toDate

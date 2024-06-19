@@ -2,7 +2,7 @@ package fr.c1.chatbot.composable
 
 import fr.c1.chatbot.model.ActivitiesRepository
 import fr.c1.chatbot.model.Settings
-import fr.c1.chatbot.model.TypeAction
+import fr.c1.chatbot.model.messageManager.TypeAction
 import fr.c1.chatbot.model.activity.Type.CULTURE
 import fr.c1.chatbot.model.activity.Type.SPORT
 import fr.c1.chatbot.utils.LocationHandler

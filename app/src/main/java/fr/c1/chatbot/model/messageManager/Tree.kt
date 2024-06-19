@@ -1,9 +1,11 @@
-package fr.c1.chatbot.model
+package fr.c1.chatbot.model.messageManager
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import android.util.Log
-import fr.c1.chatbot.R
+import fr.c1.chatbot.model.Settings
+import fr.c1.chatbot.model.User
+import fr.c1.chatbot.viewModel.MessageVM
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
@@ -48,8 +50,12 @@ class Tree {
     private var currentScript = "Rob"
     private var currentData: Data? = null
 
+    private var messageManager : MessageVM? = null
+
+
     //Take a json file in parameter
-    fun initTree(mapScript: Map<String, InputStream>) {
+    fun initTree(mvm : MessageVM, mapScript: Map<String, InputStream>) {
+        messageManager = mvm
         val gson = Gson()
         try {
             mapScript.entries
@@ -63,6 +69,7 @@ class Tree {
             questionsHistory.add(0)
             currentScript = Settings.botPersonality
             currentData = dataList[currentScript]
+            mvm.addMessage(Message(question, false))
         } catch (e: IOException) {
             e.printStackTrace()
         }
@@ -72,7 +79,7 @@ class Tree {
     //Return the question ask by the bot
     val question: String
         get() {
-            return currentData?.robot?.get(questionsHistory.last())?.text + "${currentScript}" ?: ""
+            return currentData?.robot?.get(questionsHistory.last())?.text ?: ""
             //return currentData?.robot?.get(questionsHistory.last())?.text ?: ""
         }
 
@@ -143,4 +150,5 @@ class Tree {
                 currentData?.robot!!.first { h -> h.id == questionsHistory.last() }.action
             return if (actionStr == null) TypeAction.None else enumValueOf<TypeAction>(actionStr)
         }
+
 }

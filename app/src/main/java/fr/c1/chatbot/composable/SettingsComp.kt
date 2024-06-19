@@ -371,8 +371,7 @@ fun SettingsComp() {
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     Text(
-                        text = "Quelle personnalité voulez-vous que le robot ait ?\n" +
-                                "Attention, vous devrait recommencer la conversation depuis le début en cas de changement de personnalité",
+                        text = "Quelle personnalité voulez-vous que le robot ait ?",
                         style = MaterialTheme.typography.titleLarge
                     )
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {

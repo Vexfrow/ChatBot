@@ -2,19 +2,21 @@ package fr.c1.chatbot
 
 import fr.c1.chatbot.model.ActivitiesRepository
 import fr.c1.chatbot.model.Settings
-import fr.c1.chatbot.model.Tree
+import fr.c1.chatbot.model.messageManager.Tree
 import fr.c1.chatbot.model.User
 import fr.c1.chatbot.model.loadAllUsersInformation
 import fr.c1.chatbot.model.storeAllUsersInformation
 import fr.c1.chatbot.utils.TTS
 import android.app.Application
+import fr.c1.chatbot.composable.Message
+import fr.c1.chatbot.viewModel.MessageVM
 import java.io.InputStream
 
 private const val TAG = "ChatBot"
 
 class ChatBot : Application() {
     val activitiesRepository: ActivitiesRepository = ActivitiesRepository()
-    val chatbotTree = Tree()
+    val messageManager = MessageVM()
     var userList = mutableListOf<User>()
     lateinit var currentUser: User
 
@@ -24,10 +26,7 @@ class ChatBot : Application() {
     override fun onCreate() {
         super.onCreate()
         Settings.init(this)
-
-        val mapScript : Map<String, InputStream> = mapOf("Rob" to resources.openRawResource(R.raw.rob), "Amy" to resources.openRawResource(R.raw.amy), "Georges" to resources.openRawResource(R.raw.georges))
-
-        chatbotTree.initTree(mapScript)
+        messageManager.initMessageManager(this)
 
         tts = TTS(this)
 

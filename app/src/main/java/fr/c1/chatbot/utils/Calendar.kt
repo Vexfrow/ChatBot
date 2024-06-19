@@ -1,10 +1,9 @@
 package fr.c1.chatbot.utils
 
-import fr.c1.chatbot.model.Event
+import fr.c1.chatbot.model.messageManager.Event
 import fr.c1.chatbot.utils.Calendar.PermissionsRequest.hasReadCalendarPermission
 import fr.c1.chatbot.utils.Calendar.PermissionsRequest.hasWriteCalendarPermission
 import android.Manifest
-import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri

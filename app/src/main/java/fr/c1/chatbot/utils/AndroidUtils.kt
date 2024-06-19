@@ -28,14 +28,13 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import android.app.Activity
-import android.app.NotificationManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.work.WorkManager
-import fr.c1.chatbot.model.Event
+import fr.c1.chatbot.model.messageManager.Event
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream

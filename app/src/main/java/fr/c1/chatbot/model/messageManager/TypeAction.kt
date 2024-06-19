@@ -1,4 +1,4 @@
-package fr.c1.chatbot.model
+package fr.c1.chatbot.model.messageManager
 
 enum class TypeAction {
     /** No specific action (searchbar disabled) */

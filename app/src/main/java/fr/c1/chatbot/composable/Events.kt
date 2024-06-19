@@ -1,6 +1,6 @@
 package fr.c1.chatbot.composable
 
-import fr.c1.chatbot.model.Event
+import fr.c1.chatbot.model.messageManager.Event
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn

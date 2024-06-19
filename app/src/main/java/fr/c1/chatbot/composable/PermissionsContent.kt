@@ -1,6 +1,6 @@
 package fr.c1.chatbot.composable
 
-import fr.c1.chatbot.model.Event
+import fr.c1.chatbot.model.messageManager.Event
 import fr.c1.chatbot.utils.Calendar
 import fr.c1.chatbot.utils.LocationHandler
 import fr.c1.chatbot.utils.hasPermission

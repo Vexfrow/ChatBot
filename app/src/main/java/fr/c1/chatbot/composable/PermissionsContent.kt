@@ -88,7 +88,6 @@ fun PermissionsContent(context: ComponentActivity) {
     LaunchedEffect(hasReadPermission && hasWritePermission) {
         if (hasReadPermission && hasWritePermission) {
             events = Calendar.fetchCalendarEvents(context)
-            Event.Notifs.addNotification(events, context)
         } else {
             Log.d(TAG, "PermissionsContent: Calendar permissions not granted")
         }

@@ -53,9 +53,10 @@ import androidx.compose.ui.window.Dialog
 import android.net.Uri
 import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.ui.unit.toSize
 import fr.c1.chatbot.ui.theme.pickDarkColorList
 import fr.c1.chatbot.ui.theme.pickLightColorList
+import fr.c1.chatbot.utils.disableNotification
+import fr.c1.chatbot.utils.enableNotification
 
 @Composable
 fun SettingsComp() {
@@ -190,21 +191,31 @@ fun SettingsComp() {
 
         Spacer(modifier = Modifier.height(50.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            Button(colors = ButtonDefaults.buttonColors(containerColor = with(Color) { if (Settings.tts) Green else Red }),
-                onClick = {
-                    Settings.tts = !Settings.tts
-                }) { Text(text = "Lecture Audio: ${if (Settings.tts) "ON" else "OFF"}") }
             Button(onClick = {
                 botColorPicker = false
                 fontColorPicker = true
                 isColorPickerOpen = true
-            }) { Text(text = "Changer la couleur du background") }
+            }) { Text(text = "Changer la couleur du fond d'écran") }
             Button(onClick = {
                 isBotNameOpen = true
             }) { Text(text = "Changer le nom du robot") }
             Button(onClick = {
                 isBotPersonalityChooserOpen = true
             }) { Text(text = "Changer la personnalité du robot") }
+        }
+
+        Spacer(modifier = Modifier.height(25.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            Button(colors = ButtonDefaults.buttonColors(containerColor = with(Color) { if (Settings.tts) Green else Red }),
+                onClick = {
+                    Settings.tts = !Settings.tts
+                }) { Text(text = "Lecture Audio : ${if (Settings.tts) "Activé" else "Désactivé"}") }
+            Button(colors = ButtonDefaults.buttonColors(containerColor = with(Color) { if (Settings.notifs) Green else Red }),
+                onClick = {
+                    Settings.notifs = !Settings.notifs
+                    if(Settings.notifs) enableNotification(context) else disableNotification(context)
+                }) { Text(text = "Notifications : ${if (Settings.notifs) "Activé" else "Désactivé"}") }
+
         }
     }
     if (isDialogOpen) {
@@ -248,7 +259,7 @@ fun SettingsComp() {
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    "Ajouter une Photo de la galerie",
+                                    "Ajouter une photo de la galerie",
                                     style = MaterialTheme.typography.bodySmall
                                 )
                             }
@@ -288,6 +299,7 @@ fun SettingsComp() {
                             Box(
                                 modifier = Modifier
                                     .background(color)
+                                    .border(4.dp, Color.Black)
                                     .size(100.dp)
                                     .clickable {
                                         when {
@@ -361,7 +373,23 @@ fun SettingsComp() {
                                 "Attention, vous devrait recommencer la conversation depuis le début en cas de changement de personnalité",
                         style = MaterialTheme.typography.titleLarge
                     )
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        val list : List<String> = listOf("Amy", "Georges", "Rob")
+                        items(list) { name ->
+                            Box(
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .clickable {
+                                        Settings.botName = name
+                                        Settings.botPersonality = name
 
+                                        isBotPersonalityChooserOpen = false
+                                    },
+                            ) {
+                                Text(text = name)
+                            }
+                        }
+                    }
                     Button(onClick = { isBotPersonalityChooserOpen = false }) {
                         Text("Valider")
                     }

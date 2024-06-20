@@ -50,7 +50,7 @@ class ActivitiesRepository {
      * Distance choosen by the user (in km)
      * Default value is 10 km
      */
-    var distance = 10 // 10 km par défaut
+    var distance = 10
 
     /**
      * Location of the terminal
@@ -88,12 +88,14 @@ class ActivitiesRepository {
         if (app.currentUser.passions.run { isNotEmpty() && any(Museum.passions::contains) })
             return emptyList()
 
-        // Lire le fichier csv
+        // Read CSV file
         val csvIS: InputStream =
             BufferedInputStream(app.resources.openRawResource(R.raw.liste_musees_france))
-        // Parser le fichier csv avec des ; comme séparateur (attention, ceux entre guillemets ne sont pas pris en compte)
+
+        // Parse CSV file
         val csvData = parseCsv(csvIS)
-        // Créer la liste des sites patrimoniaux
+
+        // Create the list of museums
         return csvData
             .drop(1)
             .map { csvRecord ->
@@ -137,13 +139,14 @@ class ActivitiesRepository {
         if (app.currentUser.passions.run { isNotEmpty() && any(Site.passions::contains) })
             return emptyList()
 
-        // Lire le fichier csv
+        // Read CSV file
         val csvIS: InputStream =
             BufferedInputStream(app.resources.openRawResource(R.raw.liste_sites_patrimoniaux))
 
+        // Parse CSV file
         val csvData = parseCsv(csvIS)
 
-        // Créer la liste des sites patrimoniaux
+        // Create the list of patrimonial sites
         return csvData
             .drop(1)
             .map { csvRecord ->
@@ -173,13 +176,14 @@ class ActivitiesRepository {
         if (app.currentUser.passions.run { isNotEmpty() && any(Exposition.passions::contains) })
             return emptyList()
 
-        // Lire le fichier csv
+        // Read CSV file
         val csvIS: InputStream =
             BufferedInputStream(app.resources.openRawResource(R.raw.liste_expositions))
 
+        // Parse CSV file
         val csvData = parseCsv(csvIS)
 
-        // Créer la liste des sites patrimoniaux
+        // Create the list of expositions
         return csvData
             .drop(1)
             .map { csvRecord ->
@@ -214,13 +218,14 @@ class ActivitiesRepository {
         if (app.currentUser.passions.run { isNotEmpty() && any(Content.passions::contains) })
             return emptyList()
 
-        // Lire le fichier csv
+        // Read CSV file
         val csvIS: InputStream =
             BufferedInputStream(app.resources.openRawResource(R.raw.liste_culture))
 
+        // Parse CSV file
         val csvData = parseCsv(csvIS)
 
-        // Créer la liste des sites patrimoniaux
+        // Create the list of cultural contents
         return csvData
             .drop(1)
             .map { csvRecord ->
@@ -257,17 +262,18 @@ class ActivitiesRepository {
         if (app.currentUser.passions.run { isNotEmpty() && any(Building.passions::contains) })
             return emptyList()
 
-        // Lire le fichier csv
-        // reference_de_la_notice;region;commune;adresse_forme_editoriale;coordonnees;titre_courant;departement_en_lettres
+        // Read CSV file
         val csvIS: InputStream =
             BufferedInputStream(app.resources.openRawResource(R.raw.liste_edifices_architecture_contemporaine))
 
+        // Parse CSV file
         val csvData = parseCsv(csvIS)
 
+        // Location of the building
         var latitude: Double
         var longitude: Double
 
-        // Créer la liste des sites patrimoniaux
+        // Create the list of buildings
         return csvData
             .drop(1)
             .map { csvRecord ->
@@ -305,13 +311,14 @@ class ActivitiesRepository {
         if (app.currentUser.passions.run { isNotEmpty() && any(Garden.passions::contains) })
             return emptyList()
 
-        // Lire le fichier csv
+        // Read CSV file
         val csvIS: InputStream =
             BufferedInputStream(app.resources.openRawResource(R.raw.liste_jardins_remarquables))
 
+        // Parse CSV file
         val csvData = parseCsv(csvIS)
 
-        // Créer la liste des jardins remarquables
+        // Create the list of remarkable gardens
         return csvData
             .drop(1)
             .map { csvRecord ->
@@ -346,16 +353,18 @@ class ActivitiesRepository {
         if (app.currentUser.passions.run { isNotEmpty() && any(Festival.passions::contains) })
             return emptyList()
 
-        // Lire le fichier csv
+        // Read CSV file
         val csvIS: InputStream =
             BufferedInputStream(app.resources.openRawResource(R.raw.liste_festivals))
 
+        // Parse CSV file
         val csvData = parseCsv(csvIS)
 
+        // Location of the festival
         var latitude: Double
         var longitude: Double
 
-        // Créer la liste des festivals
+        // Create the list of festivals
         return csvData
             .drop(1)
             .map { csvRecord ->
@@ -396,17 +405,19 @@ class ActivitiesRepository {
         if (app.currentUser.passions.run { isNotEmpty() && any(SportEquipment.passions::contains) })
             return emptyList()
 
-        // Lire le fichier csv
+        // Read CSV file
         // numinstallation;nominstallation;adresse;codepostal;commune;typequipement;latitude;longitude
         val csvIS: InputStream =
             BufferedInputStream(app.resources.openRawResource(R.raw.liste_equipements_sportifs))
 
+        // Parse CSV file
         val csvData = parseCsv(csvIS)
 
+        // Location of the sport equipment
         var latitude: Double
         var longitude: Double
 
-        // Créer la liste des équipements sportifs
+        // Create the list of sport equipments
         return csvData
             .drop(1)
             .map { csvRecord ->
@@ -446,17 +457,18 @@ class ActivitiesRepository {
         if (app.currentUser.passions.run { isNotEmpty() && any(Association.passions::contains) })
             return emptyList()
 
-        // Lire le fichier csv
-        // id;titre;adr1;adrs_codepostal;libcom;siteweb;latitude;longitude
+        // Read CSV file
         val csvIS: InputStream =
             BufferedInputStream(app.resources.openRawResource(R.raw.liste_asso))
 
+        // Parse CSV file
         val csvData = parseCsv(csvIS)
 
+        // Location of the association
         var latitude: Double
         var longitude: Double
 
-        // Créer la liste des associations
+        // Create the list of associations
         return csvData
             .drop(1)
             .map { csvRecord ->
@@ -884,80 +896,6 @@ class ActivitiesRepository {
         }
         return resultList
     }
-
-//    /**
-//     * Get the final result
-//     */
-//    fun getResults(app: ChatBot): List<AbstractActivity> {
-//        val user = app.currentUser
-//        // Différents critères :
-//        // Ville, date, distance, type, localisation, passions
-//        // Récupérer les activités correspondant aux critères
-//        var list: List<List<AbstractActivity>> = listOf(
-////            museumList,
-////            siteList,
-////            expositionList,
-////            contentList,
-////            buildingList,
-////            gardenList,
-////            festivalList,
-////            sportEquipmentList,
-////            associationList
-//        )
-////        list.forEach { Log.d(TAG, "getResultats: list = ${it.size}") }
-//        // Tri par Type
-////        user.types.forEach { type ->
-////            list = list.map {
-////                Log.d(TAG, "getResultats: list = ${it.subList(0, 1)}")
-////                selectByType(it, type)
-////            }
-////        }
-//        // Afficher le nombre d'éléments de chaque liste
-////        list.forEach { abstractActivityList ->
-////            if (abstractActivityList.isNotEmpty()) {
-////                Log.d(TAG, "getResultats: list = ${abstractActivityList.size}")
-////            }
-////        }
-////        list = list.filter(List<AbstractActivity>::isNotEmpty)
-//        // Tri par Ville
-////        user.cities.forEach { ville ->
-////            list = list.map {
-////                selectByCommune(it, ville)
-////            }
-////                .filter(List<AbstractActivity>::isNotEmpty)
-////        }
-//        // Tri par Date
-////        if (date != "null") {
-////            // TODO : date des activités
-////        }
-////        list = list.filter(List<AbstractActivity>::isNotEmpty)
-//        // Tri par Distance
-////        if (distance != 0) {
-////            // TODO : distance des activités à la localisation actuelle
-////        }
-////        list = list.filter(List<AbstractActivity>::isNotEmpty)
-//
-//        // Tri par Localisation
-//        //val localisation =
-//        //if (localisation.latitude != 0.0 && localisation.longitude != 0.0) {
-//        // TODO : activités dans un rayon de 5km par rapport à la localisation actuelle
-//        list = list
-//            //.map { selectionnerParDistance(it, 10, getLocation()) }
-//            .filter(List<AbstractActivity>::isNotEmpty)
-//        //}
-//        // Tri par Passion
-//        user.passions.forEach { passion ->
-//            list = list
-//                .map { selectByPassion(it, passion) }
-//                .filter(List<AbstractActivity>::isNotEmpty)
-//        }
-//
-//        list = list.map(::sortByName)
-//        // TODO : Trier la liste totale avant de retourner
-//        Log.d(TAG, "getResultats: Fin de la recherche")
-//        list.forEach { Log.d(TAG, "getResultats: list = ${it.size}") }
-//        return list.flatten()
-//    }
 
     /**
      * Select the activities by type

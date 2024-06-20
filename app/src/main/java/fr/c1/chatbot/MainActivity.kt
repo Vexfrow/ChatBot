@@ -112,7 +112,7 @@ class MainActivity : ComponentActivity() {
 
                     Tab.AccountData -> AccountComp.Data()
                     Tab.AccountPreferences -> AccountComp.Preferences()
-                    Tab.ChatBotMap -> OsmdroidMapView()
+                    Tab.ChatBotMap -> OsmdroidMapView(activitiesRepository)
                     Tab.Suggestion -> Suggestion()
                     Tab.History -> History()
 

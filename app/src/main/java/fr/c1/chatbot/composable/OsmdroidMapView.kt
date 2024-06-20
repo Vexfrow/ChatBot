@@ -29,7 +29,7 @@ import android.graphics.Color
 import android.graphics.Paint
 
 @Composable
-fun OsmdroidMapView(locationHandler: LocationHandler, ar: ActivitiesRepository) {
+fun OsmdroidMapView(ar: ActivitiesRepository) {
 
     AndroidView(
         modifier = Modifier.fillMaxSize(),
@@ -43,8 +43,8 @@ fun OsmdroidMapView(locationHandler: LocationHandler, ar: ActivitiesRepository) 
                     setZoom(15.0)
                     setCenter(
                         GeoPoint(
-                            locationHandler.currentLocation!!.latitude,
-                            locationHandler.currentLocation!!.longitude
+                            LocationHandler.currentLocation!!.latitude,
+                            LocationHandler.currentLocation!!.longitude
                         )
                     )
                 }

@@ -426,10 +426,15 @@ class ActivitiesRepository {
             val adresse = csvRecord[2]
             val codePostal = csvRecord[3]
             val url = csvRecord[5]
-            if (csvRecord[6].isEmpty())
-                Log.e(TAG, "getAssociations: $identifiant")
-            val latitude = csvRecord[6].toDouble()
-            val longitude = csvRecord[7].toDouble()
+
+            val latitude = csvRecord[6].let {
+                if (it.isNotEmpty()) it.toDouble()
+                else -1.0
+            }
+            val longitude = csvRecord[7].let {
+                if (it.isNotEmpty()) it.toDouble()
+                else -1.0
+            }
 
             addCity(commune)
 

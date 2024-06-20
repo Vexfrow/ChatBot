@@ -134,6 +134,11 @@ class ActivitiesVM(
             resultJob?.join()
 
             resultJob = launch {
+                if (result is Resource.None)
+                    result = Resource.Loading(emptyList())
+                else
+                    history.add(result.data!!)
+
                 jobs.forEachIndexed { i, job ->
                     val completed = job?.isCompleted ?: return@forEachIndexed
 
@@ -147,7 +152,7 @@ class ActivitiesVM(
                 }
 
                 result = Resource.Loading(
-                    if (result is Resource.Loading || result is Resource.Success) result.data!!
+                    if (result is Resource.Success) result.data!!
                     else all.map { it.data!! }.flatten()
                 )
 
@@ -160,7 +165,18 @@ class ActivitiesVM(
         }
     }
 
-    var date: String = ""
+    private val history: ArrayDeque<List<AbstractActivity>> = ArrayDeque()
+
+    fun undo() {
+        result = history.removeLastOrNull()?.let { Resource.Success(it) } ?: Resource.None()
+    }
+
+    fun reset() {
+        result = Resource.None()
+    }
+
+    var date: String
+        get() = throw Exception()
         set(value) {
             // ToDo: Filter by date
             updateResult {
@@ -169,7 +185,6 @@ class ActivitiesVM(
                 Log.i(TAG, "addType: Filter by date finished")
                 result
             }
-            field = value
         }
 
     fun addType(type: Type) {
@@ -183,7 +198,7 @@ class ActivitiesVM(
     }
 
     var city: String
-        get() = user.cities.joinToString()
+        get() = throw Exception()
         set(value) {
             updateResult {
                 Log.i(TAG, "addType: Filter by city started")
@@ -194,15 +209,14 @@ class ActivitiesVM(
             user.addCity(value)
         }
 
-    var distance: Int = 0
+    var distance: Int
+        get() = throw Exception()
         set(value) {
-            // ToDo: Filter from distance
             updateResult {
                 Log.i(TAG, "addType: Filter by distance started")
                 val result = repo.selectByDistance(it, value)
                 Log.i(TAG, "addType: Filter by distance finished")
                 result
             }
-            field = value
         }
 }

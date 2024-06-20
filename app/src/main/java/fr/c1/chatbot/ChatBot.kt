@@ -27,7 +27,7 @@ class ChatBot : Application() {
     lateinit var tts: TTS
         private set
 
-    suspend fun init() {
+    fun init() {
         if (inited)
             return
 

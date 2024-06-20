@@ -443,6 +443,8 @@ class ActivitiesRepository {
      * Initialise the associations list
      */
     fun getAssociations(app: ChatBot): List<Association> {
+        return emptyList()
+
         if (app.currentUser.passions.run { isNotEmpty() && any(Association.passions::contains) })
             return emptyList()
 

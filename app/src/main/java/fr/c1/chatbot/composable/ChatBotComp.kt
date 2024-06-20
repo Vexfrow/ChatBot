@@ -219,7 +219,10 @@ object ChatBotComp {
                         return@Proposals
                     }
 
-                    else -> {}
+                    TypeAction.Back -> activitiesVM.undo()
+                    TypeAction.Restart -> activitiesVM.reset()
+
+                    else -> Log.i(TAG, "Chat: Action not implemented: $act")
                 }
 
                 addAnswer(i)
@@ -247,7 +250,7 @@ object ChatBotComp {
                         )
                     }
 
-                    else -> {}
+                    else -> Log.i(TAG, "search: Action not implemented: ${sbState.action}")
                 }
                 Log.i(TAG, "Searched $value")
             }

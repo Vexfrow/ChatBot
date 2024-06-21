@@ -35,6 +35,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import android.location.Location
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
+import fr.c1.chatbot.model.messageManager.Message
+import fr.c1.chatbot.viewModel.MessageVM
 import kotlin.time.Duration.Companion.seconds
 
 private const val TAG = "ChatBotComp"
@@ -42,23 +45,22 @@ private const val TAG = "ChatBotComp"
 object ChatBotComp {
     @Composable
     fun Chat(
-        messages: SnapshotStateList<String>,
         animated: SnapshotStateList<Boolean>,
         activitiesVM: ActivitiesVM,
+        messageVM: MessageVM,
         modifier: Modifier = Modifier,
         onResult: () -> Unit
     ) {
         val app = application
-        val tree = app.chatbotTree
         val crtScope = rememberCoroutineScope()
         val lazyListState = rememberLazyListState()
         val user = app.currentUser
 
         val tts = application.tts
 
-        LaunchedEffect(key1 = messages.size) {
-            if (Settings.tts && messages.lastIndex % 2 == 0)
-                tts.speak(messages.last())
+        LaunchedEffect(key1 = messageVM.messages.size) {
+            if (Settings.tts && !messageVM.messages.last().isUser)
+                tts.speak(messageVM.messages.last().messageContent)
         }
 
         Column(
@@ -73,7 +75,7 @@ object ChatBotComp {
                     .background(Settings.backgroundColor),
                 state = lazyListState
             ) {
-                itemsIndexed(messages) { i, message ->
+                itemsIndexed(messageVM.messages) { i, message ->
                     val scale: Animatable<Float, AnimationVector1D> =
                         remember { Animatable(0f) }
 
@@ -87,34 +89,35 @@ object ChatBotComp {
                         }
                     }
 
-                    val isBot = i % 2 == 0
+                    val isUser = message.isUser
                     val mod = Modifier.graphicsLayer(
                         scaleX = scale.value,
                         scaleY = scale.value
                     )
 
-                    if (isBot)
-                        Message(
-                            modifier = if (i == messages.lastIndex) mod else Modifier,
-                            text = message
+                    if (!isUser)
+                        MessageComponent(
+                            modifier = if (i == messageVM.messages.lastIndex) mod else Modifier,
+                            text = message.messageContent,
+                            isUser = false
                         )
                     else
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .then(if (i == messages.lastIndex) mod else Modifier)
+                                .then(if (i == messageVM.messages.lastIndex) mod else Modifier)
                         ) {
-                            Message(
+                            MessageComponent(
                                 modifier = Modifier.align(Alignment.CenterEnd),
-                                text = message,
+                                text = message.messageContent,
                                 isUser = true
                             )
                         }
                 }
             }
 
-            var answers by rememberMutableStateOf(value = tree.answersId
-                .map { tree.getAnswerText(it) })
+            var answers by rememberMutableStateOf(value = messageVM.chatBotTree.answersId
+                .map { messageVM.chatBotTree.getAnswerText(it) })
 
             var sbState by rememberMutableStateOf(SearchBarState())
 
@@ -133,17 +136,16 @@ object ChatBotComp {
 
             fun addAnswer(id: Int, answer: String? = null) {
                 reset()
-                messages.add(answer ?: tree.getAnswerText(id))
-                tree.selectAnswer(id, user)
+                messageVM.selectAnswer(id, user)
 
                 crtScope.launch {
-                    lazyListState.animateScrollToItem(messages.size)
+                    lazyListState.animateScrollToItem(messageVM.messages.size)
                     delay(1.seconds)
-                    messages += tree.question
-                    answers = tree.answersId.map { i -> tree.getAnswerText(i) }
-                    lazyListState.animateScrollToItem(messages.size)
+                    messageVM.updateQuestion()
+                    answers = messageVM.chatBotTree.answersId.map { i -> messageVM.chatBotTree.getAnswerText(i) }
+                    lazyListState.animateScrollToItem(messageVM.messages.size)
 
-                    if (tree.botAction == TypeAction.ShowResults) {
+                    if (messageVM.chatBotTree.botAction == TypeAction.ShowResults) {
                         delay(5.seconds)
                         onResult()
                     }
@@ -156,8 +158,8 @@ object ChatBotComp {
             ) {
                 answers = emptyList()
                 Log.i(TAG, "Choose '$it'")
-                val i = tree.answersId.first { i -> tree.getAnswerText(i) == it }
-                when (val act = tree.getUserAction(i)) {
+                val i = messageVM.chatBotTree.answersId.first { i -> messageVM.chatBotTree.getAnswerText(i) == it }
+                when (val act = messageVM.chatBotTree.getUserAction(i)) {
                     TypeAction.DateInput -> {
                         enableSearchBar("Sélectionnez une date", act, i)
                         return@Proposals
@@ -192,7 +194,6 @@ object ChatBotComp {
                         return@Proposals
                     }
 
-//                TypeAction.ChoisirPassions -> TODO()
 
                     TypeAction.PhysicalActivity -> activitiesVM.addType(SPORT)
                     TypeAction.CulturalActivity -> activitiesVM.addType(CULTURE)

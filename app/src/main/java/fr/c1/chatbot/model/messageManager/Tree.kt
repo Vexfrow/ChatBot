@@ -13,9 +13,10 @@ import java.io.InputStreamReader
 import java.lang.reflect.Type
 
 private const val TAG = "Tree"
-const val retour = -1
-const val recommencerConversation = -2
-const val afficherFiltre = -3
+const val back = -1
+const val restartConversation = -2
+const val showFilter = -3
+//const val skip = -4
 
 class Robot {
     var id: Int = 0
@@ -50,11 +51,11 @@ class Tree {
     private var currentScript = "Rob"
     private var currentData: Data? = null
 
-    private var messageManager : MessageVM? = null
+    private var messageManager: MessageVM? = null
 
 
     //Take a json file in parameter
-    fun initTree(mvm : MessageVM, mapScript: Map<String, InputStream>) {
+    fun initTree(mvm: MessageVM, mapScript: Map<String, InputStream>) {
         messageManager = mvm
         val gson = Gson()
         try {
@@ -69,7 +70,7 @@ class Tree {
             questionsHistory.add(0)
             currentScript = Settings.botPersonality
             currentData = dataList[currentScript]
-            mvm.addMessage(Message(question, false))
+            messageManager!!.addMessage(Message(question, false))
         } catch (e: IOException) {
             e.printStackTrace()
         }
@@ -88,8 +89,8 @@ class Tree {
         get() {
             val currentAnswers = ArrayList<Int>()
             if (questionsHistory.size != 1) {
-                currentAnswers.add(recommencerConversation)
-                currentAnswers.add(retour)
+                currentAnswers.add(restartConversation)
+                currentAnswers.add(back)
             }
 
             for (r in currentData?.link!!) {
@@ -97,9 +98,22 @@ class Tree {
                     currentAnswers.add(r.answer)
                 }
             }
-            currentAnswers.add(afficherFiltre)
+            //currentAnswers.add(skip)
+            currentAnswers.add(showFilter)
             return currentAnswers
         }
+
+    fun restart() {
+        questionsHistory.removeAll(questionsHistory.toSet())
+        questionsHistory.add(0)
+        messageManager?.addMessage(Message(question, false))
+    }
+
+    fun back() {
+        if (questionsHistory.size > 1) {
+            questionsHistory.removeLast()
+        }
+    }
 
 
     //Update the current question and execute the action link to the answer chosen
@@ -110,28 +124,17 @@ class Tree {
             currentData = dataList[currentScript]
         }
 
-        if (idAnswer == retour && questionsHistory.size > 1) questionsHistory.removeLast()
-        else if (idAnswer == recommencerConversation) { //Clear previous messages ?
-            questionsHistory.removeAll(questionsHistory.toSet())
-            questionsHistory.add(0)
-        } else if (idAnswer == afficherFiltre) {
-            //val text = "Voici les filtres utilisés pour le moment : \nVilles : ${user.getVilles()}\nTypes d'activités : ${user.getTypes()}\n Distance préféré : ${getDistance()}\n Date voulue : ${app.getDate()}"
-            //val saveText = getQuestion()
+        for (r in currentData?.link!!) {
+            if (r.from == questionsHistory.last() && r.answer == idAnswer) {
+                questionsHistory.add(r.to)
+                // Print the answer's text
+                Log.d(TAG, "selectAnswer: ${getAnswerText(idAnswer)}")
+                // Fill the ActivitiesRepository according to the answer selected
+                Log.d(TAG, "selectAnswer: ${getUserAction(idAnswer)}")
 
-            Log.d(TAG, "selectAnswer: afficherFiltre")
-        } else {
-            for (r in currentData?.link!!) {
-                if (r.from == questionsHistory.last() && r.answer == idAnswer) {
-                    questionsHistory.add(r.to)
-                    // Print the answer's text
-                    Log.d(TAG, "selectAnswer: ${getAnswerText(idAnswer)}")
-                    // Fill the ActivitiesRepository according to the answer selected
-                    Log.d(TAG, "selectAnswer: ${getUserAction(idAnswer)}")
-
-                }
             }
-            Log.d(TAG, "selectAnswer: new type : ${user.types}")
         }
+        Log.d(TAG, "selectAnswer: new type : ${user.types}")
     }
 
 

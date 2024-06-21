@@ -56,6 +56,7 @@ class MainActivity : ComponentActivity() {
         PermissionsContent(this)
         val activitiesVM = ActivitiesVM(app.currentUser, app.activitiesRepository)
         val messageManager = MessageVM(this)
+        messageManager.initMessageManager()
 
         UnitLaunchedEffect {
             activitiesVM.load(app)
@@ -85,15 +86,13 @@ class MainActivity : ComponentActivity() {
                     .fillMaxSize()
                     .background(Settings.backgroundColor)
             ) {
-                val messages =
-                    rememberMutableStateListOf(messageManager.messageHistory)
                 val animated = rememberMutableStateListOf<Boolean>()
 
                 when (tab) {
                     Tab.ChatBotChat -> ChatBotComp.Chat(
-                        messages = messages,
                         animated = animated,
-                        activitiesVM = activitiesVM
+                        activitiesVM = activitiesVM,
+                        messageVM = messageManager
                     ) { tab = Tab.ChatBotResults }
 
                     Tab.ChatBotResults -> ChatBotComp.Result(activitiesVM)

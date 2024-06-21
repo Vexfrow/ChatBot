@@ -213,9 +213,8 @@ fun SettingsComp() {
             Button(colors = ButtonDefaults.buttonColors(containerColor = with(Color) { if (Settings.notifications) Green else Red }),
                 onClick = {
                     Settings.notifications = !Settings.notifications
-                    if (Settings.notifications) enableNotification(context) else disableNotification(
-                        context
-                    )
+                    if (Settings.notifications) enableNotification(context)
+                    else disableNotification(context)
                 }) { Text(text = "Notifications : ${if (Settings.notifications) "Activé" else "Désactivé"}") }
 
         }

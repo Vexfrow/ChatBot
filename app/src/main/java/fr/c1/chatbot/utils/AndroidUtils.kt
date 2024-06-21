@@ -3,7 +3,9 @@ package fr.c1.chatbot.utils
 import com.opencsv.CSVParserBuilder
 import com.opencsv.CSVReaderBuilder
 import fr.c1.chatbot.ChatBot
+import fr.c1.chatbot.model.Event
 import kotlinx.coroutines.CoroutineScope
+import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -27,6 +29,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.work.WorkManager
 import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
@@ -184,7 +187,7 @@ fun SharedPreferences.Editor.putUri(
 /**
  * Parse a CSV file
  */
-fun parseCsv(csvIS: InputStream): List<List<String>> {
+fun <T> parseCsv(csvIS: InputStream, onLine: (Array<String>) -> T): List<T> {
     val csvParser = CSVParserBuilder()
         .withSeparator(';')
         .withIgnoreQuotations(false)
@@ -195,8 +198,11 @@ fun parseCsv(csvIS: InputStream): List<List<String>> {
         .withCSVParser(csvParser)
         .build()
 
-    val allRows = csvReader.readAll()
-    return allRows.map { it.toList() }
+    return csvReader
+        .asSequence()
+        .drop(1)
+        .map(onLine)
+        .toList()
 }
 
 fun SharedPreferences.Editor.putColor(

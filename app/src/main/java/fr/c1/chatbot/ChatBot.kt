@@ -7,12 +7,18 @@ import fr.c1.chatbot.model.User
 import fr.c1.chatbot.model.loadAllUsersInformation
 import fr.c1.chatbot.model.storeAllUsersInformation
 import fr.c1.chatbot.utils.TTS
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import android.app.Application
 import java.io.InputStream
 
 private const val TAG = "ChatBot"
 
 class ChatBot : Application() {
+    var inited by mutableStateOf(value = false)
+        private set
+
     val activitiesRepository: ActivitiesRepository = ActivitiesRepository()
     val chatbotTree = Tree()
     var userList = mutableListOf<User>()
@@ -21,11 +27,17 @@ class ChatBot : Application() {
     lateinit var tts: TTS
         private set
 
-    override fun onCreate() {
-        super.onCreate()
+    fun init() {
+        if (inited)
+            return
+
         Settings.init(this)
 
-        val mapScript : Map<String, InputStream> = mapOf("Rob" to resources.openRawResource(R.raw.rob), "Amy" to resources.openRawResource(R.raw.amy), "Georges" to resources.openRawResource(R.raw.georges))
+        val mapScript: Map<String, InputStream> = mapOf(
+            "Rob" to resources.openRawResource(R.raw.rob),
+            "Amy" to resources.openRawResource(R.raw.amy),
+            "Georges" to resources.openRawResource(R.raw.georges)
+        )
 
         chatbotTree.initTree(mapScript)
 
@@ -39,5 +51,7 @@ class ChatBot : Application() {
             storeAllUsersInformation(this, userList)
         }
         currentUser = userList[0]
+
+        inited = true
     }
 }

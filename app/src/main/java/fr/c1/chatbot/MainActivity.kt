@@ -22,6 +22,7 @@ import org.osmdroid.config.Configuration
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -32,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.preference.PreferenceManager
 import android.os.Bundle
 
@@ -87,12 +89,14 @@ class MainActivity : ComponentActivity() {
 
         Scaffold(
             modifier = Modifier.fillMaxSize(),
+            containerColor = Color.Transparent,
             topBar = { TopBar(tabSelected = tab, onTabSelected = ::switchTab) },
             snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
         ) { innerPadding ->
             Box(
                 modifier = Modifier
                     .padding(innerPadding)
+                    .background(Settings.backgroundColor)
                     .fillMaxSize()
             ) {
                 val messages =

@@ -24,8 +24,6 @@ private val DarkColorScheme: ColorScheme
         secondary = PurpleGrey80,
         tertiary = Pink80,
         background = Settings.backgroundColor,
-        surface = Settings.backgroundColor,
-        onSurface = Settings.foregroundColor,
         onBackground = Settings.foregroundColor
     )
 
@@ -35,8 +33,6 @@ private val LightColorScheme: ColorScheme
         secondary = PurpleGrey40,
         tertiary = Pink40,
         background = Settings.backgroundColor,
-        surface = Settings.backgroundColor,
-        onSurface = Settings.foregroundColor,
         onBackground = Settings.foregroundColor
     )
 

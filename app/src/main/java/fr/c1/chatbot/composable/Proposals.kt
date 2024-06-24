@@ -16,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -84,8 +85,11 @@ private fun Proposal(
     proposal: String,
     onClick: () -> Unit
 ) = SuggestionChip(
-    modifier = Modifier,
     onClick = onClick,
+    colors = SuggestionChipDefaults.suggestionChipColors(
+        containerColor = MaterialTheme.colorScheme.surface,
+        labelColor = MaterialTheme.colorScheme.onSurface
+    ),
     label = {
         Text(
             modifier = Modifier.padding(vertical = 5.dp),

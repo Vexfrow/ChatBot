@@ -223,7 +223,6 @@ fun SettingsComp() {
         Dialog(onDismissRequest = { isDialogOpen = false }) {
             Surface(
                 shape = MaterialTheme.shapes.medium,
-                color = MaterialTheme.colorScheme.surface,
                 modifier = Modifier.padding(16.dp)
             ) {
                 Column(
@@ -278,7 +277,6 @@ fun SettingsComp() {
         Dialog(onDismissRequest = { isColorPickerOpen = false }) {
             Surface(
                 shape = MaterialTheme.shapes.medium,
-                color = MaterialTheme.colorScheme.surface,
                 modifier = Modifier.padding(16.dp)
             ) {
 
@@ -328,7 +326,6 @@ fun SettingsComp() {
         Dialog(onDismissRequest = { isBotNameOpen = false }) {
             Surface(
                 shape = MaterialTheme.shapes.medium,
-                color = MaterialTheme.colorScheme.surface,
                 modifier = Modifier.padding(16.dp)
             ) {
 
@@ -358,7 +355,6 @@ fun SettingsComp() {
         Dialog(onDismissRequest = { isBotPersonalityChooserOpen = false }) {
             Surface(
                 shape = MaterialTheme.shapes.medium,
-                color = MaterialTheme.colorScheme.surface,
                 modifier = Modifier.padding(16.dp)
             ) {
 

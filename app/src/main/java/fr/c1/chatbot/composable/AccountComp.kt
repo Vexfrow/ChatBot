@@ -28,8 +28,16 @@ import androidx.compose.ui.unit.dp
 import java.text.Collator
 import java.util.Locale
 
+/**
+ * Tag coucou
+ */
 private const val TAG = "AccountComp"
 
+/**
+ * Account comp Test
+ *
+ * @constructor Create empty Account comp
+ */
 object AccountComp {
     @Composable
     fun Data(modifier: Modifier = Modifier) = Box(

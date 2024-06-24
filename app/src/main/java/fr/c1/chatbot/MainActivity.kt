@@ -37,10 +37,17 @@ import androidx.compose.ui.Modifier
 import androidx.preference.PreferenceManager
 import android.os.Bundle
 
+/** MainActivity TAG */
 private const val TAG = "MainActivity"
 
+/**
+ * Main (and single) activity of the app
+ *
+ * @constructor Automatically called by android
+ */
 class MainActivity : ComponentActivity() {
     companion object {
+        /** Snackbar host state */
         val snackbarHostState = SnackbarHostState()
     }
 
@@ -57,6 +64,23 @@ class MainActivity : ComponentActivity() {
         setContent { this() }
     }
 
+    /**
+     * Main component of the application
+     *
+     * - If app not inited, show a loading page and ask the permissions
+     * - Otherwise, setup the [Scaffold] and manage the differents tabs
+     *
+     * @see HomeLoading First loading page
+     * @see PermissionsContent Ask the permissions
+     * @see ChatBotComp [Tab.ChatBot] components
+     * @see OsmdroidMapView [Tab.ChatBotMap] component
+     * @see SettingsComp [Tab.Settings] component
+     * @see AccountComp [Tab.Account] component
+     * @see Suggestion [Tab.Suggestion] component
+     * @see History [Tab.History] component
+     *
+     * @throws NotImplementedError Throwed if the tab doesn't correpond to any [Tab]
+     */
     @Composable
     private operator fun invoke() = ChatBotTheme {
         // Request all needed permissions

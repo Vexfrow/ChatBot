@@ -15,24 +15,35 @@ val Gray400 = Color(0xFFBDBDBD)
 val Gray600 = Color(0xFF757575)
 
 
+val CameoGreen = Color(0xFFAAC0AD)
+val BlueCuracao = Color(0xFF32BECC)
+val BlueGrotto = Color(0xFF5CACCE)
+val PersianViolet = Color(0xFF8A8DB5)
+val FrenchBlue = Color(0xFF0072B5)
+val Bluing = Color(0xFF333E83)
+val DarkDenim = Color(0xFF35465E)
+val PlumPerfect = Color(0xFF473442)
+
 val pickLightColorList = listOf(
-    Color.Blue,
     Color.White,
-    Color(140, 204, 219),
-    Color(136, 227, 160),
-    Color(198, 138, 209),
-    Color(222, 138, 177),
-    Color(217, 141, 126),
-    Color(214, 197, 111)
+    CameoGreen,
+    BlueCuracao,
+    BlueGrotto,
+    PersianViolet,
+    FrenchBlue,
+    Bluing,
+    DarkDenim,
+    PlumPerfect,
 )
 
 val pickDarkColorList = listOf(
-    Color.Blue,
     Color.Black,
-    Color(140, 204, 219),
-    Color(136, 227, 160),
-    Color(198, 138, 209),
-    Color(222, 138, 177),
-    Color(217, 141, 126),
-    Color(214, 197, 111)
+    CameoGreen,
+    BlueCuracao,
+    BlueGrotto,
+    PersianViolet,
+    FrenchBlue,
+    Bluing,
+    DarkDenim,
+    PlumPerfect,
 )

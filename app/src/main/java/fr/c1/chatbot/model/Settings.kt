@@ -37,7 +37,7 @@ private const val TAG = "Settings"
 object Settings {
     private object Default {
         val defaultBubbleSpeechColor = Color.Blue
-        val defaultBackgroundColor = Color(136, 227, 160)
+        val defaultBackgroundColor = Color.Unspecified
         const val defaultBotName = "Rob"
         const val defaultBotPersonality = "Rob"
     }

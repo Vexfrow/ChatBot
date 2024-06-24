@@ -41,20 +41,6 @@
       "text": "Dis-moi ton souci, je peux peut-être t'aider ?"
     },
     {
-      "id": 10,
-      "text": "Quelles notifications veux-tu désactiver ?"
-    },
-    {
-      "id": 11,
-      "text": "C'est fait ! j'ai désactivé les rappels.\n Tu pourras toujours les réactiver si tu veux, et compter sur ma mémoire d'éléphant",
-      "action": "DeleteRecalls"
-    },
-    {
-      "id": 12,
-      "text": "Je comprends je ne ferais plus de suggestions, si mes idées ne plaisent pas je me tais.",
-      "action": "DeleteSuggestions"
-    },
-    {
       "id": 13,
       "text": "**Indication pour voir l'historique de recherche**"
     },
@@ -135,18 +121,6 @@
     {
       "id": 1012,
       "text": "Bonjour, j'ai besoin d'aide"
-    },
-    {
-      "id": 1013,
-      "text": "Comment désactiver les notifications/alertes ?"
-    },
-    {
-      "id": 1014,
-      "text": "Les rappels"
-    },
-    {
-      "id": 1015,
-      "text": "Les suggestions"
     },
     {
       "id": 1016,
@@ -283,21 +257,6 @@
     },
     {
       "from": 9,
-      "to": 10,
-      "answer": 1013
-    },
-    {
-      "from": 10,
-      "to": 11,
-      "answer": 1014
-    },
-    {
-      "from": 10,
-      "to": 12,
-      "answer": 1015
-    },
-    {
-      "from": 10,
       "to": 17,
       "answer": 1021
     },

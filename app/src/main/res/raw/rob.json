@@ -41,20 +41,6 @@
       "text": "Comment puis-je vous aider ?"
     },
     {
-      "id": 10,
-      "text": "Quelles notifications voulez-vous désactiver ?"
-    },
-    {
-      "id": 11,
-      "text": "Les rappels ont été désactivées",
-      "action": "DeleteRecalls"
-    },
-    {
-      "id": 12,
-      "text": "Les suggestions ont été désactivées",
-      "action": "DeleteSuggestions"
-    },
-    {
       "id": 13,
       "text": "**Indication pour voir l'historique de recherche**"
     },
@@ -100,12 +86,12 @@
     {
       "id": 1004,
       "text": "Activité physique",
-        "action": "PhysicalActivity"
+      "action": "PhysicalActivity"
     },
     {
       "id": 1005,
       "text": "Activité Culturelle",
-        "action": "CulturalActivity"
+      "action": "CulturalActivity"
     },
     {
       "id": 1006,
@@ -135,18 +121,6 @@
     {
       "id": 1012,
       "text": "Bonjour, j'ai besoin d'aide"
-    },
-    {
-      "id": 1013,
-      "text": "Comment désactiver les notifications/alertes ?"
-    },
-    {
-      "id": 1014,
-      "text": "Les rappels"
-    },
-    {
-      "id": 1015,
-      "text": "Les suggestions"
     },
     {
       "id": 1016,
@@ -283,26 +257,6 @@
     },
     {
       "from": 9,
-      "to": 10,
-      "answer": 1013
-    },
-    {
-      "from": 10,
-      "to": 11,
-      "answer": 1014
-    },
-    {
-      "from": 10,
-      "to": 12,
-      "answer": 1015
-    },
-    {
-      "from": 10,
-      "to": 17,
-      "answer": 1021
-    },
-    {
-      "from": 9,
       "to": 13,
       "answer": 1016
     },
@@ -315,6 +269,11 @@
       "from": 9,
       "to": 15,
       "answer": 1018
+    },
+    {
+      "from": 9,
+      "to": 17,
+      "answer": 1021
     }
   ]
 }

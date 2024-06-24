@@ -81,7 +81,6 @@ class Tree {
     val question: String
         get() {
             return currentData?.robot?.get(questionsHistory.last())?.text ?: ""
-            //return currentData?.robot?.get(questionsHistory.last())?.text ?: ""
         }
 
     //Return the list of all the answers possible
@@ -106,7 +105,13 @@ class Tree {
     fun restart() {
         questionsHistory.removeAll(questionsHistory.toSet())
         questionsHistory.add(0)
-        messageManager?.addMessage(Message(question, false))
+        messageManager?.addMessage(
+            Message(
+                messageContent = question,
+                isUser = false,
+                isScript = true
+            )
+        )
     }
 
     fun back() {

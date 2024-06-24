@@ -8,7 +8,6 @@ import fr.c1.chatbot.model.Settings
 import fr.c1.chatbot.model.messageManager.TypeAction
 import fr.c1.chatbot.model.activity.Type.CULTURE
 import fr.c1.chatbot.model.activity.Type.SPORT
-import fr.c1.chatbot.utils.LocationHandler
 import fr.c1.chatbot.utils.Resource
 import fr.c1.chatbot.utils.application
 import fr.c1.chatbot.utils.rememberMutableStateOf
@@ -49,10 +48,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import android.location.Location
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
-import fr.c1.chatbot.model.messageManager.Message
 import fr.c1.chatbot.viewModel.MessageVM
 import kotlin.time.Duration.Companion.seconds
 
@@ -75,8 +71,7 @@ object ChatBotComp {
         val tts = application.tts
 
         LaunchedEffect(key1 = messageVM.messages.size) {
-            if (Settings.tts && !messageVM.messages.last().isUser)
-                tts.speak(messageVM.messages.last().messageContent)
+            if (Settings.tts && !messageVM.messages.last().isUser) tts.speak(messageVM.messages.last().messageContent)
         }
 
         Column(
@@ -92,56 +87,50 @@ object ChatBotComp {
                 state = lazyListState
             ) {
                 itemsIndexed(messageVM.messages) { i, message ->
-                    val scale: Animatable<Float, AnimationVector1D> =
-                        remember { Animatable(0f) }
+                    val scale: Animatable<Float, AnimationVector1D> = remember { Animatable(0f) }
 
                     LaunchedEffect(key1 = Unit) {
                         scale.animateTo(
-                            1f,
-                            animationSpec = tween(durationMillis = 500)
+                            1f, animationSpec = tween(durationMillis = 500)
                         ) {
-                            if (value == 1f)
-                                animated.add(true)
+                            if (value == 1f) animated.add(true)
                         }
                     }
 
                     val isUser = message.isUser
                     val mod = Modifier.graphicsLayer(
-                        scaleX = scale.value,
-                        scaleY = scale.value
+                        scaleX = scale.value, scaleY = scale.value
                     )
 
-                    if (!isUser)
+                    if (!isUser) MessageComponent(
+                        modifier = if (i == messageVM.messages.lastIndex) mod else Modifier,
+                        text = message.messageContent,
+                        isUser = false
+                    )
+                    else Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .then(if (i == messageVM.messages.lastIndex) mod else Modifier)
+                    ) {
                         MessageComponent(
-                            modifier = if (i == messageVM.messages.lastIndex) mod else Modifier,
+                            modifier = Modifier.align(Alignment.CenterEnd),
                             text = message.messageContent,
-                            isUser = false
+                            isUser = true
                         )
-                    else
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .then(if (i == messageVM.messages.lastIndex) mod else Modifier)
-                        ) {
-                            MessageComponent(
-                                modifier = Modifier.align(Alignment.CenterEnd),
-                                text = message.messageContent,
-                                isUser = true
-                            )
-                        }
+                    }
                 }
             }
 
-            var answers by rememberMutableStateOf(value = messageVM.chatBotTree.answersId
-                .map { messageVM.chatBotTree.getAnswerText(it) })
+            var answers by rememberMutableStateOf(value = messageVM.chatBotTree.answersId.map {
+                messageVM.chatBotTree.getAnswerText(
+                    it
+                )
+            })
 
             var sbState by rememberMutableStateOf(SearchBarState())
 
             fun enableSearchBar(
-                text: String,
-                act: TypeAction,
-                id: Int,
-                list: Collection<String>? = null
+                text: String, act: TypeAction, id: Int, list: Collection<String>? = null
             ) {
                 sbState = SearchBarState(true, text, act, id, list)
             }
@@ -150,15 +139,17 @@ object ChatBotComp {
                 sbState = SearchBarState()
             }
 
-            fun addAnswer(id: Int, answer: String? = null) {
+            fun addAnswer(id: Int, text: String? = null) {
                 reset()
-                messageVM.selectAnswer(id, user)
+                messageVM.selectAnswer(id, text, user, app, activitiesVM)
 
                 crtScope.launch {
                     lazyListState.animateScrollToItem(messageVM.messages.size)
                     delay(1.seconds)
-                    messageVM.updateQuestion()
-                    answers = messageVM.chatBotTree.answersId.map { i -> messageVM.chatBotTree.getAnswerText(i) }
+                    messageVM.updateQuestion(app, activitiesVM)
+                    answers = messageVM.chatBotTree.answersId.map { i ->
+                        messageVM.chatBotTree.getAnswerText(i)
+                    }
                     lazyListState.animateScrollToItem(messageVM.messages.size)
 
                     if (messageVM.chatBotTree.botAction == TypeAction.ShowResults) {
@@ -174,7 +165,9 @@ object ChatBotComp {
             ) {
                 answers = emptyList()
                 Log.i(TAG, "Choose '$it'")
-                val i = messageVM.chatBotTree.answersId.first { i -> messageVM.chatBotTree.getAnswerText(i) == it }
+                val i = messageVM.chatBotTree.answersId.first { i ->
+                    messageVM.chatBotTree.getAnswerText(i) == it
+                }
                 when (val act = messageVM.chatBotTree.getUserAction(i)) {
                     TypeAction.DateInput -> {
                         enableSearchBar("Sélectionnez une date", act, i)
@@ -188,10 +181,7 @@ object ChatBotComp {
 
                     TypeAction.CityInput -> {
                         enableSearchBar(
-                            "Saisissez une ville",
-                            act,
-                            i,
-                            app.activitiesRepository.cities
+                            "Saisissez une ville", act, i, app.activitiesRepository.cities
                         )
                         return@Proposals
                     }
@@ -199,20 +189,20 @@ object ChatBotComp {
                     TypeAction.ShowResults -> {
                         Log.i(TAG, "MyColumn: Affichage des résultats")
                     }
+//
+//                    TypeAction.Geolocate -> {
+//                        app.activitiesRepository.location =
+//                            LocationHandler.currentLocation ?: Location("")
+//                        addAnswer(
+//                            i,
+//                            "Je suis ici : ${LocationHandler.currentLocation!!.longitude}, ${LocationHandler.currentLocation?.latitude}"
+//                        )
+//                        return@Proposals
+//                    }
 
-                    TypeAction.Geolocate -> {
-                        app.activitiesRepository.location =
-                            LocationHandler.currentLocation ?: Location("")
-                        addAnswer(
-                            i,
-                            "Je suis ici : ${LocationHandler.currentLocation!!.longitude}, ${LocationHandler.currentLocation?.latitude}"
-                        )
-                        return@Proposals
-                    }
 
-
-                    TypeAction.PhysicalActivity -> activitiesVM.addType(SPORT)
-                    TypeAction.CulturalActivity -> activitiesVM.addType(CULTURE)
+//                    TypeAction.PhysicalActivity -> activitiesVM.addType(SPORT)
+//                    TypeAction.CulturalActivity -> activitiesVM.addType(CULTURE)
 
                     TypeAction.ChoosePassions -> {
                         val passions = ActivitiesRepository.passionList
@@ -220,8 +210,8 @@ object ChatBotComp {
                         return@Proposals
                     }
 
-                    TypeAction.Back -> activitiesVM.undo()
-                    TypeAction.Restart -> activitiesVM.reset()
+//                    TypeAction.Back -> activitiesVM.undo()
+//                    TypeAction.Restart -> activitiesVM.reset()
 
                     else -> Log.i(TAG, "Chat: Action not implemented: $act")
                 }
@@ -231,23 +221,30 @@ object ChatBotComp {
 
             fun search(value: String) {
                 when (sbState.action) {
+                    //If the action is to put a date
                     TypeAction.DateInput -> {
-                        addAnswer(sbState.answerId, "Je veux y aller le $value")
+                        addAnswer(sbState.answerId, "Je veux faire une activité le $value")
                         activitiesVM.date = value
                     }
 
+                    //If the action is to put a distance
                     TypeAction.DistanceInput -> {
-                        addAnswer(sbState.answerId, "Je veux une distance de $value km")
+                        addAnswer(
+                            sbState.answerId,
+                            "Je peux me déplacer sur une distance de $value kilomètres"
+                        )
                         activitiesVM.distance = value.toInt()
                     }
 
+
+                    //If the action is to put the name of a city
                     TypeAction.CityInput -> {
                         activitiesVM.city = value
-                        val text =
+                        val city =
                             if ("AEIOUaeiou".indexOf(value.first()) != -1) "d'$value" else "de $value"
                         addAnswer(
                             sbState.answerId,
-                            "Je souhaite faire mon activité dans les alentours de la ville $text"
+                            "Je souhaite faire mon activité dans les alentours de la ville $city"
                         )
                     }
 
@@ -274,8 +271,7 @@ object ChatBotComp {
     fun Result(activitiesVM: ActivitiesVM) {
         when (val result = activitiesVM.result) {
             is Resource.None -> Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+                modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
             ) {
                 MyText(
                     text = "Veuillez commencer à échanger avec le robot pour obtenir des résultats",
@@ -284,8 +280,7 @@ object ChatBotComp {
             }
 
             is Resource.Loading -> Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+                modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
             ) {
                 val ir = rememberInfiniteTransition()
                 val rot by ir.animateFloat(
@@ -299,35 +294,31 @@ object ChatBotComp {
                             0f at rotationDuration * 2 using LinearEasing
                             (-rotationRange) at rotationDuration * 3 using LinearEasing
                             0f at rotationDuration * 4 using LinearEasing
-                        },
-                        repeatMode = RepeatMode.Restart
-                    ), label = ""
+                        }, repeatMode = RepeatMode.Restart
+                    ),
+                    label = ""
                 )
 
                 CircularProgressIndicator(
                     modifier = Modifier.size(96.dp)
                 )
 
-                if (Settings.botImage == null)
-                    Icon(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .graphicsLayer(rotationZ = rot),
-                        imageVector = Settings.botIcon,
-                        contentDescription = "Robot loading"
-                    )
-                else
-                    Image(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .graphicsLayer(rotationZ = rot),
-                        painter = rememberAsyncImagePainter(
-                            ImageRequest.Builder(LocalContext.current)
-                                .data(Settings.botImage)
-                                .build()
-                        ),
-                        contentDescription = "Robot loading"
-                    )
+                if (Settings.botImage == null) Icon(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .graphicsLayer(rotationZ = rot),
+                    imageVector = Settings.botIcon,
+                    contentDescription = "Robot loading"
+                )
+                else Image(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .graphicsLayer(rotationZ = rot),
+                    painter = rememberAsyncImagePainter(
+                        ImageRequest.Builder(LocalContext.current).data(Settings.botImage).build()
+                    ),
+                    contentDescription = "Robot loading"
+                )
             }
 
             is Resource.Success -> ActivitiesComp(list = result.data!!)
@@ -346,10 +337,6 @@ private data class SearchBarState(
     val list: Collection<String>?
 ) {
     constructor() : this(
-        false,
-        "Choisissez une option ci-dessus",
-        TypeAction.None,
-        0,
-        null
+        false, "Choisissez une option ci-dessus", TypeAction.None, 0, null
     )
 }

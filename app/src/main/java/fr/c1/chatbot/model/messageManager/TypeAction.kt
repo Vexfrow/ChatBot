@@ -28,8 +28,6 @@ enum class TypeAction {
     /** Just a suggestion */
     CulturalActivity,
 
-    DeleteRecalls,
-
     DeleteSuggestions,
 
     DeletNotifs,

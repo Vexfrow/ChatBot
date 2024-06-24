@@ -10,7 +10,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import android.app.Application
-import fr.c1.chatbot.viewModel.MessageVM
 
 private const val TAG = "ChatBot"
 

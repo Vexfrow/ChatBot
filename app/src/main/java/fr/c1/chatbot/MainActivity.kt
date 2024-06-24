@@ -22,11 +22,12 @@ import org.osmdroid.config.Configuration
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -38,6 +39,10 @@ import fr.c1.chatbot.viewModel.MessageVM
 private const val TAG = "MainActivity"
 
 class MainActivity : ComponentActivity() {
+    companion object {
+        val snackbarHostState = SnackbarHostState()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -85,13 +90,13 @@ class MainActivity : ComponentActivity() {
 
         Scaffold(
             modifier = Modifier.fillMaxSize(),
-            topBar = { TopBar(tabSelected = tab, onTabSelected = ::switchTab) }
+            topBar = { TopBar(tabSelected = tab, onTabSelected = ::switchTab) },
+            snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
         ) { innerPadding ->
             Box(
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxSize()
-                    .background(Settings.backgroundColor)
             ) {
                 val animated = rememberMutableStateListOf<Boolean>()
 

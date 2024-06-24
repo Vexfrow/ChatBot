@@ -1,9 +1,20 @@
 package fr.c1.chatbot.model
 
-import android.content.Context
-import android.content.SharedPreferences
-import android.net.Uri
-import android.util.Log
+import fr.c1.chatbot.ui.icons.Bot
+import fr.c1.chatbot.ui.icons.Robot
+import fr.c1.chatbot.ui.icons.RobotFace
+import fr.c1.chatbot.utils.foreground
+import fr.c1.chatbot.utils.getBool
+import fr.c1.chatbot.utils.getColor
+import fr.c1.chatbot.utils.getNullable
+import fr.c1.chatbot.utils.getSp
+import fr.c1.chatbot.utils.getString
+import fr.c1.chatbot.utils.getUri
+import fr.c1.chatbot.utils.putBool
+import fr.c1.chatbot.utils.putColor
+import fr.c1.chatbot.utils.putSp
+import fr.c1.chatbot.utils.putString
+import fr.c1.chatbot.utils.saveImage
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.AccountCircle
@@ -16,29 +27,20 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import androidx.core.content.edit
-import fr.c1.chatbot.ui.icons.Bot
-import fr.c1.chatbot.ui.icons.Robot
-import fr.c1.chatbot.ui.icons.RobotFace
-import fr.c1.chatbot.utils.getBool
-import fr.c1.chatbot.utils.getColor
-import fr.c1.chatbot.utils.getNullable
-import fr.c1.chatbot.utils.getSp
-import fr.c1.chatbot.utils.getString
-import fr.c1.chatbot.utils.getUri
-import fr.c1.chatbot.utils.putBool
-import fr.c1.chatbot.utils.putColor
-import fr.c1.chatbot.utils.putSp
-import fr.c1.chatbot.utils.putString
-import fr.c1.chatbot.utils.saveImage
+import android.content.Context
+import android.content.SharedPreferences
+import android.net.Uri
+import android.util.Log
 
 private const val TAG = "Settings"
 
 object Settings {
-
-    private var defaultBubbleSpeechColor = Color.Blue
-    private var defaultBackgroundColor = Color(136, 227, 160)
-    private var defaultBotName = "Rob"
-    private var defaultBotPersonality = "Rob"
+    private object Default {
+        val defaultBubbleSpeechColor = Color.Blue
+        val defaultBackgroundColor = Color(136, 227, 160)
+        const val defaultBotName = "Rob"
+        const val defaultBotPersonality = "Rob"
+    }
 
     var textSize: TextUnit by mutableStateOf(40.sp)
     var tts: Boolean by mutableStateOf(false)
@@ -46,11 +48,14 @@ object Settings {
     var botImage: Uri? by mutableStateOf(null)
     var userIcon: ImageVector by mutableStateOf(Icons.Default.Person)
     var userImage: Uri? by mutableStateOf(null)
-    var bubbleSpeechBotColor: Color by mutableStateOf(defaultBubbleSpeechColor)
-    var bubbleSpeechUserColor: Color by mutableStateOf(defaultBubbleSpeechColor)
-    var backgroundColor: Color by mutableStateOf(defaultBackgroundColor)
-    var botName: String by mutableStateOf(defaultBotName)
-    var botPersonality: String by mutableStateOf(defaultBotPersonality)
+    var bubbleSpeechBotColor: Color by mutableStateOf(Default.defaultBubbleSpeechColor)
+    val textBotColor: Color get() = bubbleSpeechBotColor.foreground
+    var bubbleSpeechUserColor: Color by mutableStateOf(Default.defaultBubbleSpeechColor)
+    val textUserColor: Color get() = bubbleSpeechUserColor.foreground
+    var backgroundColor: Color by mutableStateOf(Default.defaultBackgroundColor)
+    val foregroundColor: Color get() = backgroundColor.foreground
+    var botName: String by mutableStateOf(Default.defaultBotName)
+    var botPersonality: String by mutableStateOf(Default.defaultBotPersonality)
     var notifications: Boolean by mutableStateOf(true)
 
     val iconsAvailable = with(Icons.Default) {
@@ -75,11 +80,11 @@ object Settings {
         botImage = null
         userIcon = Icons.Default.Person
         userImage = null
-        bubbleSpeechBotColor = defaultBubbleSpeechColor
-        bubbleSpeechUserColor = defaultBubbleSpeechColor
-        backgroundColor = defaultBackgroundColor
-        botName = defaultBotName
-        botPersonality = defaultBotPersonality
+        bubbleSpeechBotColor = Default.defaultBubbleSpeechColor
+        bubbleSpeechUserColor = Default.defaultBubbleSpeechColor
+        backgroundColor = Default.defaultBackgroundColor
+        botName = Default.defaultBotName
+        botPersonality = Default.defaultBotPersonality
         notifications = true
 
     }
@@ -95,11 +100,11 @@ object Settings {
         getNullable(
             ::userImage, ::getUri, "https://upload.wikimedia.org/wikipedia/commons/4/41/Noimage.svg"
         )
-        getColor(::bubbleSpeechBotColor, defaultBubbleSpeechColor.value.toInt())
-        getColor(::bubbleSpeechUserColor, defaultBubbleSpeechColor.value.toInt())
-        getColor(::backgroundColor, defaultBackgroundColor.value.toInt())
-        getString(::botName, defaultBotName)
-        getString(::botPersonality, defaultBotPersonality)
+        getColor(::bubbleSpeechBotColor, Default.defaultBubbleSpeechColor.value.toInt())
+        getColor(::bubbleSpeechUserColor, Default.defaultBubbleSpeechColor.value.toInt())
+        getColor(::backgroundColor, Default.defaultBackgroundColor.value.toInt())
+        getString(::botName, Default.defaultBotName)
+        getString(::botPersonality, Default.defaultBotPersonality)
         getBool(::notifications, false)
 
         Log.i(TAG, "Settings loaded: ${this@Settings}")

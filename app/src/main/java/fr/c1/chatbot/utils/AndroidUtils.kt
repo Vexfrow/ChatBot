@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.PathFillType
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.DefaultFillType
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.PathBuilder
@@ -27,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import androidx.core.net.toUri
 import androidx.work.WorkManager
 import android.app.Activity
@@ -220,3 +222,8 @@ fun enableNotification(context: Context) {
     val events = Calendar.fetchCalendarEvents(context)
     Event.Notifs.addNotification(events, context as ComponentActivity)
 }
+
+val Color.foreground: Color
+    get() =
+        if (ColorUtils.calculateLuminance(toArgb()) > .5) Color.Black
+        else Color.White

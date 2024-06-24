@@ -24,7 +24,6 @@ import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -77,13 +76,11 @@ object ChatBotComp {
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .background(Settings.backgroundColor)
         ) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
-                    .background(Settings.backgroundColor),
+                    .weight(1f),
                 state = lazyListState
             ) {
                 itemsIndexed(messageVM.messages) { i, message ->
@@ -160,7 +157,6 @@ object ChatBotComp {
             }
 
             Proposals(
-                modifier = Modifier.background(Settings.backgroundColor),
                 proposals = answers,
             ) {
                 answers = emptyList()
@@ -254,7 +250,6 @@ object ChatBotComp {
             }
 
             MySearchBar(
-                modifier = Modifier.background(Settings.backgroundColor),
                 placeholder = sbState.text,
                 enabled = sbState.enabled,
                 action = sbState.action,

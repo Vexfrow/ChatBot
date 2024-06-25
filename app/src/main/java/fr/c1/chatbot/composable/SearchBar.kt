@@ -71,6 +71,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import android.util.Log
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.ZoneOffset
 import java.util.Date
 import java.util.Locale
 
@@ -195,8 +197,12 @@ fun MySearchBar(
 
     val dpState = rememberDatePickerState(
         selectableDates = object : SelectableDates {
-            override fun isSelectableDate(utcTimeMillis: Long): Boolean =
-                utcTimeMillis > System.currentTimeMillis()
+            private val today = LocalDate.now()
+            private val todayEpoch =
+                LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli()
+
+            override fun isSelectableDate(utcTimeMillis: Long) = utcTimeMillis >= todayEpoch
+            override fun isSelectableYear(year: Int) = year >= today.year
         }
     )
     var currentMillis by remember { mutableLongStateOf(-1L) }
@@ -314,7 +320,7 @@ fun MyDatePicker(
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(
-                enabled = state.selectedDateMillis != null && state.selectedDateMillis!! > System.currentTimeMillis(),
+                enabled = state.selectedDateMillis != null,
                 onClick = onConfirm
             ) { Text(text = "OK") }
         }

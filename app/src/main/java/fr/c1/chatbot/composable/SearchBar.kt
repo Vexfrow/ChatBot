@@ -308,7 +308,7 @@ fun MyDatePicker(
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(
-                enabled = state.selectedDateMillis != null,
+                enabled = state.selectedDateMillis != null && state.selectedDateMillis!! > System.currentTimeMillis(),
                 onClick = onConfirm
             ) { Text(text = "OK") }
         }

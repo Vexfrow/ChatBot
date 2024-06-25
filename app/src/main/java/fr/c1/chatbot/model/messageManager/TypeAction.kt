@@ -17,7 +17,7 @@ enum class TypeAction {
     ShowResults,
 
     /** ToDo: city ? */
-    Geolocate,
+    Geolocation,
 
     /** Dropdown with multiple choices */
     ChoosePassions,
@@ -35,6 +35,9 @@ enum class TypeAction {
     LittleSportif,
 
     InexistantSportif,
+    Meeting,
+    NoMeeting,
+    PerhapsMeeting,
 
     /** Just a suggestion */
     Back,

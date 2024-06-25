@@ -104,5 +104,5 @@ private fun Proposal(
 private fun Prev() = ChatBotPrev {
     Proposals(
         proposals = (0..20).map { "proposal $it" }
-    ) { Log.i(TAG, "Prev: $it choosed") }
+    ) { Log.i(TAG, "Prev: $it chosen") }
 }

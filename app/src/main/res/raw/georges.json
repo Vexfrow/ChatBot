@@ -14,7 +14,7 @@
     },
     {
       "id": 3,
-      "text": "Pas trop loin j'imagine, combien de km au max ?"
+      "text": "Pas trop loin j'imagine, tu peux te déplacer sur combien de kilomètres au max ?"
     },
     {
       "id": 4,
@@ -22,7 +22,7 @@
     },
     {
       "id": 5,
-      "text": "Plutot physique ou le sport c'est pas pour toi ?"
+      "text": "Plutôt physique ou le sport c'est pas pour toi ?"
     },
     {
       "id": 6,
@@ -42,7 +42,7 @@
     },
     {
       "id": 10,
-      "text": "**Indication pour voir l'historique de recherche**"
+      "text": "Vous pouvez accéder à votre historique en cliquant sur l'onglet \"Historique\""
     },
     {
       "id": 11,
@@ -60,7 +60,7 @@
     {
       "id": 14,
       "text": "Hop là, j'ai fait un peu de ménage ! Un peu d'exercice ça fait pas de mal.",
-      "action": "DeletNotifs"
+      "action": "DeleteNotifs"
     }
   ],
   "humain": [
@@ -96,7 +96,7 @@
     {
       "id": 1006,
       "text": "Utiliser la géolocalisation",
-      "action": "Geolocate"
+      "action": "Geolocation"
     },
     {
       "id": 1007,
@@ -104,15 +104,18 @@
     },
     {
       "id": 1008,
-      "text": "Oui"
+      "text": "Oui",
+      "action": "Meeting"
     },
     {
       "id": 1009,
-      "text": "Non"
+      "text": "Non",
+      "action": "NoMeeting"
     },
     {
       "id": 1010,
-      "text": "N'importe"
+      "text": "N'importe",
+      "action": "PerhapsMeeting"
     },
     {
       "id": 1011,

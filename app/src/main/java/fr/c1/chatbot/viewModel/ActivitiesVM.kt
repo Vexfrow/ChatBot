@@ -61,8 +61,8 @@ class ActivitiesVM(
             associations,
         )
 
-    val jobs: Array<Job?> = Array(all.size) { null }
-    var resultJob: Job? = null
+    private val jobs: Array<Job?> = Array(all.size) { null }
+    private var resultJob: Job? = null
 
     private fun CoroutineContext.launch(
         start: CoroutineStart = CoroutineStart.DEFAULT,
@@ -175,8 +175,8 @@ class ActivitiesVM(
         result = Resource.None()
     }
 
-    var date: String
-        get() = throw Exception()
+    var date: String = ""
+        get() = field
         set(value) {
             // ToDo: Filter by date
             updateResult {
@@ -185,6 +185,7 @@ class ActivitiesVM(
                 Log.i(TAG, "addType: Filter by date finished")
                 result
             }
+            field = value
         }
 
     fun addType(type: Type) {
@@ -209,8 +210,8 @@ class ActivitiesVM(
             user.addCity(value)
         }
 
-    var distance: Int
-        get() = throw Exception()
+    var distance: Int = -1
+        get() = field
         set(value) {
             updateResult {
                 Log.i(TAG, "addType: Filter by distance started")
@@ -218,5 +219,6 @@ class ActivitiesVM(
                 Log.i(TAG, "addType: Filter by distance finished")
                 result
             }
+            field = value
         }
 }

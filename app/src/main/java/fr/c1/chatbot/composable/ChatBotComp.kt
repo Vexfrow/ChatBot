@@ -68,7 +68,7 @@ object ChatBotComp {
         val tts = application.tts
 
         LaunchedEffect(key1 = messageVM.messages.size) {
-            if (Settings.tts && !messageVM.messages.last().isUser) tts.speak(messageVM.messages.last().messageContent)
+            if (Settings.tts && messageVM.messages.isNotEmpty() && !messageVM.messages.last().isUser) tts.speak(messageVM.messages.last().messageContent)
         }
 
         Column(
@@ -229,8 +229,8 @@ object ChatBotComp {
         }
     }
 
-    const val rotationRange = 45f
-    const val rotationDuration = 500
+    private const val rotationRange = 45f
+    private const val rotationDuration = 500
 
     @Composable
     fun Result(activitiesVM: ActivitiesVM) {

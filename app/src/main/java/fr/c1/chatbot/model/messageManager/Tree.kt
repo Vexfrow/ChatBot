@@ -69,7 +69,6 @@ class Tree {
             questionsHistory.add(0)
             currentScript = Settings.botPersonality
             currentData = dataList[currentScript]
-            messageManager!!.addMessage(Message(question, false))
         } catch (e: IOException) {
             e.printStackTrace()
         }

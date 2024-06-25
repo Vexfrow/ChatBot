@@ -39,11 +39,12 @@ class MessageVM(
     //Initialise le messageManager (mm)
     fun initMessageManager() {
         chatBotTree.initTree(this, mapScript)
-        chatBotTree.answersId.map { optionsAvailable.add(chatBotTree.getAnswerText(it))}
+        chatBotTree.answersId.map { optionsAvailable.add(chatBotTree.getAnswerText(it)) }
+        addMessage(Message(chatBotTree.question, isUser = false, isScript = true, showing = true))
     }
 
     //Rajoute un message à la liste des message
-    fun addMessage(message: Message) {
+    private fun addMessage(message: Message) {
         messageHistory.add(message)
     }
 
@@ -58,7 +59,7 @@ class MessageVM(
             TypeAction.DistanceInput -> {}
             TypeAction.CityInput -> {}
             TypeAction.ShowResults -> {}
-            TypeAction.Geolocate -> {
+            TypeAction.Geolocation -> {
                 messageHistory.removeLast()
                 app.activitiesRepository.location = LocationHandler.currentLocation ?: Location("")
                 addMessage(
@@ -107,13 +108,16 @@ class MessageVM(
             }
 
             TypeAction.Back -> {
+                messageHistory.removeLast()
                 chatBotTree.back()
-                var i = messageHistory.size - 1
-                while (i > 0 && !messageHistory[i].isScript) {
-                    messageHistory.removeAt(i)
-                    i--
+                if (messageHistory.size > 0)
+                    messageHistory.removeLast()
+
+                while (messageHistory.isNotEmpty() && (messageHistory.last().isUser || !messageHistory.last().isScript)) {
+                    messageHistory.removeLast()
                 }
-                if (i > 0)
+
+                if (messageHistory.size > 0)
                     messageHistory.removeLast()
 
                 activitiesVM.undo()
@@ -123,6 +127,7 @@ class MessageVM(
                 messageHistory.removeAll(messageHistory.toSet())
                 chatBotTree.restart()
                 activitiesVM.reset()
+
             }
 
             TypeAction.ShowFilters -> {
@@ -135,19 +140,41 @@ class MessageVM(
                         showing = true
                     )
                 )
-
-
-                messageHistory.add(
+                addMessage(
                     Message(
-                        messageContent = "Voici la liste des filtres utilisés : \n" +
-                                if (app.currentUser.cities.isNotEmpty()) "Villes : ${app.currentUser.cities}\n" else {
-                                    "Villes : Aucunes sélectionnées\n\n"
-                                } +
-                                if (app.currentUser.types.isNotEmpty()) "Types d'activités : ${app.currentUser.types}\n" else {
-                                    "Types d'activités : Aucuns sélectionnés\n\n"
-                                } +
-                                "Distance : Corenthin ne veut pas me donner la distance\n\n" +
-                                "Dates: Corenthin est un petit con qui ne veut pas faire de date avec moi ><\n\n",
+                        messageContent = "Voici la liste des filtres utilisés",
+                        isUser = false,
+                        isScript = false,
+                        showing = true
+                    )
+                )
+                addMessage(
+                    Message(
+                        messageContent = if (app.currentUser.cities.isNotEmpty()) "Villes : ${app.currentUser.cities}" else "Villes : Aucunes villes sélectionnées",
+                        isUser = false,
+                        isScript = false,
+                        showing = true
+                    )
+                )
+                addMessage(
+                    Message(
+                        messageContent = if (app.currentUser.types.isNotEmpty()) "Types d'activités : ${app.currentUser.types}" else "Types d'activités : Aucuns type d'activités sélectionnés",
+                        isUser = false,
+                        isScript = false,
+                        showing = true
+                    )
+                )
+                addMessage(
+                    Message(
+                        messageContent = if (activitiesVM.distance > -1) "Distance : ${activitiesVM.distance}" else "Distance : Aucune distance sélectionnée",
+                        isUser = false,
+                        isScript = false,
+                        showing = true
+                    )
+                )
+                addMessage(
+                    Message(
+                        messageContent = if (activitiesVM.date.isNotEmpty()) "Date : ${activitiesVM.date}" else "Date : Aucune date sélectionnée",
                         isUser = false,
                         isScript = false,
                         showing = true
@@ -192,6 +219,42 @@ class MessageVM(
                     )
                 )
             }
+
+            TypeAction.Meeting -> {
+                messageHistory.removeLast()
+                messageHistory.add(
+                    Message(
+                        "Je souhaite rencontrer d'autres personnes",
+                        isUser = true,
+                        isScript = false,
+                        showing = true
+                    )
+                )
+            }
+
+            TypeAction.NoMeeting -> {
+                messageHistory.removeLast()
+                messageHistory.add(
+                    Message(
+                        "Je ne souhaite pas rencontrer d'autres personnes",
+                        isUser = true,
+                        isScript = false,
+                        showing = true
+                    )
+                )
+            }
+
+            TypeAction.PerhapsMeeting -> {
+                messageHistory.removeLast()
+                messageHistory.add(
+                    Message(
+                        "Cela m'importe peu",
+                        isUser = true,
+                        isScript = false,
+                        showing = true
+                    )
+                )
+            }
         }
     }
 
@@ -228,6 +291,6 @@ class MessageVM(
         )
         manageActions(chatBotTree.botAction, app, activitiesVM)
 
-        chatBotTree.answersId.map { optionsAvailable.add(chatBotTree.getAnswerText(it))}
+        chatBotTree.answersId.map { optionsAvailable.add(chatBotTree.getAnswerText(it)) }
     }
 }

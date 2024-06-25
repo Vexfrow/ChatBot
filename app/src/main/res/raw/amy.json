@@ -42,7 +42,7 @@
     },
     {
       "id": 10,
-      "text": "**Indication pour voir l'historique de recherche**"
+      "text": "Vous pouvez accéder à votre historique en cliquant sur l'onglet \"Historique\""
     },
     {
       "id": 11,
@@ -60,7 +60,7 @@
     {
       "id": 14,
       "text": "Très bien, j'ai fait un peu de ménage dans vos notifications",
-      "action": "DeletNotifs"
+      "action": "DeleteNotifs"
     }
   ],
   "humain": [
@@ -96,7 +96,7 @@
     {
       "id": 1006,
       "text": "Utiliser la géolocalisation",
-      "action": "Geolocate"
+      "action": "Geolocation"
     },
     {
       "id": 1007,
@@ -104,15 +104,18 @@
     },
     {
       "id": 1008,
-      "text": "Oui"
+      "text": "Oui",
+      "action": "Meeting"
     },
     {
       "id": 1009,
-      "text": "Non"
+      "text": "Non",
+      "action": "NoMeeting"
     },
     {
       "id": 1010,
-      "text": "N'importe"
+      "text": "N'importe",
+      "action": "PerhapsMeeting"
     },
     {
       "id": 1011,

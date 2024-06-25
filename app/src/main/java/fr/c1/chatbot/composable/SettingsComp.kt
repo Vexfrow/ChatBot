@@ -5,12 +5,17 @@ import coil.request.ImageRequest
 import fr.c1.chatbot.model.Settings
 import fr.c1.chatbot.ui.shape.SpeechBubbleShape
 import fr.c1.chatbot.ui.theme.ChatBotPrev
+import fr.c1.chatbot.ui.theme.getColorList
+import fr.c1.chatbot.utils.disableNotification
+import fr.c1.chatbot.utils.enableNotification
 import fr.c1.chatbot.utils.rememberMutableStateOf
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -51,12 +56,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import android.net.Uri
-import androidx.compose.foundation.border
-import androidx.compose.foundation.isSystemInDarkTheme
-import fr.c1.chatbot.ui.theme.pickDarkColorList
-import fr.c1.chatbot.ui.theme.pickLightColorList
-import fr.c1.chatbot.utils.disableNotification
-import fr.c1.chatbot.utils.enableNotification
 
 @Composable
 fun SettingsComp() {
@@ -87,10 +86,6 @@ fun SettingsComp() {
         }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .background(Settings.backgroundColor),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -210,11 +205,13 @@ fun SettingsComp() {
                 onClick = {
                     Settings.tts = !Settings.tts
                 }) { Text(text = "Lecture Audio : ${if (Settings.tts) "Activé" else "Désactivé"}") }
-            Button(colors = ButtonDefaults.buttonColors(containerColor = with(Color) { if (Settings.notifs) Green else Red }),
+            Button(colors = ButtonDefaults.buttonColors(containerColor = with(Color) { if (Settings.notifications) Green else Red }),
                 onClick = {
-                    Settings.notifs = !Settings.notifs
-                    if(Settings.notifs) enableNotification(context) else disableNotification(context)
-                }) { Text(text = "Notifications : ${if (Settings.notifs) "Activé" else "Désactivé"}") }
+                    Settings.notifications = !Settings.notifications
+                    if (Settings.notifications) enableNotification(context) else disableNotification(
+                        context
+                    )
+                }) { Text(text = "Notifications : ${if (Settings.notifications) "Activé" else "Désactivé"}") }
 
         }
     }
@@ -222,7 +219,6 @@ fun SettingsComp() {
         Dialog(onDismissRequest = { isDialogOpen = false }) {
             Surface(
                 shape = MaterialTheme.shapes.medium,
-                color = MaterialTheme.colorScheme.surface,
                 modifier = Modifier.padding(16.dp)
             ) {
                 Column(
@@ -277,7 +273,6 @@ fun SettingsComp() {
         Dialog(onDismissRequest = { isColorPickerOpen = false }) {
             Surface(
                 shape = MaterialTheme.shapes.medium,
-                color = MaterialTheme.colorScheme.surface,
                 modifier = Modifier.padding(16.dp)
             ) {
 
@@ -292,8 +287,13 @@ fun SettingsComp() {
                         text = "Veuillez choisir une couleur",
                         style = MaterialTheme.typography.titleLarge
                     )
-                    val colorList =
-                        if (isSystemInDarkTheme()) pickDarkColorList else pickLightColorList
+
+                    val colorList = when {
+                        botColorPicker -> getColorList(!isSystemInDarkTheme())
+                        fontColorPicker -> getColorList(isSystemInDarkTheme())
+                        else -> getColorList(!isSystemInDarkTheme())
+                    }
+
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                         items(colorList) { color ->
                             Box(
@@ -327,7 +327,6 @@ fun SettingsComp() {
         Dialog(onDismissRequest = { isBotNameOpen = false }) {
             Surface(
                 shape = MaterialTheme.shapes.medium,
-                color = MaterialTheme.colorScheme.surface,
                 modifier = Modifier.padding(16.dp)
             ) {
 
@@ -357,7 +356,6 @@ fun SettingsComp() {
         Dialog(onDismissRequest = { isBotPersonalityChooserOpen = false }) {
             Surface(
                 shape = MaterialTheme.shapes.medium,
-                color = MaterialTheme.colorScheme.surface,
                 modifier = Modifier.padding(16.dp)
             ) {
 
@@ -374,7 +372,7 @@ fun SettingsComp() {
                         style = MaterialTheme.typography.titleLarge
                     )
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                        val list : List<String> = listOf("Amy", "Georges", "Rob")
+                        val list: List<String> = listOf("Amy", "Georges", "Rob")
                         items(list) { name ->
                             Box(
                                 modifier = Modifier

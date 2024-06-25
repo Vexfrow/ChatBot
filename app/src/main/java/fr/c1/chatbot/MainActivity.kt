@@ -26,7 +26,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -34,9 +37,20 @@ import androidx.compose.ui.Modifier
 import androidx.preference.PreferenceManager
 import android.os.Bundle
 
+/** MainActivity TAG */
 private const val TAG = "MainActivity"
 
+/**
+ * Main (and single) activity of the app
+ *
+ * @constructor Automatically called by android
+ */
 class MainActivity : ComponentActivity() {
+    companion object {
+        /** Snackbar host state */
+        val snackbarHostState = SnackbarHostState()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -50,6 +64,23 @@ class MainActivity : ComponentActivity() {
         setContent { this() }
     }
 
+    /**
+     * Main component of the application
+     *
+     * - If app not inited, show a loading page and ask the permissions
+     * - Otherwise, setup the [Scaffold] and manage the differents tabs
+     *
+     * @see HomeLoading First loading page
+     * @see PermissionsContent Ask the permissions
+     * @see ChatBotComp [Tab.ChatBot] components
+     * @see OsmdroidMapView [Tab.ChatBotMap] component
+     * @see SettingsComp [Tab.Settings] component
+     * @see AccountComp [Tab.Account] component
+     * @see Suggestion [Tab.Suggestion] component
+     * @see History [Tab.History] component
+     *
+     * @throws NotImplementedError Throwed if the tab doesn't correpond to any [Tab]
+     */
     @Composable
     private operator fun invoke() = ChatBotTheme {
         // Request all needed permissions
@@ -82,13 +113,15 @@ class MainActivity : ComponentActivity() {
 
         Scaffold(
             modifier = Modifier.fillMaxSize(),
-            topBar = { TopBar(tabSelected = tab, onTabSelected = ::switchTab) }
+            containerColor = MaterialTheme.colorScheme.surface,
+            topBar = { TopBar(tabSelected = tab, onTabSelected = ::switchTab) },
+            snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
         ) { innerPadding ->
             Box(
                 modifier = Modifier
                     .padding(innerPadding)
-                    .fillMaxSize()
                     .background(Settings.backgroundColor)
+                    .fillMaxSize()
             ) {
                 val messages =
                     rememberMutableStateListOf(app.chatbotTree.question)

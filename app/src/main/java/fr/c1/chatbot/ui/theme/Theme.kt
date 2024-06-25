@@ -1,5 +1,6 @@
 package fr.c1.chatbot.ui.theme
 
+import fr.c1.chatbot.model.Settings
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -16,7 +17,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import android.os.Build
-import fr.c1.chatbot.model.Settings
 
 private val DarkColorScheme: ColorScheme
     get() = darkColorScheme(
@@ -24,7 +24,7 @@ private val DarkColorScheme: ColorScheme
         secondary = PurpleGrey80,
         tertiary = Pink80,
         background = Settings.backgroundColor,
-        surface = Settings.backgroundColor
+        onBackground = Settings.foregroundColor,
     )
 
 private val LightColorScheme: ColorScheme
@@ -33,7 +33,7 @@ private val LightColorScheme: ColorScheme
         secondary = PurpleGrey40,
         tertiary = Pink40,
         background = Settings.backgroundColor,
-        surface = Settings.backgroundColor
+        onBackground = Settings.foregroundColor,
     )
 
 
@@ -70,7 +70,7 @@ fun ChatBotTheme(
         LocalColorSchemeExtension provides colorSchemeExtension
     ) {
         MaterialTheme(
-            colorScheme = colorScheme, typography = Typography(), content = content
+            colorScheme = colorScheme, typography = Typography, content = content
         )
     }
 }

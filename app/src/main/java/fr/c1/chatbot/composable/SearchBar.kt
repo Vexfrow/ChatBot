@@ -1,11 +1,12 @@
 package fr.c1.chatbot.composable
 
+import fr.c1.chatbot.MainActivity
 import fr.c1.chatbot.model.TypeAction
 import fr.c1.chatbot.ui.theme.ChatBotPrev
-import fr.c1.chatbot.ui.theme.colorSchemeExtension
 import fr.c1.chatbot.utils.UnitLaunchedEffect
 import fr.c1.chatbot.utils.focusRequesterIfNotNull
 import fr.c1.chatbot.utils.rememberMutableStateOf
+import kotlinx.coroutines.launch
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
@@ -48,6 +49,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -94,7 +96,7 @@ fun SearchBar(
 ) {
     Surface(
         shape = shape,
-        color = colors.containerColor,
+                            color = colors.containerColor,
         contentColor = Color.Red,
         tonalElevation = tonalElevation,
         shadowElevation = shadowElevation,
@@ -241,8 +243,8 @@ fun MySearchBar(
     }
 
     var ifColors = TextFieldDefaults.colors(
-        focusedPlaceholderColor = MaterialTheme.colorSchemeExtension.placeHolder,
-        unfocusedPlaceholderColor = MaterialTheme.colorSchemeExtension.placeHolder
+//        focusedPlaceholderColor = MaterialTheme.colorSchemeExtension.placeHolder,
+//        unfocusedPlaceholderColor = MaterialTheme.colorSchemeExtension.placeHolder
     )
 
     if (action == TypeAction.DateInput)
@@ -326,6 +328,19 @@ fun DropDown(
     focus: FocusRequester? = null
 ) {
     var exp by rememberMutableStateOf(value = true)
+    val error = query !in proposals
+    val scope = rememberCoroutineScope()
+
+    val search = fun() {
+        if (error) {
+            scope.launch {
+                MainActivity.snackbarHostState.showSnackbar("Veuillez rentrer un nom de ville valide")
+            }
+            return
+        }
+
+        onSearch(query)
+    }
 
     ExposedDropdownMenuBox(
         modifier = modifier,
@@ -336,10 +351,11 @@ fun DropDown(
             value = query,
             onValueChange = onValueChanged,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-            keyboardActions = KeyboardActions(onSearch = { onSearch(query) }),
+            keyboardActions = KeyboardActions(onSearch = { search() }),
             shape = RoundedCornerShape(10.dp),
             placeholder = { Placeholder(text = placeholder) },
-            trailingIcon = { TrailingIcon { onSearch(query) } },
+            trailingIcon = { TrailingIcon(onSearch = search) },
+            isError = error,
 
             modifier = Modifier
                 .fillMaxSize()

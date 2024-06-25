@@ -38,7 +38,7 @@ fun MyText(
 ) = Text(
     text = text,
     modifier = modifier,
-    color = color,
+                                                                                                                                                                                                                                                        color = color,
     fontSize = fontSize,
     fontStyle = fontStyle,
     fontWeight = fontWeight,

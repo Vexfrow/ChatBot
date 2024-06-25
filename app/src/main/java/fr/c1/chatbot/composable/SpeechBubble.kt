@@ -1,6 +1,10 @@
 package fr.c1.chatbot.composable
 
-import android.net.Uri
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import fr.c1.chatbot.model.Settings
+import fr.c1.chatbot.ui.shape.SpeechBubbleShape
+import fr.c1.chatbot.ui.theme.ChatBotPrev
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -38,21 +42,16 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
-import fr.c1.chatbot.model.Settings
-import fr.c1.chatbot.ui.shape.SpeechBubbleShape
-import fr.c1.chatbot.ui.theme.ChatBotPrev
+import android.net.Uri
 
 @Composable
 fun SpeechBubble(
     text: String,
     modifier: Modifier = Modifier,
-    cornerRadius: Dp = 15.dp,
+    cornerRadius: Dp = 20.dp,
     tipSize: Dp = 15.dp,
     isUser: Boolean = false
 ) {
-
     var textSize by remember { mutableStateOf(IntSize(0, 0)) }
     var realWidth by remember { mutableIntStateOf(0) }
     val minimumWidth = 600
@@ -102,7 +101,8 @@ fun SpeechBubble(
                 },
             text = text,
             style = MaterialTheme.typography.bodyLarge,
-            lineHeight = MaterialTheme.typography.bodyLarge.fontSize
+            lineHeight = MaterialTheme.typography.bodyLarge.fontSize,
+            color = if (isUser) Settings.textUserColor else Settings.textBotColor
         )
     }
 }

@@ -71,7 +71,7 @@ fun HomeLoading(
 
         userVM.users is Resource.Success && userVM.currentUser == null -> {
             if (userVM.users.data!!.isEmpty()) {
-                userVM.newUser(User(), ctx)
+                userVM.newUser(User.DEFAULT, ctx)
             }
 
             UserList(userVM) { createNew = true }

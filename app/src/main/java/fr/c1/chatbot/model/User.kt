@@ -45,9 +45,16 @@ class User private constructor(
                 }.toMutableList()
             )
         }
+
+        val DEFAULT = User(
+            id = UUID(0x123456789ABCDEF, 0xFEDCBA987654321).toString(),
+            firstName = "Default",
+            lastName = "user",
+            age = 60
+        )
     }
 
-    constructor() : this(UUID.randomUUID().toString(), "user", "Default", 60)
+    constructor() : this(UUID.randomUUID().toString(), "", "", 60)
 
     /**
      * Add city

@@ -64,6 +64,7 @@ fun HomeLoading(
             onUndo = { createNew = false },
             onValidate = {
                 userVM.newUser(it, ctx)
+                userVM.setCurrentUser(it)
                 createNew = false
             },
         )

@@ -3,6 +3,7 @@ package fr.c1.chatbot.model
 import fr.c1.chatbot.ui.icons.Bot
 import fr.c1.chatbot.ui.icons.Robot
 import fr.c1.chatbot.ui.icons.RobotFace
+import fr.c1.chatbot.ui.theme.getColorList
 import fr.c1.chatbot.utils.foreground
 import fr.c1.chatbot.utils.getBool
 import fr.c1.chatbot.utils.getColor
@@ -29,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.edit
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.net.Uri
 import android.util.Log
 
@@ -70,18 +72,20 @@ object Settings {
     fun init(ctx: Context) {
         val pref = ctx.getSharedPreferences("Settings", Context.MODE_PRIVATE)
         if (pref.contains("init")) from(pref)
-        else reset()
+        else reset(ctx.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES)
     }
 
-    private fun reset() {
+    private fun reset(night: Boolean) {
         textSize = 40.sp
         tts = false
         botIcon = Icons.Default.Bot
         botImage = null
         userIcon = Icons.Default.Person
         userImage = null
-        bubbleSpeechBotColor = Default.defaultBubbleSpeechColor
-        bubbleSpeechUserColor = Default.defaultBubbleSpeechColor
+        getColorList(!night).let {
+            bubbleSpeechBotColor = it[0]
+            bubbleSpeechUserColor = it[1]
+        }
         backgroundColor = Default.defaultBackgroundColor
         botName = Default.defaultBotName
         botPersonality = Default.defaultBotPersonality

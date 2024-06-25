@@ -30,20 +30,14 @@ val pickLightColorList = listOf(
     BlueCuracao,
     BlueGrotto,
     PersianViolet,
+)
+
+val pickDarkColorList = listOf(
+    Color.Black,
     FrenchBlue,
     Bluing,
     DarkDenim,
     PlumPerfect,
 )
 
-val pickDarkColorList = listOf(
-    Color.Black,
-    CameoGreen,
-    BlueCuracao,
-    BlueGrotto,
-    PersianViolet,
-    FrenchBlue,
-    Bluing,
-    DarkDenim,
-    PlumPerfect,
-)
+fun getColorList(night: Boolean) = if (night) pickDarkColorList else pickLightColorList

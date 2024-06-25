@@ -18,6 +18,7 @@ import fr.c1.chatbot.utils.app
 import fr.c1.chatbot.utils.rememberMutableStateListOf
 import fr.c1.chatbot.utils.rememberMutableStateOf
 import fr.c1.chatbot.viewModel.ActivitiesVM
+import fr.c1.chatbot.viewModel.MessageVM
 import fr.c1.chatbot.viewModel.UserVM
 import org.osmdroid.config.Configuration
 import androidx.activity.ComponentActivity
@@ -106,6 +107,9 @@ class MainActivity : ComponentActivity() {
             ActivitiesVM(userVM.currentUser!!, app.activitiesRepository)
         }
 
+        val messageManager = remember { MessageVM(this) }
+        messageManager.initMessageManager()
+
         UnitLaunchedEffect {
             activitiesVM.load(app)
         }
@@ -137,15 +141,13 @@ class MainActivity : ComponentActivity() {
                     .background(Settings.backgroundColor)
                     .fillMaxSize()
             ) {
-                val messages =
-                    rememberMutableStateListOf(app.chatbotTree.question)
                 val animated = rememberMutableStateListOf<Boolean>()
 
                 when (tab) {
                     Tab.ChatBotChat -> ChatBotComp.Chat(
-                        messages = messages,
                         animated = animated,
-                        activitiesVM = activitiesVM
+                        activitiesVM = activitiesVM,
+                        messageVM = messageManager
                     ) { tab = Tab.ChatBotResults }
 
                     Tab.ChatBotResults -> ChatBotComp.Result(activitiesVM)

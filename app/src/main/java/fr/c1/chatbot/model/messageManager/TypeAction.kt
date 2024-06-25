@@ -1,4 +1,4 @@
-package fr.c1.chatbot.model
+package fr.c1.chatbot.model.messageManager
 
 enum class TypeAction {
     /** No specific action (searchbar disabled) */
@@ -17,7 +17,7 @@ enum class TypeAction {
     ShowResults,
 
     /** ToDo: city ? */
-    Geolocate,
+    Geolocation,
 
     /** Dropdown with multiple choices */
     ChoosePassions,
@@ -28,15 +28,19 @@ enum class TypeAction {
     /** Just a suggestion */
     CulturalActivity,
 
-    DeleteRecalls,
+    DeleteNotifs,
 
-    DeleteSuggestions,
+    BigSportif,
 
-    DeletNotifs,
+    LittleSportif,
+
+    InexistantSportif,
+    Meeting,
+    NoMeeting,
+    PerhapsMeeting,
 
     /** Just a suggestion */
     Back,
     Restart,
     ShowFilters,
-    Skip
 }

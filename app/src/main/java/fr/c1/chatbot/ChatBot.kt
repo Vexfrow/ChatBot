@@ -2,13 +2,11 @@ package fr.c1.chatbot
 
 import fr.c1.chatbot.model.ActivitiesRepository
 import fr.c1.chatbot.model.Settings
-import fr.c1.chatbot.model.Tree
 import fr.c1.chatbot.utils.TTS
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import android.app.Application
-import java.io.InputStream
 
 /** ChatBot TAG */
 private const val TAG = "ChatBot"
@@ -26,9 +24,6 @@ class ChatBot : Application() {
     /** Activities repository to get the activities */
     val activitiesRepository: ActivitiesRepository = ActivitiesRepository()
 
-    /** Tree that represent the bot questions and user answers */
-    val chatbotTree = Tree()
-
     /** TTS system */
     lateinit var tts: TTS
         private set
@@ -36,11 +31,9 @@ class ChatBot : Application() {
     /**
      * Initialize the application :
      * - Init the [Settings]
-     * - Init the [chatbotTree]
      * - Init the [tts]
      *
      * @see Settings.init
-     * @see Tree.initTree
      * @see TTS
      */
     fun init() {
@@ -48,14 +41,6 @@ class ChatBot : Application() {
             return
 
         Settings.init(this)
-
-        val mapScript: Map<String, InputStream> = mapOf(
-            "Rob" to resources.openRawResource(R.raw.rob),
-            "Amy" to resources.openRawResource(R.raw.amy),
-            "Georges" to resources.openRawResource(R.raw.georges)
-        )
-
-        chatbotTree.initTree(mapScript)
 
         tts = TTS(this)
 

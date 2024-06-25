@@ -8,15 +8,16 @@ import java.util.UUID
 private const val TAG = "UserProfile"
 
 /**
- * Represents a user
- * @property lastName Name of the user
- * @property firstName First name of the user
- * @property age Age of the user
- * @property _cities List of cities of the user
- * @property _types List of activity types of the user
- * @property _passions List of interests of the user
- * @property _weeklyPreferences List of weekly preferences of the user
- * @constructor Creates a user with the specified parameters
+ * User
+ *
+ * @property lastName
+ * @property firstName
+ * @property age
+ * @property _cities
+ * @property _types
+ * @property _passions
+ * @property _weeklyPreferences
+ * @constructor Create User
  */
 class User private constructor(
     val id: String,
@@ -49,84 +50,96 @@ class User private constructor(
     constructor() : this(UUID.randomUUID().toString(), "user", "Default", 60)
 
     /**
-     * Add a city
+     * Add city
+     * @param city
      */
     fun addCity(city: String) {
         _cities.add(city)
     }
 
     /**
-     * Add an activity type
+     * Add type
+     * @param type
      */
     fun addType(type: Type) {
         _types.add(type)
     }
 
     /**
-     * Add an interest
+     * Add passion
+     * @param passion
      */
     fun addPassion(passion: String) {
         _passions.add(passion)
     }
 
     /**
-     * Add a weekly preference
+     * Add weekly preference
+     * @param day
+     * @param houe
+     * @param duration
      */
     fun addWeeklyPreference(day: String, houe: String, duration: Int) {
         _weeklyPreferences.add(WeeklyPreference(day, houe, duration))
     }
 
     /**
-     * Delete a weekly preference
+     * Remove weekly peference
+     * @param day
+     * @param hour
+     * @param duration
      */
     fun removeWeeklyPeference(day: String, hour: String, duration: Int) {
         _weeklyPreferences.remove(WeeklyPreference(day, hour, duration))
     }
 
     /**
-     * Delete all weekly preferences
+     * Clear weekly preferences
      */
     fun clearWeeklyPreferences() {
         _weeklyPreferences.clear()
     }
 
     /**
-     * Delete a city
+     * Remove city
+     * @param city
      */
     fun removeCity(city: String) {
         _cities.remove(city)
     }
 
     /**
-     * Delete all cities
+     * Clear cities
      */
     fun clearCities() {
         _cities.clear()
     }
 
     /**
-     * Delete an interest
+     * Remove passion
+     * @param passion
      */
     fun removePassion(passion: String) {
         _passions.remove(passion)
     }
 
     /**
-     * Delete all interests
+     * Clear passions
      */
     fun clearPassions() {
         _passions.clear()
     }
 
     /**
-     * Delete an activity type
+     * Remove type
+     * @param type
      */
     fun removeType(type: Type) {
         _types.remove(type)
     }
 
     /**
-     * Delete all activity types
+     * Clear types
      */
     fun clearTypes() {
         _types.clear()
@@ -142,6 +155,12 @@ class User private constructor(
      */
     val types: List<Type> get() = _types
 
+    /**
+     * Has passion
+     *
+     * @param passion
+     * @return Boolean true if the user has the passion, false otherwise
+     */
     fun hasPassion(passion: String): Boolean = passions.contains(passion)
 
     /**

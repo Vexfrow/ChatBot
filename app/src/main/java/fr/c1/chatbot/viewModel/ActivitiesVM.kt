@@ -1,6 +1,5 @@
 package fr.c1.chatbot.viewModel
 
-import fr.c1.chatbot.ChatBot
 import fr.c1.chatbot.model.ActivitiesRepository
 import fr.c1.chatbot.model.User
 import fr.c1.chatbot.model.activity.AbstractActivity
@@ -26,11 +25,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import android.content.Context
 import android.util.Log
 import kotlin.coroutines.CoroutineContext
 
 private const val TAG = "ActivitiesVM"
 
+/**
+ * Activities view model
+ *
+ * @property user
+ * @property repo
+ * @constructor Create empty Activities v m
+ */
 class ActivitiesVM(
     val user: User,
     val repo: ActivitiesRepository,
@@ -48,6 +55,9 @@ class ActivitiesVM(
     private var sportEquipments: Resource<List<SportEquipment>> = Resource.None()
     private var associations: Resource<List<Association>> = Resource.None()
 
+    /**
+     * All activities
+     */
     private val all: List<Resource<out List<AbstractActivity>>>
         get() = listOf(
             museums,
@@ -61,8 +71,8 @@ class ActivitiesVM(
             associations,
         )
 
-    val jobs: Array<Job?> = Array(all.size) { null }
-    var resultJob: Job? = null
+    private val jobs: Array<Job?> = Array(all.size) { null }
+    private var resultJob: Job? = null
 
     private fun CoroutineContext.launch(
         start: CoroutineStart = CoroutineStart.DEFAULT,
@@ -72,7 +82,12 @@ class ActivitiesVM(
     private suspend fun <T> withMain(block: suspend CoroutineScope.() -> T) =
         withContext(Dispatchers.Main, block)
 
-    fun load(ctx: ChatBot) {
+    /**
+     * Load activities
+     *
+     * @param app
+     */
+    fun load(ctx: Context) {
         jobs[0] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start museums")
             val tmp = repo.getMuseums(user, ctx)
@@ -129,6 +144,11 @@ class ActivitiesVM(
         }
     }
 
+    /**
+     * Update result
+     *
+     * @param onFinish
+     */
     private fun updateResult(onFinish: suspend (List<AbstractActivity>) -> List<AbstractActivity>) {
         Dispatchers.Default.launch {
             resultJob?.join()
@@ -167,16 +187,22 @@ class ActivitiesVM(
 
     private val history: ArrayDeque<List<AbstractActivity>> = ArrayDeque()
 
+    /**
+     * Undo
+     */
     fun undo() {
         result = history.removeLastOrNull()?.let { Resource.Success(it) } ?: Resource.None()
     }
 
+    /**
+     * Reset
+     */
     fun reset() {
         result = Resource.None()
     }
 
-    var date: String
-        get() = throw Exception()
+    var date: String = ""
+        get() = field
         set(value) {
             // ToDo: Filter by date
             updateResult {
@@ -185,8 +211,13 @@ class ActivitiesVM(
                 Log.i(TAG, "addType: Filter by date finished")
                 result
             }
+            field = value
         }
 
+    /**
+     * Add type
+     * @param type
+     */
     fun addType(type: Type) {
         updateResult {
             Log.i(TAG, "addType: Filter by type started")
@@ -209,8 +240,8 @@ class ActivitiesVM(
             user.addCity(value)
         }
 
-    var distance: Int
-        get() = throw Exception()
+    var distance: Int = -1
+        get() = field
         set(value) {
             updateResult {
                 Log.i(TAG, "addType: Filter by distance started")
@@ -218,5 +249,6 @@ class ActivitiesVM(
                 Log.i(TAG, "addType: Filter by distance finished")
                 result
             }
+            field = value
         }
 }

@@ -1,27 +1,12 @@
 package fr.c1.chatbot.utils
 
 import android.Manifest
-import android.app.NotificationManager
 import android.content.ContentValues
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Looper
 import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -29,33 +14,43 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import fr.c1.chatbot.MainActivity
-import fr.c1.chatbot.R
 
+/**
+ * Location handler
+ *
+ * @constructor Create empty Location handler
+ */
 object LocationHandler {
 
-    private var configurationChange = false
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
     var currentLocation: Location? = null
         private set
-    fun initLocation(cxt: Context) {
+
+    /**
+     * Init location
+     *
+     * @param ctx
+     */
+    fun initLocation(ctx: Context) {
         Log.d(ContentValues.TAG, "Init Location")
         createLocationRequest()
         createLocationCallback()
         Log.d(ContentValues.TAG, "Check Permissions")
-        if (ActivityCompat.checkSelfPermission(cxt, Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ActivityCompat.checkSelfPermission(ctx, Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED
         ) {
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(cxt)
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(ctx)
             //last location
             fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
                 // Got last known location. In some rare situations this can be null.
                 if (location != null) {
                     currentLocation = location
-                    Log.d(ContentValues.TAG,"Longitude: "+currentLocation?.longitude +
-                            ", Latitude: "+ currentLocation?.latitude)
+                    Log.d(
+                        ContentValues.TAG, "Longitude: " + currentLocation?.longitude +
+                                ", Latitude: " + currentLocation?.latitude
+                    )
                 }
             }
         } else {
@@ -63,8 +58,13 @@ object LocationHandler {
         }
     }
 
-    fun startLocationUpdates(cxt: Context) {
-        if (ActivityCompat.checkSelfPermission(cxt, Manifest.permission.ACCESS_FINE_LOCATION)
+    /**
+     * Start location updates
+     *
+     * @param ctx
+     */
+    fun startLocationUpdates(ctx: Context) {
+        if (ActivityCompat.checkSelfPermission(ctx, Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED
         ) {
             Log.i(ContentValues.TAG, "PERMISSIONS GRANTED")
@@ -76,10 +76,17 @@ object LocationHandler {
         }
     }
 
+    /**
+     * Stop location updates
+     */
     fun stopLocationUpdates() {
         fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
+    /**
+     * Create location request
+     *
+     */
     private fun createLocationRequest() {
         Log.d(ContentValues.TAG, "Building Location Request")
         locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000)
@@ -87,6 +94,10 @@ object LocationHandler {
             .build()
     }
 
+    /**
+     * Create location callback
+     *
+     */
     private fun createLocationCallback() {
         Log.d(ContentValues.TAG, "Building Location Callback")
         locationCallback = object : LocationCallback() {
@@ -99,7 +110,7 @@ object LocationHandler {
                     currentLocation = locationResult.lastLocation
                     Log.d(
                         ContentValues.TAG,
-                        "Latitude: " + currentLocation?.getLatitude() + ", Longitude: " + currentLocation?.getLongitude()
+                        "Latitude: " + currentLocation?.latitude + ", Longitude: " + currentLocation?.longitude
                     )
                     stopLocationUpdates()
                 } else {

@@ -1,7 +1,7 @@
 package fr.c1.chatbot.composable
 
 import fr.c1.chatbot.MainActivity
-import fr.c1.chatbot.model.TypeAction
+import fr.c1.chatbot.model.messageManager.TypeAction
 import fr.c1.chatbot.ui.theme.ChatBotPrev
 import fr.c1.chatbot.utils.UnitLaunchedEffect
 import fr.c1.chatbot.utils.focusRequesterIfNotNull

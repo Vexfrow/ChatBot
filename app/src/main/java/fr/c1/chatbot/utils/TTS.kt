@@ -10,6 +10,13 @@ import java.util.UUID
 
 private const val TAG = "TTS"
 
+/**
+ * Tts
+ *
+ * @constructor
+ *
+ * @param ctx
+ */
 class TTS(ctx: Context) {
     private object UtteranceLst : UtteranceProgressListener() {
         override fun onStart(utteranceId: String?) {}
@@ -69,6 +76,12 @@ class TTS(ctx: Context) {
         }
     }
 
+    /**
+     * Speak
+     *
+     * @param text
+     * @param flush
+     */
     fun speak(text: CharSequence, flush: Boolean = false) {
         if (!inited) {
             if (list == null)
@@ -93,6 +106,10 @@ class TTS(ctx: Context) {
         }
     }
 
+    /**
+     * Shutdown
+     *
+     */
     fun shutdown() {
         tts.shutdown()
     }

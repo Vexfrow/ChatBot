@@ -22,7 +22,7 @@
     },
     {
       "id": 5,
-      "text": "Un activité sportive vous conviendrait-elle ?"
+      "text": "Une activité sportive vous conviendrait-elle ?"
     },
     {
       "id": 6,
@@ -42,39 +42,25 @@
     },
     {
       "id": 10,
-      "text": "Quelles notifications voulez-vous désactiver ?"
+      "text": "Vous pouvez accéder à votre historique en cliquant sur l'onglet \"Historique\""
     },
     {
       "id": 11,
-      "text": "C'est fait ! j'ai désactivé les rappels.\n Vous pouvez les réactiver à tout moment si vous changez d'avis.",
-      "action": "DeleteRecalls"
-    },
-    {
-      "id": 12,
-      "text": "Je comprends que vous ne soyez pas intéressés, j'ai désactivé les suggestions",
-      "action": "DeleteSuggestions"
-    },
-    {
-      "id": 13,
-      "text": "**Indication pour voir l'historique de recherche**"
-    },
-    {
-      "id": 14,
       "text": "Essayons de la retrouver ensemble, si vous vous en souvenez, tapez le nom de l'activité.\n Sinon vous pouvez regarder dans :\n- L'historique de recherche\n- Les activités enregistrées"
     },
     {
-      "id": 15,
+      "id": 12,
       "text": "Je suis désolé je ne peux pas effectuer cette action pour le moment"
     },
     {
-      "id": 16,
+      "id": 13,
       "text": "Super, je vous propose d'aller voir les activités disponibles dans l'onglet 'Résultats'",
       "action": "ShowResults"
     },
     {
-      "id": 17,
+      "id": 14,
       "text": "Très bien, j'ai fait un peu de ménage dans vos notifications",
-      "action": "DeletNotifs"
+      "action": "DeleteNotifs"
     }
   ],
   "humain": [
@@ -100,17 +86,17 @@
     {
       "id": 1004,
       "text": "Activité physique",
-        "action": "PhysicalActivity"
+      "action": "PhysicalActivity"
     },
     {
       "id": 1005,
       "text": "Activité Culturelle",
-        "action": "CulturalActivity"
+      "action": "CulturalActivity"
     },
     {
       "id": 1006,
       "text": "Utiliser la géolocalisation",
-      "action": "Geolocate"
+      "action": "Geolocation"
     },
     {
       "id": 1007,
@@ -118,15 +104,18 @@
     },
     {
       "id": 1008,
-      "text": "Oui"
+      "text": "Oui",
+      "action": "Meeting"
     },
     {
       "id": 1009,
-      "text": "Non"
+      "text": "Non",
+      "action": "NoMeeting"
     },
     {
       "id": 1010,
-      "text": "N'importe"
+      "text": "N'importe",
+      "action": "PerhapsMeeting"
     },
     {
       "id": 1011,
@@ -138,41 +127,44 @@
     },
     {
       "id": 1013,
-      "text": "Comment désactiver les notifications/alertes ?"
-    },
-    {
-      "id": 1014,
-      "text": "Les rappels"
-    },
-    {
-      "id": 1015,
-      "text": "Les suggestions"
-    },
-    {
-      "id": 1016,
       "text": "Je souhaite accéder à mon historique de recherche ?"
     },
     {
-      "id": 1017,
+      "id": 1014,
       "text": "Je ne trouve plus d'activité intéressante"
     },
     {
-      "id": 1018,
+      "id": 1015,
       "text": "Je souhaite proposer de nouvelles activités"
     },
     {
-      "id": 1019,
+      "id": 1016,
       "text": "Choisir passions",
       "actions": "ChoisirPassions"
     },
     {
-      "id": 1020,
+      "id": 1017,
       "text": "Passer à la suite",
       "action": "Skip"
     },
     {
-      "id": 1021,
+      "id": 1018,
       "text": "Je souhaite désactiver toutes les notifications"
+    },
+    {
+      "id": 1019,
+      "text": "Régulièrement",
+      "action": "BigSportif"
+    },
+    {
+      "id": 1020,
+      "text": "De temps en temps",
+      "action": "LittleSportif"
+    },
+    {
+      "id": 1021,
+      "text": "Très peu",
+      "action": "InexistantSportif"
     },
     {
       "id": -1,
@@ -244,42 +236,52 @@
     {
       "from": 5,
       "to": 6,
-      "answer": 1008
+      "answer": 1019
     },
     {
       "from": 5,
       "to": 6,
-      "answer": 1009
+      "answer": 1020
+    },
+    {
+      "from": 5,
+      "to": 6,
+      "answer": 1021
     },
     {
       "from": 7,
       "to": 6,
-      "answer": 1019
+      "answer": 1016
     },
     {
       "from": 6,
-      "to": 16,
+      "to": 13,
       "answer": 1008
     },
     {
       "from": 6,
-      "to": 16,
+      "to": 13,
       "answer": 1009
     },
     {
       "from": 6,
-      "to": 16,
+      "to": 13,
       "answer": 1010
     },
     {
       "from": 8,
-      "to": 16,
+      "to": 13,
       "answer": 1006
     },
     {
       "from": 8,
-      "to": 16,
+      "to": 13,
       "answer": 1002
+    },
+    {
+      "from": 9,
+      "to": 14,
+      "answer": 1018
     },
     {
       "from": 9,
@@ -287,34 +289,14 @@
       "answer": 1013
     },
     {
-      "from": 10,
+      "from": 9,
       "to": 11,
       "answer": 1014
     },
     {
-      "from": 10,
+      "from": 9,
       "to": 12,
       "answer": 1015
-    },
-    {
-      "from": 10,
-      "to": 17,
-      "answer": 1021
-    },
-    {
-      "from": 9,
-      "to": 13,
-      "answer": 1016
-    },
-    {
-      "from": 9,
-      "to": 14,
-      "answer": 1017
-    },
-    {
-      "from": 9,
-      "to": 15,
-      "answer": 1018
     }
   ]
 }

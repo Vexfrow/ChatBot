@@ -48,11 +48,10 @@ import android.net.Uri
 fun SpeechBubble(
     text: String,
     modifier: Modifier = Modifier,
-    cornerRadius: Dp = 15.dp,
+    cornerRadius: Dp = 20.dp,
     tipSize: Dp = 15.dp,
     isUser: Boolean = false
 ) {
-
     var textSize by remember { mutableStateOf(IntSize(0, 0)) }
     var realWidth by remember { mutableIntStateOf(0) }
     val minimumWidth = 600

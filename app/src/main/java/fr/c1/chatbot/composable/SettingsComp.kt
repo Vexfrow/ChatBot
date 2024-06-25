@@ -5,8 +5,7 @@ import coil.request.ImageRequest
 import fr.c1.chatbot.model.Settings
 import fr.c1.chatbot.ui.shape.SpeechBubbleShape
 import fr.c1.chatbot.ui.theme.ChatBotPrev
-import fr.c1.chatbot.ui.theme.pickDarkColorList
-import fr.c1.chatbot.ui.theme.pickLightColorList
+import fr.c1.chatbot.ui.theme.getColorList
 import fr.c1.chatbot.utils.disableNotification
 import fr.c1.chatbot.utils.enableNotification
 import fr.c1.chatbot.utils.rememberMutableStateOf
@@ -87,9 +86,6 @@ fun SettingsComp() {
         }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -222,7 +218,6 @@ fun SettingsComp() {
         Dialog(onDismissRequest = { isDialogOpen = false }) {
             Surface(
                 shape = MaterialTheme.shapes.medium,
-                color = MaterialTheme.colorScheme.surface,
                 modifier = Modifier.padding(16.dp)
             ) {
                 Column(
@@ -277,7 +272,6 @@ fun SettingsComp() {
         Dialog(onDismissRequest = { isColorPickerOpen = false }) {
             Surface(
                 shape = MaterialTheme.shapes.medium,
-                color = MaterialTheme.colorScheme.surface,
                 modifier = Modifier.padding(16.dp)
             ) {
 
@@ -292,8 +286,13 @@ fun SettingsComp() {
                         text = "Veuillez choisir une couleur",
                         style = MaterialTheme.typography.titleLarge
                     )
-                    val colorList =
-                        if (isSystemInDarkTheme()) pickDarkColorList else pickLightColorList
+
+                    val colorList = when {
+                        botColorPicker -> getColorList(!isSystemInDarkTheme())
+                        fontColorPicker -> getColorList(isSystemInDarkTheme())
+                        else -> getColorList(!isSystemInDarkTheme())
+                    }
+
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                         items(colorList) { color ->
                             Box(
@@ -327,7 +326,6 @@ fun SettingsComp() {
         Dialog(onDismissRequest = { isBotNameOpen = false }) {
             Surface(
                 shape = MaterialTheme.shapes.medium,
-                color = MaterialTheme.colorScheme.surface,
                 modifier = Modifier.padding(16.dp)
             ) {
 
@@ -357,7 +355,6 @@ fun SettingsComp() {
         Dialog(onDismissRequest = { isBotPersonalityChooserOpen = false }) {
             Surface(
                 shape = MaterialTheme.shapes.medium,
-                color = MaterialTheme.colorScheme.surface,
                 modifier = Modifier.padding(16.dp)
             ) {
 

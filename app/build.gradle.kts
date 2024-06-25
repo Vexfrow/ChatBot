@@ -1,6 +1,10 @@
+import org.jetbrains.dokka.DokkaConfiguration.Visibility
+import org.jetbrains.dokka.gradle.DokkaTask
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("org.jetbrains.dokka") version "1.9.20"
 }
 
 android {
@@ -110,4 +114,14 @@ dependencies {
     androidTestImplementation("androidx.work:work-testing:$workVersion")
     // optional - Multiprocess support
     implementation("androidx.work:work-multiprocess:$workVersion")
+}
+
+tasks.withType<DokkaTask>().configureEach {
+    dokkaSourceSets.configureEach {
+        suppressInheritedMembers = true
+        documentedVisibilities = Visibility.values().toSet()
+        includes.from(fileTree("src/main/java") {
+            include("**/package.md")
+        })
+    }
 }

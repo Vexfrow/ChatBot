@@ -3,7 +3,6 @@ package fr.c1.chatbot.composable
 import fr.c1.chatbot.model.messageManager.TypeAction
 import fr.c1.chatbot.MainActivity
 import fr.c1.chatbot.ui.theme.ChatBotPrev
-import fr.c1.chatbot.ui.theme.colorSchemeExtension
 import fr.c1.chatbot.utils.UnitLaunchedEffect
 import fr.c1.chatbot.utils.focusRequesterIfNotNull
 import fr.c1.chatbot.utils.rememberMutableStateOf
@@ -97,7 +96,7 @@ fun SearchBar(
 ) {
     Surface(
         shape = shape,
-        color = colors.containerColor,
+                            color = colors.containerColor,
         contentColor = Color.Red,
         tonalElevation = tonalElevation,
         shadowElevation = shadowElevation,
@@ -244,8 +243,8 @@ fun MySearchBar(
     }
 
     var ifColors = TextFieldDefaults.colors(
-        focusedPlaceholderColor = MaterialTheme.colorSchemeExtension.placeHolder,
-        unfocusedPlaceholderColor = MaterialTheme.colorSchemeExtension.placeHolder
+//        focusedPlaceholderColor = MaterialTheme.colorSchemeExtension.placeHolder,
+//        unfocusedPlaceholderColor = MaterialTheme.colorSchemeExtension.placeHolder
     )
 
     if (action == TypeAction.DateInput)

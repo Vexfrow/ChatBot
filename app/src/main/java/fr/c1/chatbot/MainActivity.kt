@@ -22,9 +22,11 @@ import org.osmdroid.config.Configuration
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -36,10 +38,17 @@ import androidx.preference.PreferenceManager
 import android.os.Bundle
 import fr.c1.chatbot.viewModel.MessageVM
 
+/** MainActivity TAG */
 private const val TAG = "MainActivity"
 
+/**
+ * Main (and single) activity of the app
+ *
+ * @constructor Automatically called by android
+ */
 class MainActivity : ComponentActivity() {
     companion object {
+        /** Snackbar host state */
         val snackbarHostState = SnackbarHostState()
     }
 
@@ -56,6 +65,23 @@ class MainActivity : ComponentActivity() {
         setContent { this() }
     }
 
+    /**
+     * Main component of the application
+     *
+     * - If app not inited, show a loading page and ask the permissions
+     * - Otherwise, setup the [Scaffold] and manage the differents tabs
+     *
+     * @see HomeLoading First loading page
+     * @see PermissionsContent Ask the permissions
+     * @see ChatBotComp [Tab.ChatBot] components
+     * @see OsmdroidMapView [Tab.ChatBotMap] component
+     * @see SettingsComp [Tab.Settings] component
+     * @see AccountComp [Tab.Account] component
+     * @see Suggestion [Tab.Suggestion] component
+     * @see History [Tab.History] component
+     *
+     * @throws NotImplementedError Throwed if the tab doesn't correpond to any [Tab]
+     */
     @Composable
     private operator fun invoke() = ChatBotTheme {
         // Request all needed permissions
@@ -90,12 +116,14 @@ class MainActivity : ComponentActivity() {
 
         Scaffold(
             modifier = Modifier.fillMaxSize(),
+            containerColor = MaterialTheme.colorScheme.surface,
             topBar = { TopBar(tabSelected = tab, onTabSelected = ::switchTab) },
             snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
         ) { innerPadding ->
             Box(
                 modifier = Modifier
                     .padding(innerPadding)
+                    .background(Settings.backgroundColor)
                     .fillMaxSize()
             ) {
                 val animated = rememberMutableStateListOf<Boolean>()

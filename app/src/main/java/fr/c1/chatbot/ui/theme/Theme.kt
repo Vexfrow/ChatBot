@@ -24,9 +24,7 @@ private val DarkColorScheme: ColorScheme
         secondary = PurpleGrey80,
         tertiary = Pink80,
         background = Settings.backgroundColor,
-        surface = Settings.backgroundColor,
-        onSurface = Settings.foregroundColor,
-        onBackground = Settings.foregroundColor
+        onBackground = Settings.foregroundColor,
     )
 
 private val LightColorScheme: ColorScheme
@@ -35,9 +33,7 @@ private val LightColorScheme: ColorScheme
         secondary = PurpleGrey40,
         tertiary = Pink40,
         background = Settings.backgroundColor,
-        surface = Settings.backgroundColor,
-        onSurface = Settings.foregroundColor,
-        onBackground = Settings.foregroundColor
+        onBackground = Settings.foregroundColor,
     )
 
 
@@ -74,7 +70,7 @@ fun ChatBotTheme(
         LocalColorSchemeExtension provides colorSchemeExtension
     ) {
         MaterialTheme(
-            colorScheme = colorScheme, typography = Typography(), content = content
+            colorScheme = colorScheme, typography = Typography, content = content
         )
     }
 }

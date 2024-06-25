@@ -7,6 +7,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import fr.c1.chatbot.R
@@ -42,7 +46,7 @@ class CustomInfoWindow(private val mapView: MapView) :
     InfoWindow(R.layout.custom_map_info, mapView) {
     override fun onOpen(item: Any?) {
         // Following command
-        //closeAllInfoWindowsOn(mapView)
+        closeAllInfoWindowsOn(mapView)
 
         val title = mView.findViewById<TextView>(R.id.title)
         val snippet = mView.findViewById<TextView>(R.id.snippet)
@@ -71,6 +75,9 @@ class CustomInfoWindow(private val mapView: MapView) :
 @Composable
 fun OsmdroidMapView(aVM: ActivitiesVM) {
 
+    // Variable pour stocker la MapView
+    var mapView by remember { mutableStateOf<MapView?>(null) }
+
     AndroidView(
         modifier = Modifier.fillMaxSize(),
         factory = { context ->
@@ -90,23 +97,23 @@ fun OsmdroidMapView(aVM: ActivitiesVM) {
                 }
                 val mLocationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(context), this)
                 mLocationOverlay.enableMyLocation()
-                val mapView = this
+                mapView = this
                 overlays.apply {
                     // create overlays with differents themes
                     // add overlays
                     setResult(aVM.result)
-                    add(setSFPO(mapView, festivalsLocations, "#ff4f29"))
-                    add(setSFPO(mapView, associationsLocations, "#e478ff"))
-                    add(setSFPO(mapView, museesLocations, "#cecece"))
-                    add(setSFPO(mapView, expositionsLocations, "#2db0ff"))
-                    add(setSFPO(mapView, sitesLocations, "#ffb02d"))
-                    add(setSFPO(mapView, contenuLocations, "#fffc93"))
-                    add(setSFPO(mapView, edificesLocations, "#b87800"))
-                    add(setSFPO(mapView, jardinLocations, "#6cff40"))
+                    add(setSFPO(mapView!!, festivalsLocations, "#ff4f29"))
+                    add(setSFPO(mapView!!, associationsLocations, "#e478ff"))
+                    add(setSFPO(mapView!!, museesLocations, "#cecece"))
+                    add(setSFPO(mapView!!, expositionsLocations, "#2db0ff"))
+                    add(setSFPO(mapView!!, sitesLocations, "#ffb02d"))
+                    add(setSFPO(mapView!!, contenuLocations, "#fffc93"))
+                    add(setSFPO(mapView!!, edificesLocations, "#b87800"))
+                    add(setSFPO(mapView!!, jardinLocations, "#6cff40"))
                     add(mLocationOverlay)
                 }
             }
-        }
+        }, update = { mapView = it }
     )
 }
 
@@ -199,10 +206,8 @@ fun setSFPO(mapView : MapView, points: ArrayList<IGeoPoint>, color: String): Sim
     // onClick callback
 
     sfpo.setOnClickListener { point, p ->
-        if (point is LabelledGeoPoint) {
-            val infoWindow = CustomInfoWindow(mapView)
-            infoWindow.open(point, point, 0, 0)
-        }
+        val infoWindow = CustomInfoWindow(mapView)
+        infoWindow.open(point.get(p), point.get(p) as GeoPoint, 0, 0)
     }
     return sfpo
 }

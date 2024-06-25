@@ -63,23 +63,17 @@ class ActivitiesRepository {
      * Add a city to the list
      */
     private fun addCity(str: String) {
-        if (str.isBlank())
-            return
+        if (str.isBlank()) return
 
-        if (str.any(Char::isDigit))
-            return
+        if (str.any(Char::isDigit)) return
 
-        val tmp = str
-            .trim('\"')
-            .lowercase(Locale.getDefault())
-            .replaceFirstChar {
-                if (it.isLowerCase()) it.titlecase(Locale.getDefault())
-                else it.toString()
-            }
+        val tmp = str.trim('\"').lowercase(Locale.getDefault()).replaceFirstChar {
+            if (it.isLowerCase()) it.titlecase(Locale.getDefault())
+            else it.toString()
+        }
 
         synchronized(cityList) {
-            if (!cityList.contains(tmp))
-                cityList.add(tmp)
+            if (!cityList.contains(tmp)) cityList.add(tmp)
         }
     }
 
@@ -90,8 +84,7 @@ class ActivitiesRepository {
      * @return List<Museum>
      */
     fun getMuseums(app: ChatBot): List<Museum> {
-        if (app.currentUser.passions.run { isNotEmpty() && any(Museum.passions::contains) })
-            return emptyList()
+        if (app.currentUser.passions.run { isNotEmpty() && any(Museum.passions::contains) }) return emptyList()
 
         // Read CSV file
         val csvIS: InputStream =
@@ -139,8 +132,7 @@ class ActivitiesRepository {
      * @return
      */
     fun getSites(app: ChatBot): List<Site> {
-        if (app.currentUser.passions.run { isNotEmpty() && any(Site.passions::contains) })
-            return emptyList()
+        if (app.currentUser.passions.run { isNotEmpty() && any(Site.passions::contains) }) return emptyList()
 
         // Read CSV file
         val csvIS: InputStream =
@@ -157,12 +149,7 @@ class ActivitiesRepository {
             addCity(commune)
 
             Site(
-                region,
-                departement,
-                commune,
-                true,
-                latitude,
-                longitude
+                region, departement, commune, true, latitude, longitude
             )
         }
     }
@@ -174,8 +161,7 @@ class ActivitiesRepository {
      * @return
      */
     fun getExpositions(app: ChatBot): List<Exposition> {
-        if (app.currentUser.passions.run { isNotEmpty() && any(Exposition.passions::contains) })
-            return emptyList()
+        if (app.currentUser.passions.run { isNotEmpty() && any(Exposition.passions::contains) }) return emptyList()
 
         // Read CSV file
         val csvIS: InputStream =
@@ -195,15 +181,7 @@ class ActivitiesRepository {
             addCity(commune)
 
             Exposition(
-                region,
-                departement,
-                identifiant,
-                commune,
-                nom,
-                url,
-                true,
-                latitude,
-                longitude
+                region, departement, identifiant, commune, nom, url, true, latitude, longitude
             )
         }
     }
@@ -215,8 +193,7 @@ class ActivitiesRepository {
      * @return List<Content>
      */
     fun getContents(app: ChatBot): List<Content> {
-        if (app.currentUser.passions.run { isNotEmpty() && any(Content.passions::contains) })
-            return emptyList()
+        if (app.currentUser.passions.run { isNotEmpty() && any(Content.passions::contains) }) return emptyList()
 
         // Read CSV file
         val csvIS: InputStream =
@@ -237,16 +214,7 @@ class ActivitiesRepository {
             addCity(commune)
 
             Content(
-                identifiant,
-                commune,
-                nom,
-                adresse,
-                lieu,
-                codePostal,
-                url,
-                true,
-                latitude,
-                longitude
+                identifiant, commune, nom, adresse, lieu, codePostal, url, true, latitude, longitude
             )
         }
     }
@@ -258,8 +226,7 @@ class ActivitiesRepository {
      * @return List<Building>
      */
     fun getBuildings(app: ChatBot): List<Building> {
-        if (app.currentUser.passions.run { isNotEmpty() && any(Building.passions::contains) })
-            return emptyList()
+        if (app.currentUser.passions.run { isNotEmpty() && any(Building.passions::contains) }) return emptyList()
 
         // Read CSV file
         val csvIS: InputStream =
@@ -283,14 +250,7 @@ class ActivitiesRepository {
             addCity(commune)
 
             Building(
-                region,
-                departement,
-                commune,
-                nom,
-                adresse,
-                true,
-                latitude,
-                longitude
+                region, departement, commune, nom, adresse, true, latitude, longitude
             )
         }
     }
@@ -302,8 +262,7 @@ class ActivitiesRepository {
      * @return List<Garden>
      */
     fun getGardens(app: ChatBot): List<Garden> {
-        if (app.currentUser.passions.run { isNotEmpty() && any(Garden.passions::contains) })
-            return emptyList()
+        if (app.currentUser.passions.run { isNotEmpty() && any(Garden.passions::contains) }) return emptyList()
 
         // Read CSV file
         val csvIS: InputStream =
@@ -344,8 +303,7 @@ class ActivitiesRepository {
      * @return List<Festival>
      */
     fun getFestivals(app: ChatBot): List<Festival> {
-        if (app.currentUser.passions.run { isNotEmpty() && any(Festival.passions::contains) })
-            return emptyList()
+        if (app.currentUser.passions.run { isNotEmpty() && any(Festival.passions::contains) }) return emptyList()
 
         // Read CSV file
         val csvIS: InputStream =
@@ -391,11 +349,9 @@ class ActivitiesRepository {
      * @return List<SportEquipment>
      */
     fun getSportEquipments(app: ChatBot): List<SportEquipment> {
-        if (app.currentUser.passions.run { isNotEmpty() && any(SportEquipment.passions::contains) })
-            return emptyList()
+        if (app.currentUser.passions.run { isNotEmpty() && any(SportEquipment.passions::contains) }) return emptyList()
 
         // Read CSV file
-        // numinstallation;nominstallation;adresse;codepostal;commune;typequipement;latitude;longitude
         val csvIS: InputStream =
             BufferedInputStream(app.resources.openRawResource(R.raw.liste_equipements_sportifs))
 
@@ -417,14 +373,7 @@ class ActivitiesRepository {
 
             addCity(commune)
             SportEquipment(
-                departement,
-                commune,
-                nom,
-                adresse,
-                codePostal,
-                true,
-                latitude,
-                longitude
+                departement, commune, nom, adresse, codePostal, true, latitude, longitude
             )
         }
     }
@@ -436,8 +385,7 @@ class ActivitiesRepository {
      * @return List<Association>
      */
     fun getAssociations(app: ChatBot): List<Association> {
-        if (app.currentUser.passions.let { it.isNotEmpty() && it.any(Association.passions::contains) })
-            return emptyList()
+        if (app.currentUser.passions.let { it.isNotEmpty() && it.any(Association.passions::contains) }) return emptyList()
 
         // Read CSV file
         val csvIS: InputStream =
@@ -576,7 +524,9 @@ class ActivitiesRepository {
      * @param departement
      * @return List<T>
      */
-    fun selectByDepartement(list: List<AbstractActivity>, departement: String): List<AbstractActivity> {
+    fun selectByDepartement(
+        list: List<AbstractActivity>, departement: String
+    ): List<AbstractActivity> {
         val clazz = list.first()::class
         return when (clazz) {
             Museum::class -> list.filter {
@@ -778,8 +728,7 @@ class ActivitiesRepository {
      * @return List<AbstractActivity>
      */
     fun selectByPostalCode(
-        list: List<AbstractActivity>,
-        codePostal: String
+        list: List<AbstractActivity>, codePostal: String
     ): List<AbstractActivity> {
         val clazz = list.first()::class
         return when (clazz) {
@@ -819,8 +768,7 @@ class ActivitiesRepository {
      * @return List<AbstractActivity>
      */
     fun selectByAccessible(
-        list: List<AbstractActivity>,
-        accessible: Boolean
+        list: List<AbstractActivity>, accessible: Boolean
     ): List<AbstractActivity> {
         val clazz = list.first()::class
         return when (clazz) {
@@ -862,8 +810,7 @@ class ActivitiesRepository {
      * @return List<AbstractActivity>
      */
     fun selectByPassion(
-        list: List<AbstractActivity>,
-        passion: String
+        list: List<AbstractActivity>, passion: String
     ): List<AbstractActivity> {
         // passion dans la liste des passions
         return list.filter { it.passions.contains(passion.lowercase()) }
@@ -882,8 +829,7 @@ class ActivitiesRepository {
                 .readTimeout(30, TimeUnit.SECONDS).writeTimeout(30, TimeUnit.SECONDS).build()
             val url = "https://nominatim.openstreetmap.org/search?q=${
                 commune.replace(
-                    " ",
-                    "+"
+                    " ", "+"
                 )
             }&format=json&addressdetails=1"
             val request = Request.Builder().url(url).build()
@@ -946,19 +892,16 @@ class ActivitiesRepository {
      * @return List<AbstractActivity>
      */
     fun selectByType(
-        it: List<AbstractActivity>,
-        type: Type
+        it: List<AbstractActivity>, type: Type
     ): List<AbstractActivity> {
         Log.d(TAG, "selectionnerParType: filtre = $type")
         return when (type) {
             Type.SPORT -> it.filter {
-                it is SportEquipment ||
-                        (it is Association && it.name.contains("sport", true))
+                it is SportEquipment || (it is Association && it.name.contains("sport", true))
             }
 
             Type.CULTURE -> it.filter {
-                it is Museum || it is Site || it is Exposition || it is Content ||
-                        it is Building || it is Garden || it is Festival
+                it is Museum || it is Site || it is Exposition || it is Content || it is Building || it is Garden || it is Festival
             }
 
             Type.MUSIC -> it.filter {
@@ -966,22 +909,32 @@ class ActivitiesRepository {
             }
 
             Type.CINEMA -> it.filter {
-                it is Festival && (it.discipline.contains("cinéma", true) ||
-                        it.discipline.contains("cinema", true))
+                it is Festival && (it.discipline.contains("cinéma", true) || it.discipline.contains(
+                    "cinema",
+                    true
+                ))
             }
 
             Type.LITTERATURE -> it.filter {
-                it is Festival &&
-                        (it.discipline.contains("littérature", true) ||
-                                it.discipline.contains("litterature", true) ||
-                                it.name.contains("livre", true) ||
-                                it.name.contains("livre", true)) ||
-                        (it is Content && (it.name.contains("livre", true) ||
-                                it.name.contains("littérature", true) ||
-                                it.name.contains("litterature", true))) ||
-                        (it is Association && (it.name.contains("littérature", true) ||
-                                it.name.contains("litterature", true) ||
-                                it.name.contains("livre", true)))
+                it is Festival && (it.discipline.contains(
+                    "littérature",
+                    true
+                ) || it.discipline.contains("litterature", true) || it.name.contains(
+                    "livre",
+                    true
+                ) || it.name.contains(
+                    "livre",
+                    true
+                )) || (it is Content && (it.name.contains(
+                    "livre",
+                    true
+                ) || it.name.contains("littérature", true) || it.name.contains(
+                    "litterature",
+                    true
+                ))) || (it is Association && (it.name.contains(
+                    "littérature",
+                    true
+                ) || it.name.contains("litterature", true) || it.name.contains("livre", true)))
             }
 
             Type.ASSOCIATION -> it.filterIsInstance<Association>()

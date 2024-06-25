@@ -1,5 +1,7 @@
 package fr.c1.chatbot.model
 
+import android.location.Location
+import android.util.Log
 import fr.c1.chatbot.ChatBot
 import fr.c1.chatbot.R
 import fr.c1.chatbot.model.activity.AbstractActivity
@@ -19,8 +21,6 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONArray
-import android.location.Location
-import android.util.Log
 import java.io.BufferedInputStream
 import java.io.InputStream
 import java.util.Locale
@@ -29,7 +29,9 @@ import java.util.concurrent.TimeUnit
 private const val TAG = "ActivitiesRepository"
 
 /**
- * Repository of activities
+ * Activities repository
+ *
+ * @constructor Create Activities repository
  */
 class ActivitiesRepository {
     companion object {
@@ -61,32 +63,28 @@ class ActivitiesRepository {
      * Add a city to the list
      */
     private fun addCity(str: String) {
-        if (str.isBlank())
-            return
+        if (str.isBlank()) return
 
-        if (str.any(Char::isDigit))
-            return
+        if (str.any(Char::isDigit)) return
 
-        val tmp = str
-            .trim('\"')
-            .lowercase(Locale.getDefault())
-            .replaceFirstChar {
-                if (it.isLowerCase()) it.titlecase(Locale.getDefault())
-                else it.toString()
-            }
+        val tmp = str.trim('\"').lowercase(Locale.getDefault()).replaceFirstChar {
+            if (it.isLowerCase()) it.titlecase(Locale.getDefault())
+            else it.toString()
+        }
 
         synchronized(cityList) {
-            if (!cityList.contains(tmp))
-                cityList.add(tmp)
+            if (!cityList.contains(tmp)) cityList.add(tmp)
         }
     }
 
     /**
-     * Initialise the museums list
+     * Get museums
+     *
+     * @param app
+     * @return List<Museum>
      */
     fun getMuseums(app: ChatBot): List<Museum> {
-        if (app.currentUser.passions.run { isNotEmpty() && any(Museum.passions::contains) })
-            return emptyList()
+        if (app.currentUser.passions.run { isNotEmpty() && any(Museum.passions::contains) }) return emptyList()
 
         // Read CSV file
         val csvIS: InputStream =
@@ -128,11 +126,13 @@ class ActivitiesRepository {
     }
 
     /**
-     * Initialise the patrimonial sites list
+     * Get sites
+     *
+     * @param app
+     * @return
      */
     fun getSites(app: ChatBot): List<Site> {
-        if (app.currentUser.passions.run { isNotEmpty() && any(Site.passions::contains) })
-            return emptyList()
+        if (app.currentUser.passions.run { isNotEmpty() && any(Site.passions::contains) }) return emptyList()
 
         // Read CSV file
         val csvIS: InputStream =
@@ -149,22 +149,19 @@ class ActivitiesRepository {
             addCity(commune)
 
             Site(
-                region,
-                departement,
-                commune,
-                true,
-                latitude,
-                longitude
+                region, departement, commune, true, latitude, longitude
             )
         }
     }
 
     /**
-     * Initialise the expositions list
+     * Get expositions
+     *
+     * @param app
+     * @return
      */
     fun getExpositions(app: ChatBot): List<Exposition> {
-        if (app.currentUser.passions.run { isNotEmpty() && any(Exposition.passions::contains) })
-            return emptyList()
+        if (app.currentUser.passions.run { isNotEmpty() && any(Exposition.passions::contains) }) return emptyList()
 
         // Read CSV file
         val csvIS: InputStream =
@@ -184,25 +181,19 @@ class ActivitiesRepository {
             addCity(commune)
 
             Exposition(
-                region,
-                departement,
-                identifiant,
-                commune,
-                nom,
-                url,
-                true,
-                latitude,
-                longitude
+                region, departement, identifiant, commune, nom, url, true, latitude, longitude
             )
         }
     }
 
     /**
-     * Initialise the cultural contents list
+     * Get contents
+     *
+     * @param app
+     * @return List<Content>
      */
     fun getContents(app: ChatBot): List<Content> {
-        if (app.currentUser.passions.run { isNotEmpty() && any(Content.passions::contains) })
-            return emptyList()
+        if (app.currentUser.passions.run { isNotEmpty() && any(Content.passions::contains) }) return emptyList()
 
         // Read CSV file
         val csvIS: InputStream =
@@ -223,26 +214,19 @@ class ActivitiesRepository {
             addCity(commune)
 
             Content(
-                identifiant,
-                commune,
-                nom,
-                adresse,
-                lieu,
-                codePostal,
-                url,
-                true,
-                latitude,
-                longitude
+                identifiant, commune, nom, adresse, lieu, codePostal, url, true, latitude, longitude
             )
         }
     }
 
     /**
-     * Initialise the buildings list
+     * Get buildings
+     *
+     * @param app
+     * @return List<Building>
      */
     fun getBuildings(app: ChatBot): List<Building> {
-        if (app.currentUser.passions.run { isNotEmpty() && any(Building.passions::contains) })
-            return emptyList()
+        if (app.currentUser.passions.run { isNotEmpty() && any(Building.passions::contains) }) return emptyList()
 
         // Read CSV file
         val csvIS: InputStream =
@@ -266,24 +250,19 @@ class ActivitiesRepository {
             addCity(commune)
 
             Building(
-                region,
-                departement,
-                commune,
-                nom,
-                adresse,
-                true,
-                latitude,
-                longitude
+                region, departement, commune, nom, adresse, true, latitude, longitude
             )
         }
     }
 
     /**
-     * Initialise the remarkable gardens list
+     * Get gardens
+     *
+     * @param app
+     * @return List<Garden>
      */
     fun getGardens(app: ChatBot): List<Garden> {
-        if (app.currentUser.passions.run { isNotEmpty() && any(Garden.passions::contains) })
-            return emptyList()
+        if (app.currentUser.passions.run { isNotEmpty() && any(Garden.passions::contains) }) return emptyList()
 
         // Read CSV file
         val csvIS: InputStream =
@@ -318,11 +297,13 @@ class ActivitiesRepository {
     }
 
     /**
-     * Initialise the festivals list
+     * Get festivals
+     *
+     * @param app
+     * @return List<Festival>
      */
     fun getFestivals(app: ChatBot): List<Festival> {
-        if (app.currentUser.passions.run { isNotEmpty() && any(Festival.passions::contains) })
-            return emptyList()
+        if (app.currentUser.passions.run { isNotEmpty() && any(Festival.passions::contains) }) return emptyList()
 
         // Read CSV file
         val csvIS: InputStream =
@@ -362,14 +343,15 @@ class ActivitiesRepository {
     }
 
     /**
-     * Initialise the sport equipments list
+     * Get sport equipments
+     *
+     * @param app
+     * @return List<SportEquipment>
      */
     fun getSportEquipments(app: ChatBot): List<SportEquipment> {
-        if (app.currentUser.passions.run { isNotEmpty() && any(SportEquipment.passions::contains) })
-            return emptyList()
+        if (app.currentUser.passions.run { isNotEmpty() && any(SportEquipment.passions::contains) }) return emptyList()
 
         // Read CSV file
-        // numinstallation;nominstallation;adresse;codepostal;commune;typequipement;latitude;longitude
         val csvIS: InputStream =
             BufferedInputStream(app.resources.openRawResource(R.raw.liste_equipements_sportifs))
 
@@ -391,24 +373,19 @@ class ActivitiesRepository {
 
             addCity(commune)
             SportEquipment(
-                departement,
-                commune,
-                nom,
-                adresse,
-                codePostal,
-                true,
-                latitude,
-                longitude
+                departement, commune, nom, adresse, codePostal, true, latitude, longitude
             )
         }
     }
 
     /**
-     * Initialise the associations list
+     * Get associations
+     *
+     * @param app
+     * @return List<Association>
      */
     fun getAssociations(app: ChatBot): List<Association> {
-        if (app.currentUser.passions.let { it.isNotEmpty() && it.any(Association.passions::contains) })
-            return emptyList()
+        if (app.currentUser.passions.let { it.isNotEmpty() && it.any(Association.passions::contains) }) return emptyList()
 
         // Read CSV file
         val csvIS: InputStream =
@@ -454,17 +431,22 @@ class ActivitiesRepository {
     }
 
     /**
-     * Display a list
+     * Display list
+     *
+     * @param list
      */
-    fun <T> displayList(list: List<T>) {
+    fun displayList(list: List<AbstractActivity>) {
         list.forEach { println(it) }
     }
 
     /**
-     * Sort the list by region (if the region criterion is present)
+     * Sort by region
+     *
+     * @param list
+     * @return List<AbstractActivity>
      */
-    fun <T> sortByRegion(list: List<T>): List<T> {
-        val clazz = list.first()!!::class
+    fun sortByRegion(list: List<AbstractActivity>): List<AbstractActivity> {
+        val clazz = list.first()::class
         return when (clazz) {
             Museum::class -> list.sortedBy { (it as Museum).region }
             Site::class -> list.sortedBy { (it as Site).region }
@@ -477,10 +459,14 @@ class ActivitiesRepository {
     }
 
     /**
-     * Select the elements by region (if the region criterion is present)
+     * Select by region
+     *
+     * @param list
+     * @param region
+     * @return List<AbstractActivity>
      */
-    fun <T> selectByRegion(list: List<T>, region: String): List<T> {
-        val clazz = list.first()!!::class
+    fun selectByRegion(list: List<AbstractActivity>, region: String): List<AbstractActivity> {
+        val clazz = list.first()::class
         return when (clazz) {
             Museum::class -> list.filter {
                 (it as Museum).region.lowercase().contains(region.lowercase())
@@ -511,10 +497,13 @@ class ActivitiesRepository {
     }
 
     /**
-     * Sort the list by department (if the department criterion is present)
+     * Sort by departement
+     *
+     * @param list
+     * @return List<AbstractActivity>
      */
-    fun <T> sortByDepartement(list: List<T>): List<T> {
-        val clazz = list.first()!!::class
+    fun sortByDepartement(list: List<AbstractActivity>): List<AbstractActivity> {
+        val clazz = list.first()::class
         return when (clazz) {
             Museum::class -> list.sortedBy { (it as Museum).department }
             Site::class -> list.sortedBy { (it as Site).department }
@@ -529,10 +518,16 @@ class ActivitiesRepository {
     }
 
     /**
-     * Select the elements by department (if the department criterion is present)
+     * Select by departement
+     *
+     * @param list
+     * @param departement
+     * @return List<T>
      */
-    fun <T> selectByDepartement(list: List<T>, departement: String): List<T> {
-        val clazz = list.first()!!::class
+    fun selectByDepartement(
+        list: List<AbstractActivity>, departement: String
+    ): List<AbstractActivity> {
+        val clazz = list.first()::class
         return when (clazz) {
             Museum::class -> list.filter {
                 (it as Museum).department.lowercase().contains(departement.lowercase())
@@ -571,10 +566,13 @@ class ActivitiesRepository {
     }
 
     /**
-     * Sort the list by commune (if the commune criterion is present)
+     * Sort by commune
+     *
+     * @param list
+     * @return List<AbstractActivity>
      */
-    fun <T> sortByCommune(list: List<T>): List<T> {
-        val clazz = list.first()!!::class
+    fun sortByCommune(list: List<AbstractActivity>): List<AbstractActivity> {
+        val clazz = list.first()::class
         return when (clazz) {
             Museum::class -> list.sortedBy { (it as Museum).commune }
             Site::class -> list.sortedBy { (it as Site).commune }
@@ -590,16 +588,23 @@ class ActivitiesRepository {
     }
 
     /**
-     * Select the elements by commune (if the commune criterion is present)
+     * Select by commune
+     *
+     * @param list
+     * @param commune
+     * @return List<AbstractActivity>
      */
     fun selectByCommune(list: List<AbstractActivity>, commune: String): List<AbstractActivity> =
         list.filter { it.commune.equals(commune, true) }
 
     /**
-     * Sort the list by name (if the name criterion is present)
+     * Sort by name
+     *
+     * @param list
+     * @return List<AbstractActivity>
      */
-    fun <T> sortByName(list: List<T>): List<T> {
-        val clazz = list.first()!!::class
+    fun sortByName(list: List<AbstractActivity>): List<AbstractActivity> {
+        val clazz = list.first()::class
         return when (clazz) {
             Museum::class -> list.sortedBy { (it as Museum).name }
             Exposition::class -> list.sortedBy { (it as Exposition).name }
@@ -614,10 +619,14 @@ class ActivitiesRepository {
     }
 
     /**
-     * Select the elements by name (if the name criterion is present)
+     * Select by name
+     *
+     * @param list
+     * @param nom
+     * @return List<AbstractActivity>
      */
-    fun <T> selectByName(list: List<T>, nom: String): List<T> {
-        val clazz = list.first()!!::class
+    fun selectByName(list: List<AbstractActivity>, nom: String): List<AbstractActivity> {
+        val clazz = list.first()::class
         return when (clazz) {
             Museum::class -> list.filter {
                 (it as Museum).name.lowercase().contains(nom.lowercase())
@@ -656,10 +665,13 @@ class ActivitiesRepository {
     }
 
     /**
-     * Trier la liste par lieu (si le critère lieu est présent)
+     * Sort by location
+     *
+     * @param list
+     * @return List<AbstractActivity>
      */
-    fun <T> sortByLocation(list: List<T>): List<T> {
-        val clazz = list.first()!!::class
+    fun sortByLocation(list: List<AbstractActivity>): List<AbstractActivity> {
+        val clazz = list.first()::class
         return when (clazz) {
             Museum::class -> list.sortedBy { (it as Museum).location }
             Content::class -> list.sortedBy { (it as Content).location }
@@ -668,10 +680,14 @@ class ActivitiesRepository {
     }
 
     /**
-     * Select the elements by location (if the location criterion is present)
+     * Select by location
+     *
+     * @param list
+     * @param lieu
+     * @return List<AbstractActivity>
      */
-    fun <T> selectByLocation(list: List<T>, lieu: String): List<T> {
-        val clazz = list.first()!!::class
+    fun selectByLocation(list: List<AbstractActivity>, lieu: String): List<AbstractActivity> {
+        val clazz = list.first()::class
         return when (clazz) {
             Museum::class -> list.filter {
                 (it as Museum).location.lowercase().contains(lieu.lowercase())
@@ -686,10 +702,13 @@ class ActivitiesRepository {
     }
 
     /**
-     * Sort the list by postal code (if the postal code criterion is present)
+     * Sort by postal code
+     *
+     * @param list
+     * @return List<AbstractActivity>
      */
-    fun <T> sortByPostalCode(list: List<T>): List<T> {
-        val clazz = list.first()!!::class
+    fun sortByPostalCode(list: List<AbstractActivity>): List<AbstractActivity> {
+        val clazz = list.first()::class
         return when (clazz) {
             Museum::class -> list.sortedBy { (it as Museum).postalCode }
             Content::class -> list.sortedBy { (it as Content).postalCode }
@@ -702,10 +721,16 @@ class ActivitiesRepository {
     }
 
     /**
-     * Select the elements by postal code (if the postal code criterion is present)
+     * Select by postal code
+     *
+     * @param list
+     * @param codePostal
+     * @return List<AbstractActivity>
      */
-    fun <T> selectByPostalCode(list: List<T>, codePostal: String): List<T> {
-        val clazz = list.first()!!::class
+    fun selectByPostalCode(
+        list: List<AbstractActivity>, codePostal: String
+    ): List<AbstractActivity> {
+        val clazz = list.first()::class
         return when (clazz) {
             Museum::class -> list.filter {
                 (it as Museum).postalCode.lowercase().contains(codePostal.lowercase())
@@ -736,10 +761,16 @@ class ActivitiesRepository {
     }
 
     /**
-     * Sort the list by accessibility (if the accessibility criterion is present)
+     * Select by accessible
+     *
+     * @param list
+     * @param accessible
+     * @return List<AbstractActivity>
      */
-    fun <T> selectByAccessible(list: List<T>, accessible: Boolean): List<T> {
-        val clazz = list.first()!!::class
+    fun selectByAccessible(
+        list: List<AbstractActivity>, accessible: Boolean
+    ): List<AbstractActivity> {
+        val clazz = list.first()::class
         return when (clazz) {
             Museum::class -> list.filter { (it as Museum).accessible == accessible }
             Site::class -> list.filter { (it as Site).accessible == accessible }
@@ -755,10 +786,13 @@ class ActivitiesRepository {
     }
 
     /**
-     * Sort the list by identifiant
+     * Sort by identifiant
+     *
+     * @param list
+     * @return List<AbstractActivity>
      */
-    fun <T> sortByIdentifiant(list: List<T>): List<T> {
-        val clazz = list.first()!!::class
+    fun sortByIdentifiant(list: List<AbstractActivity>): List<AbstractActivity> {
+        val clazz = list.first()::class
         return when (clazz) {
             Museum::class -> list.sortedBy { (it as Museum).id }
             Exposition::class -> list.sortedBy { (it as Exposition).id }
@@ -769,18 +803,24 @@ class ActivitiesRepository {
     }
 
     /**
-     * Select the elements by interest
+     * Select by passion
+     *
+     * @param list
+     * @param passion
+     * @return List<AbstractActivity>
      */
     fun selectByPassion(
-        list: List<AbstractActivity>,
-        passion: String
+        list: List<AbstractActivity>, passion: String
     ): List<AbstractActivity> {
         // passion dans la liste des passions
         return list.filter { it.passions.contains(passion.lowercase()) }
     }
 
     /**
-     * Get the coordinates of a city
+     * Get coordinates
+     *
+     * @param commune
+     * @return Pair<Double, Double>?
      */
 
     suspend fun getCoordinates(commune: String): Pair<Double, Double>? {
@@ -789,8 +829,7 @@ class ActivitiesRepository {
                 .readTimeout(30, TimeUnit.SECONDS).writeTimeout(30, TimeUnit.SECONDS).build()
             val url = "https://nominatim.openstreetmap.org/search?q=${
                 commune.replace(
-                    " ",
-                    "+"
+                    " ", "+"
                 )
             }&format=json&addressdetails=1"
             val request = Request.Builder().url(url).build()
@@ -813,7 +852,11 @@ class ActivitiesRepository {
     }
 
     /**
-     * Select the activities by distance
+     * Select by distance
+     *
+     * @param list
+     * @param distanceMax
+     * @return List<AbstractActivity>
      */
     fun selectByDistance(
         list: List<AbstractActivity>,
@@ -842,22 +885,23 @@ class ActivitiesRepository {
     }
 
     /**
-     * Select the activities by type
+     * Select by type
+     *
+     * @param it
+     * @param type
+     * @return List<AbstractActivity>
      */
     fun selectByType(
-        it: List<AbstractActivity>,
-        type: Type
+        it: List<AbstractActivity>, type: Type
     ): List<AbstractActivity> {
         Log.d(TAG, "selectionnerParType: filtre = $type")
         return when (type) {
             Type.SPORT -> it.filter {
-                it is SportEquipment ||
-                        (it is Association && it.name.contains("sport", true))
+                it is SportEquipment || (it is Association && it.name.contains("sport", true))
             }
 
             Type.CULTURE -> it.filter {
-                it is Museum || it is Site || it is Exposition || it is Content ||
-                        it is Building || it is Garden || it is Festival
+                it is Museum || it is Site || it is Exposition || it is Content || it is Building || it is Garden || it is Festival
             }
 
             Type.MUSIC -> it.filter {
@@ -865,22 +909,32 @@ class ActivitiesRepository {
             }
 
             Type.CINEMA -> it.filter {
-                it is Festival && (it.discipline.contains("cinéma", true) ||
-                        it.discipline.contains("cinema", true))
+                it is Festival && (it.discipline.contains("cinéma", true) || it.discipline.contains(
+                    "cinema",
+                    true
+                ))
             }
 
             Type.LITTERATURE -> it.filter {
-                it is Festival &&
-                        (it.discipline.contains("littérature", true) ||
-                                it.discipline.contains("litterature", true) ||
-                                it.name.contains("livre", true) ||
-                                it.name.contains("livre", true)) ||
-                        (it is Content && (it.name.contains("livre", true) ||
-                                it.name.contains("littérature", true) ||
-                                it.name.contains("litterature", true))) ||
-                        (it is Association && (it.name.contains("littérature", true) ||
-                                it.name.contains("litterature", true) ||
-                                it.name.contains("livre", true)))
+                it is Festival && (it.discipline.contains(
+                    "littérature",
+                    true
+                ) || it.discipline.contains("litterature", true) || it.name.contains(
+                    "livre",
+                    true
+                ) || it.name.contains(
+                    "livre",
+                    true
+                )) || (it is Content && (it.name.contains(
+                    "livre",
+                    true
+                ) || it.name.contains("littérature", true) || it.name.contains(
+                    "litterature",
+                    true
+                ))) || (it is Association && (it.name.contains(
+                    "littérature",
+                    true
+                ) || it.name.contains("litterature", true) || it.name.contains("livre", true)))
             }
 
             Type.ASSOCIATION -> it.filterIsInstance<Association>()

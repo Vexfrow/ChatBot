@@ -1,13 +1,19 @@
 package fr.c1.chatbot.model.messageManager
 
-import fr.c1.chatbot.utils.EventReminderWorker
-import fr.c1.chatbot.utils.toDate
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.work.WorkManager
-import android.util.Log
+import fr.c1.chatbot.utils.EventReminderWorker
+import fr.c1.chatbot.utils.toDate
 
 /**
- * Represents an event.
+ * Event
+ *
+ * @property id Event ID
+ * @property title Event title
+ * @property dtStart Event start date
+ * @property dtEnd Event end date
+ * @constructor Create Event with all its properties
  */
 data class Event(
     val id: Long,

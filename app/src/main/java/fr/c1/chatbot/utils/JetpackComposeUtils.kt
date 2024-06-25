@@ -11,6 +11,18 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 
+/**
+ * Items
+ *
+ * @param T
+ * @param items
+ * @param key
+ * @param span
+ * @param contentType
+ * @param itemContent
+ * @receiver
+ * @receiver
+ */
 inline fun <T> LazyGridScope.items(
     items: Collection<T>,
     noinline key: ((item: T) -> Any)? = null,
@@ -29,10 +41,21 @@ inline fun <T> LazyGridScope.items(
     }
 }
 
+/**
+ * Focus requester if not null
+ *
+ * @param fr
+ */
 fun Modifier.focusRequesterIfNotNull(fr: FocusRequester?) =
     if (fr == null) this
     else focusRequester(fr)
 
+/**
+ * Background if
+ *
+ * @param color
+ * @param condition
+ */
 fun Modifier.backgroundIf(color: Color, condition: Boolean) =
     if (condition) background(color)
     else this

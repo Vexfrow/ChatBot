@@ -7,4 +7,13 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="cameo_green">#FFAAC0AD</color>
+    <color name="blue_curacao">#FF32BECC</color>
+    <color name="blue_grotto">#FF5CACCE</color>
+    <color name="persian_violet">#FF8A8DB5</color>
+    <color name="french_blue">#FF0072B5</color>
+    <color name="bluing">#FF333E83</color>
+    <color name="dark_denim">#FF35465E</color>
+    <color name="plum_perfect">#FF473442</color>
 </resources>

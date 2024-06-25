@@ -1,14 +1,14 @@
 package fr.c1.chatbot.utils
 
-import fr.c1.chatbot.model.messageManager.Event
-import fr.c1.chatbot.utils.Calendar.PermissionsRequest.hasReadCalendarPermission
-import fr.c1.chatbot.utils.Calendar.PermissionsRequest.hasWriteCalendarPermission
 import android.Manifest
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
 import android.provider.CalendarContract
 import android.util.Log
+import fr.c1.chatbot.model.Event
+import fr.c1.chatbot.utils.Calendar.PermissionsRequest.hasReadCalendarPermission
+import fr.c1.chatbot.utils.Calendar.PermissionsRequest.hasWriteCalendarPermission
 
 private const val TAG = "Calendar"
 
@@ -150,7 +150,10 @@ object Calendar {
             put(CalendarContract.Calendars.NAME, "ChatBot")
             put(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME, "ChatBot")
             put(CalendarContract.Calendars.CALENDAR_COLOR, -0x10000)
-            put(CalendarContract.Calendars.CALENDAR_ACCESS_LEVEL, CalendarContract.Calendars.CAL_ACCESS_OWNER)
+            put(
+                CalendarContract.Calendars.CALENDAR_ACCESS_LEVEL,
+                CalendarContract.Calendars.CAL_ACCESS_OWNER
+            )
             put(CalendarContract.Calendars.SYNC_EVENTS, 1)
             put(CalendarContract.Calendars.VISIBLE, 1)
             put(CalendarContract.Calendars._ID, 99)

@@ -4,10 +4,31 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/**
+ * To bool
+ *
+ * @return
+ */
 fun Int.toBool(): Boolean = this != 0
+
+/**
+ * To int
+ *
+ * @return
+ */
 fun Boolean.toInt(): Int = if (this) 1 else 0
+
+/**
+ * To float
+ *
+ * @return
+ */
 fun Boolean.toFloat(): Float = if (this) 1f else 0f
 
-// Convertit un long en date
-fun Long.toDate(): String = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
-    .format(Date(this))
+/**
+ * To date
+ *
+ * @return
+ */
+fun Long.toDate(): String =
+    SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date(this))

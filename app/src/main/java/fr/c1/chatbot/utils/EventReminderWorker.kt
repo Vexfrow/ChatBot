@@ -16,7 +16,12 @@ import java.util.concurrent.TimeUnit
 private const val TAG = "EventReminderWorker"
 
 /**
- * Worker class for event reminders
+ * Event reminder worker
+ *
+ * @constructor
+ *
+ * @param context
+ * @param params
  */
 class EventReminderWorker(context: Context, params: WorkerParameters) :
     CoroutineWorker(context, params) {

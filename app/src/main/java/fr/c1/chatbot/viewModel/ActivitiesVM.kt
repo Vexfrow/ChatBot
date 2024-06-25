@@ -31,6 +31,13 @@ import kotlin.coroutines.CoroutineContext
 
 private const val TAG = "ActivitiesVM"
 
+/**
+ * Activities v m
+ *
+ * @property user
+ * @property repo
+ * @constructor Create empty Activities v m
+ */
 class ActivitiesVM(
     val user: User,
     val repo: ActivitiesRepository,
@@ -48,6 +55,9 @@ class ActivitiesVM(
     private var sportEquipments: Resource<List<SportEquipment>> = Resource.None()
     private var associations: Resource<List<Association>> = Resource.None()
 
+    /**
+     * All activities
+     */
     private val all: List<Resource<out List<AbstractActivity>>>
         get() = listOf(
             museums,
@@ -72,63 +82,73 @@ class ActivitiesVM(
     private suspend fun <T> withMain(block: suspend CoroutineScope.() -> T) =
         withContext(Dispatchers.Main, block)
 
-    fun load(ctx: ChatBot) {
+    /**
+     * Load activities
+     *
+     * @param app
+     */
+    fun load(app: ChatBot) {
         jobs[0] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start museums")
-            val tmp = repo.getMuseums(ctx)
+            val tmp = repo.getMuseums(app)
             withMain { museums = Resource.Success(tmp) }
             Log.i(TAG, "load: Finished museums")
         }
         jobs[1] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start sites")
-            val tmp = repo.getSites(ctx)
+            val tmp = repo.getSites(app)
             withMain { sites = Resource.Success(tmp) }
             Log.i(TAG, "load: Finished sites")
         }
         jobs[2] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start expositions")
-            val tmp = repo.getExpositions(ctx)
+            val tmp = repo.getExpositions(app)
             withMain { expositions = Resource.Success(tmp) }
             Log.i(TAG, "load: Finished expositions")
         }
         jobs[3] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start contents")
-            val tmp = repo.getContents(ctx)
+            val tmp = repo.getContents(app)
             withMain { contents = Resource.Success(tmp) }
             Log.i(TAG, "load: Finished contents")
         }
         jobs[4] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start buildings")
-            val tmp = repo.getBuildings(ctx)
+            val tmp = repo.getBuildings(app)
             withMain { buildings = Resource.Success(tmp) }
             Log.i(TAG, "load: Finished buildings")
         }
         jobs[5] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start gardens")
-            val tmp = repo.getGardens(ctx)
+            val tmp = repo.getGardens(app)
             withMain { gardens = Resource.Success(tmp) }
             Log.i(TAG, "load: Finished gardens")
         }
         jobs[6] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start festivals")
-            val tmp = repo.getFestivals(ctx)
+            val tmp = repo.getFestivals(app)
             withMain { festivals = Resource.Success(tmp) }
             Log.i(TAG, "load: Finished festivals")
         }
         jobs[7] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start sportEquipments")
-            val tmp = repo.getSportEquipments(ctx)
+            val tmp = repo.getSportEquipments(app)
             withMain { sportEquipments = Resource.Success(tmp) }
             Log.i(TAG, "load: Finished sportEquipments")
         }
         jobs[8] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start associations")
-            val tmp = repo.getAssociations(ctx)
+            val tmp = repo.getAssociations(app)
             withMain { associations = Resource.Success(tmp) }
             Log.i(TAG, "load: Finished associations")
         }
     }
 
+    /**
+     * Update result
+     *
+     * @param onFinish
+     */
     private fun updateResult(onFinish: suspend (List<AbstractActivity>) -> List<AbstractActivity>) {
         Dispatchers.Default.launch {
             resultJob?.join()
@@ -167,10 +187,16 @@ class ActivitiesVM(
 
     private val history: ArrayDeque<List<AbstractActivity>> = ArrayDeque()
 
+    /**
+     * Undo
+     */
     fun undo() {
         result = history.removeLastOrNull()?.let { Resource.Success(it) } ?: Resource.None()
     }
 
+    /**
+     * Reset
+     */
     fun reset() {
         result = Resource.None()
     }
@@ -187,6 +213,10 @@ class ActivitiesVM(
             }
         }
 
+    /**
+     * Add type
+     * @param type
+     */
     fun addType(type: Type) {
         updateResult {
             Log.i(TAG, "addType: Filter by type started")

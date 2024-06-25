@@ -48,17 +48,10 @@ class MessageVM(
     }
 
     //S'occupe de gérer les différentes actions
-    fun manageActions(action: TypeAction, text: String, app: ChatBot, activitiesVM: ActivitiesVM) {
+    fun manageActions(action: TypeAction, app: ChatBot, activitiesVM: ActivitiesVM) {
         when (action) {
             TypeAction.None -> {
-                addMessage(
-                    Message(
-                        messageContent = text,
-                        isUser = true,
-                        isScript = false,
-                        showing = true
-                    )
-                )
+
             }
 
             TypeAction.DateInput -> {}
@@ -80,13 +73,18 @@ class MessageVM(
             TypeAction.ChoosePassions -> {
             }
 
-            TypeAction.PhysicalActivity -> activitiesVM.addType(Type.SPORT)
-            TypeAction.CulturalActivity -> activitiesVM.addType(Type.CULTURE)
-            TypeAction.DeleteSuggestions -> {
-
+            TypeAction.PhysicalActivity -> {
+                messageHistory.removeLast()
+                messageHistory.add(Message("Je souhaite faire une activité physique", isUser = true, isScript = false, showing = true))
+                activitiesVM.addType(Type.SPORT)
+            }
+            TypeAction.CulturalActivity -> {
+                messageHistory.removeLast()
+                messageHistory.add(Message("Je souhaite faire une activité culturelle", isUser = true, isScript = false, showing = true))
+                activitiesVM.addType(Type.CULTURE)
             }
 
-            TypeAction.DeletNotifs -> {
+            TypeAction.DeleteNotifs -> {
                 disableNotification(context)
             }
 
@@ -110,10 +108,10 @@ class MessageVM(
                 messageHistory.add(
                     Message(
                         messageContent = "Voici la liste des filtres utilisés : \n" +
-                                "Villes : ${app.currentUser.cities}\n" +
-                                "Types d'activités : ${app.currentUser.types}\n" +
-                                "Distance : ${activitiesVM.distance}\n" +
-                                "Dates: ${activitiesVM.date}\n",
+                                if(app.currentUser.cities.isEmpty()) "Villes : ${app.currentUser.cities}\n" else "" +
+                                if(app.currentUser.types.isEmpty()) "Types d'activités : ${app.currentUser.types}\n" else "" +
+                                "Distance : Corenthin ne veut pas me donner la distance\n" +
+                                "Dates: Corenthin est un petit con\n",
                         isUser = false,
                         isScript = false,
                         showing = true
@@ -129,19 +127,20 @@ class MessageVM(
 
         chatBotTree.selectAnswer(id, user)
         if (text != null)
-            manageActions(chatBotTree.getUserAction(id), text, app, activitiesVM)
+            addMessage(Message(text, isUser = true, isScript = false, showing = true))
         else
-            manageActions(
-                chatBotTree.getUserAction(id),
-                chatBotTree.getAnswerText(id),
-                app,
-                activitiesVM
-            )
+            addMessage(Message(chatBotTree.getAnswerText(id), isUser = true, isScript = false, showing = true))
+
+        manageActions(
+            chatBotTree.getUserAction(id),
+            app,
+            activitiesVM
+        )
     }
 
     fun updateQuestion(app: ChatBot, activitiesVM: ActivitiesVM) {
-        addMessage(Message(messageContent = chatBotTree.question, isUser = false, isScript = true))
-        manageActions(chatBotTree.botAction, chatBotTree.question, app, activitiesVM)
+        addMessage(Message(messageContent = chatBotTree.question, isUser = false, isScript = true, showing = true))
+        manageActions(chatBotTree.botAction, app, activitiesVM)
     }
 
 

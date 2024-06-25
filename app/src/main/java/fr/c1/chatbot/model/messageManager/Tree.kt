@@ -105,13 +105,6 @@ class Tree {
     fun restart() {
         questionsHistory.removeAll(questionsHistory.toSet())
         questionsHistory.add(0)
-        messageManager?.addMessage(
-            Message(
-                messageContent = question,
-                isUser = false,
-                isScript = true
-            )
-        )
     }
 
     fun back() {

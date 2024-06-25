@@ -6,15 +6,22 @@ sealed class Resource<T>(
     val data: T? = null,
     val error: Throwable? = null
 ) {
-    class None<T>() : Resource<T>()
+    class None<T> : Resource<T>()
     class Success<T>(data: T) : Resource<T>(data = data)
     class Loading<T>(data: T) : Resource<T>(data = data)
-    class Failed<T>(error: Throwable, data: T? = null) : Resource<T>(error = error)
+    class Failed<T>(error: Throwable, data: T? = null) : Resource<T>(error = error, data = data)
 
-    fun succeed() = when(this) {
+    fun succeed() = when (this) {
         is Success -> this
         is None -> Success(null)
         is Loading -> Success(data)
         is Failed -> throw IllegalStateException()
+    }
+
+    override fun toString(): String = this::class.qualifiedName + when (this) {
+        is None -> ""
+        is Success -> "$data"
+        is Loading -> "$data"
+        is Failed -> "error=$error, data=$data"
     }
 }

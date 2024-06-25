@@ -3,7 +3,6 @@ package fr.c1.chatbot.model
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import android.util.Log
-import fr.c1.chatbot.R
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
@@ -96,7 +95,7 @@ class Tree {
 
 
     //Update the current question and execute the action link to the answer chosen
-    fun selectAnswer(idAnswer: Int, user: User) {
+    fun selectAnswer(idAnswer: Int) {
 
         if (currentScript != Settings.botPersonality) {
             currentScript = Settings.botPersonality
@@ -123,7 +122,6 @@ class Tree {
 
                 }
             }
-            Log.d(TAG, "selectAnswer: new type : ${user.types}")
         }
     }
 

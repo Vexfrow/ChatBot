@@ -11,13 +11,14 @@ import fr.c1.chatbot.composable.Suggestion
 import fr.c1.chatbot.composable.Tab
 import fr.c1.chatbot.composable.TopBar
 import fr.c1.chatbot.model.Settings
-import fr.c1.chatbot.model.storeAllUsersInformation
+import fr.c1.chatbot.repositories.UserRepository
 import fr.c1.chatbot.ui.theme.ChatBotTheme
 import fr.c1.chatbot.utils.UnitLaunchedEffect
 import fr.c1.chatbot.utils.app
 import fr.c1.chatbot.utils.rememberMutableStateListOf
 import fr.c1.chatbot.utils.rememberMutableStateOf
 import fr.c1.chatbot.viewModel.ActivitiesVM
+import fr.c1.chatbot.viewModel.UserVM
 import org.osmdroid.config.Configuration
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -30,8 +31,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.preference.PreferenceManager
@@ -83,14 +86,25 @@ class MainActivity : ComponentActivity() {
      */
     @Composable
     private operator fun invoke() = ChatBotTheme {
+        var inited by rememberMutableStateOf(value = false)
+        val userVM = remember { UserVM() }
+
         // Request all needed permissions
-        if (!app.inited) {
-            HomeLoading()
+        if (!inited) {
+            Scaffold { padding ->
+                Surface(
+                    modifier = Modifier
+                        .padding(padding)
+                        .fillMaxSize()
+                ) { HomeLoading(app, userVM) { inited = true } }
+            }
             PermissionsContent(context = this)
             return@ChatBotTheme
         }
 
-        val activitiesVM = ActivitiesVM(app.currentUser, app.activitiesRepository)
+        val activitiesVM = remember {
+            ActivitiesVM(userVM.currentUser!!, app.activitiesRepository)
+        }
 
         UnitLaunchedEffect {
             activitiesVM.load(app)
@@ -106,7 +120,7 @@ class MainActivity : ComponentActivity() {
             val accountTabs =
                 listOf(Tab.AccountPassions, Tab.AccountData, Tab.AccountPreferences)
             if (tab in accountTabs && value !in accountTabs)
-                storeAllUsersInformation(this, app.userList)
+                UserRepository.storeAll(this, userVM.users.data!!)
 
             tab = value
         }
@@ -138,16 +152,11 @@ class MainActivity : ComponentActivity() {
                     Tab.Settings -> SettingsComp()
 
                     Tab.AccountPassions -> AccountComp.PassionsList(
-                        selected = app.currentUser::hasPassion,
-                        onSelectionChanged = { passion, state ->
-                            with(app.currentUser) {
-                                if (state) addPassion(passion)
-                                else removePassion(passion)
-                            }
-                        }
+                        userVM = userVM,
+                        selected = userVM.currentUser!!::hasPassion
                     )
 
-                    Tab.AccountData -> AccountComp.Data()
+                    Tab.AccountData -> AccountComp.Data(userVM.currentUser!!)
                     Tab.AccountPreferences -> AccountComp.Preferences()
                     Tab.ChatBotMap -> OsmdroidMapView()
                     Tab.Suggestion -> Suggestion()

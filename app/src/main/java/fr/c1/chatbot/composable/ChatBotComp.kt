@@ -67,7 +67,6 @@ object ChatBotComp {
         val tree = app.chatbotTree
         val crtScope = rememberCoroutineScope()
         val lazyListState = rememberLazyListState()
-        val user = app.currentUser
 
         val tts = application.tts
 
@@ -147,7 +146,7 @@ object ChatBotComp {
             fun addAnswer(id: Int, answer: String? = null) {
                 reset()
                 messages.add(answer ?: tree.getAnswerText(id))
-                tree.selectAnswer(id, user)
+                tree.selectAnswer(id)
 
                 crtScope.launch {
                     lazyListState.animateScrollToItem(messages.size)

@@ -37,6 +37,7 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBarColors
 import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -96,7 +97,7 @@ fun SearchBar(
 ) {
     Surface(
         shape = shape,
-                            color = colors.containerColor,
+        color = colors.containerColor,
         contentColor = Color.Red,
         tonalElevation = tonalElevation,
         shadowElevation = shadowElevation,
@@ -192,7 +193,12 @@ fun MySearchBar(
         else -> mod
     }
 
-    val dpState = rememberDatePickerState()
+    val dpState = rememberDatePickerState(
+        selectableDates = object : SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean =
+                utcTimeMillis > System.currentTimeMillis()
+        }
+    )
     var currentMillis by remember { mutableLongStateOf(-1L) }
 
     if (showDp)
@@ -308,7 +314,7 @@ fun MyDatePicker(
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(
-                enabled = state.selectedDateMillis != null,
+                enabled = state.selectedDateMillis != null && state.selectedDateMillis!! > System.currentTimeMillis(),
                 onClick = onConfirm
             ) { Text(text = "OK") }
         }

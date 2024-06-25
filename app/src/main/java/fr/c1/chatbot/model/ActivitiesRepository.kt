@@ -1,6 +1,5 @@
 package fr.c1.chatbot.model
 
-import fr.c1.chatbot.ChatBot
 import fr.c1.chatbot.R
 import fr.c1.chatbot.model.activity.AbstractActivity
 import fr.c1.chatbot.model.activity.Association
@@ -19,6 +18,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONArray
+import android.content.Context
 import android.location.Location
 import android.util.Log
 import java.io.BufferedInputStream
@@ -84,13 +84,13 @@ class ActivitiesRepository {
     /**
      * Initialise the museums list
      */
-    fun getMuseums(app: ChatBot): List<Museum> {
-        if (app.currentUser.passions.run { isNotEmpty() && any(Museum.passions::contains) })
+    fun getMuseums(currentUser: User, ctx: Context): List<Museum> {
+        if (currentUser.passions.run { isNotEmpty() && any(Museum.passions::contains) })
             return emptyList()
 
         // Read CSV file
         val csvIS: InputStream =
-            BufferedInputStream(app.resources.openRawResource(R.raw.liste_musees_france))
+            BufferedInputStream(ctx.resources.openRawResource(R.raw.liste_musees_france))
 
         // Parse CSV file
         return parseCsv(csvIS) { csvRecord ->
@@ -130,13 +130,13 @@ class ActivitiesRepository {
     /**
      * Initialise the patrimonial sites list
      */
-    fun getSites(app: ChatBot): List<Site> {
-        if (app.currentUser.passions.run { isNotEmpty() && any(Site.passions::contains) })
+    fun getSites(currentUser: User, ctx: Context): List<Site> {
+        if (currentUser.passions.run { isNotEmpty() && any(Site.passions::contains) })
             return emptyList()
 
         // Read CSV file
         val csvIS: InputStream =
-            BufferedInputStream(app.resources.openRawResource(R.raw.liste_sites_patrimoniaux))
+            BufferedInputStream(ctx.resources.openRawResource(R.raw.liste_sites_patrimoniaux))
 
         // Parse CSV file
         return parseCsv(csvIS) { csvRecord ->
@@ -162,13 +162,13 @@ class ActivitiesRepository {
     /**
      * Initialise the expositions list
      */
-    fun getExpositions(app: ChatBot): List<Exposition> {
-        if (app.currentUser.passions.run { isNotEmpty() && any(Exposition.passions::contains) })
+    fun getExpositions(currentUser: User, ctx: Context): List<Exposition> {
+        if (currentUser.passions.run { isNotEmpty() && any(Exposition.passions::contains) })
             return emptyList()
 
         // Read CSV file
         val csvIS: InputStream =
-            BufferedInputStream(app.resources.openRawResource(R.raw.liste_expositions))
+            BufferedInputStream(ctx.resources.openRawResource(R.raw.liste_expositions))
 
         // Parse CSV file
         return parseCsv(csvIS) { csvRecord ->
@@ -200,13 +200,13 @@ class ActivitiesRepository {
     /**
      * Initialise the cultural contents list
      */
-    fun getContents(app: ChatBot): List<Content> {
-        if (app.currentUser.passions.run { isNotEmpty() && any(Content.passions::contains) })
+    fun getContents(currentUser: User, ctx: Context): List<Content> {
+        if (currentUser.passions.run { isNotEmpty() && any(Content.passions::contains) })
             return emptyList()
 
         // Read CSV file
         val csvIS: InputStream =
-            BufferedInputStream(app.resources.openRawResource(R.raw.liste_culture))
+            BufferedInputStream(ctx.resources.openRawResource(R.raw.liste_culture))
 
         // Parse CSV file
         return parseCsv(csvIS) { csvRecord ->
@@ -240,13 +240,13 @@ class ActivitiesRepository {
     /**
      * Initialise the buildings list
      */
-    fun getBuildings(app: ChatBot): List<Building> {
-        if (app.currentUser.passions.run { isNotEmpty() && any(Building.passions::contains) })
+    fun getBuildings(currentUser: User, ctx: Context): List<Building> {
+        if (currentUser.passions.run { isNotEmpty() && any(Building.passions::contains) })
             return emptyList()
 
         // Read CSV file
         val csvIS: InputStream =
-            BufferedInputStream(app.resources.openRawResource(R.raw.liste_edifices_architecture_contemporaine))
+            BufferedInputStream(ctx.resources.openRawResource(R.raw.liste_edifices_architecture_contemporaine))
 
         // Parse CSV file
         return parseCsv(csvIS) { csvRecord ->
@@ -281,13 +281,13 @@ class ActivitiesRepository {
     /**
      * Initialise the remarkable gardens list
      */
-    fun getGardens(app: ChatBot): List<Garden> {
-        if (app.currentUser.passions.run { isNotEmpty() && any(Garden.passions::contains) })
+    fun getGardens(currentUser: User, ctx: Context): List<Garden> {
+        if (currentUser.passions.run { isNotEmpty() && any(Garden.passions::contains) })
             return emptyList()
 
         // Read CSV file
         val csvIS: InputStream =
-            BufferedInputStream(app.resources.openRawResource(R.raw.liste_jardins_remarquables))
+            BufferedInputStream(ctx.resources.openRawResource(R.raw.liste_jardins_remarquables))
 
         // Parse CSV file
         return parseCsv(csvIS) { csvRecord ->
@@ -320,13 +320,13 @@ class ActivitiesRepository {
     /**
      * Initialise the festivals list
      */
-    fun getFestivals(app: ChatBot): List<Festival> {
-        if (app.currentUser.passions.run { isNotEmpty() && any(Festival.passions::contains) })
+    fun getFestivals(currentUser: User, ctx: Context): List<Festival> {
+        if (currentUser.passions.run { isNotEmpty() && any(Festival.passions::contains) })
             return emptyList()
 
         // Read CSV file
         val csvIS: InputStream =
-            BufferedInputStream(app.resources.openRawResource(R.raw.liste_festivals))
+            BufferedInputStream(ctx.resources.openRawResource(R.raw.liste_festivals))
 
         // Parse CSV file
         return parseCsv(csvIS) { csvRecord ->
@@ -364,14 +364,14 @@ class ActivitiesRepository {
     /**
      * Initialise the sport equipments list
      */
-    fun getSportEquipments(app: ChatBot): List<SportEquipment> {
-        if (app.currentUser.passions.run { isNotEmpty() && any(SportEquipment.passions::contains) })
+    fun getSportEquipments(currentUser: User, ctx: Context): List<SportEquipment> {
+        if (currentUser.passions.run { isNotEmpty() && any(SportEquipment.passions::contains) })
             return emptyList()
 
         // Read CSV file
         // numinstallation;nominstallation;adresse;codepostal;commune;typequipement;latitude;longitude
         val csvIS: InputStream =
-            BufferedInputStream(app.resources.openRawResource(R.raw.liste_equipements_sportifs))
+            BufferedInputStream(ctx.resources.openRawResource(R.raw.liste_equipements_sportifs))
 
         // Parse CSV file
         return parseCsv(csvIS) { csvRecord ->
@@ -406,13 +406,13 @@ class ActivitiesRepository {
     /**
      * Initialise the associations list
      */
-    fun getAssociations(app: ChatBot): List<Association> {
-        if (app.currentUser.passions.let { it.isNotEmpty() && it.any(Association.passions::contains) })
+    fun getAssociations(currentUser: User, ctx: Context): List<Association> {
+        if (currentUser.passions.let { it.isNotEmpty() && it.any(Association.passions::contains) })
             return emptyList()
 
         // Read CSV file
         val csvIS: InputStream =
-            BufferedInputStream(app.resources.openRawResource(R.raw.liste_asso))
+            BufferedInputStream(ctx.resources.openRawResource(R.raw.liste_asso))
 
         // Parse CSV file
         return parseCsv(csvIS) { csvRecord ->

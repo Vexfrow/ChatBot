@@ -3,9 +3,6 @@ package fr.c1.chatbot
 import fr.c1.chatbot.model.ActivitiesRepository
 import fr.c1.chatbot.model.Settings
 import fr.c1.chatbot.model.Tree
-import fr.c1.chatbot.model.User
-import fr.c1.chatbot.model.loadAllUsersInformation
-import fr.c1.chatbot.model.storeAllUsersInformation
 import fr.c1.chatbot.utils.TTS
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,12 +29,6 @@ class ChatBot : Application() {
     /** Tree that represent the bot questions and user answers */
     val chatbotTree = Tree()
 
-    /** List of all users */
-    var userList = mutableListOf<User>()
-
-    /** The current user currently "connected" */
-    lateinit var currentUser: User
-
     /** TTS system */
     lateinit var tts: TTS
         private set
@@ -47,12 +38,10 @@ class ChatBot : Application() {
      * - Init the [Settings]
      * - Init the [chatbotTree]
      * - Init the [tts]
-     * - Init the [userList]
      *
      * @see Settings.init
      * @see Tree.initTree
      * @see TTS
-     * @see loadAllUsersInformation
      */
     fun init() {
         if (inited)
@@ -69,15 +58,6 @@ class ChatBot : Application() {
         chatbotTree.initTree(mapScript)
 
         tts = TTS(this)
-
-
-        // Load user list
-        userList = loadAllUsersInformation(this)
-        if (userList.isEmpty()) {
-            userList.add(User("1", "User", 20))
-            storeAllUsersInformation(this, userList)
-        }
-        currentUser = userList[0]
 
         inited = true
     }

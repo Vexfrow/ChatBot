@@ -41,24 +41,24 @@
       "text": "Dis-moi ton souci, je peux peut-être t'aider ?"
     },
     {
-      "id": 13,
+      "id": 10,
       "text": "**Indication pour voir l'historique de recherche**"
     },
     {
-      "id": 14,
+      "id": 11,
       "text": "Je vais retrouver ça en un clin d'oeil, tape le nom de l'activité si tu t'en souviens.\n Sinon tu peux regarder dans :\n- L'historique de recherche\n- Les activités enregistrées"
     },
     {
-      "id": 15,
+      "id": 12,
       "text": "Je suis désolé je ne peux pas effectuer cette action pour le moment, problème de dos."
     },
     {
-      "id": 16,
+      "id": 13,
       "text": "Super, tu peux voir les activités disponibles dans l'onglet 'Résultats', j'espère que ça te plaira !",
       "action": "ShowResults"
     },
     {
-      "id": 17,
+      "id": 14,
       "text": "Hop là, j'ai fait un peu de ménage ! Un peu d'exercice ça fait pas de mal.",
       "action": "DeletNotifs"
     }
@@ -123,30 +123,45 @@
       "text": "Bonjour, j'ai besoin d'aide"
     },
     {
-      "id": 1016,
+      "id": 1013,
       "text": "Je souhaite accéder à mon historique de recherche ?"
     },
     {
-      "id": 1017,
+      "id": 1014,
       "text": "Je ne trouve plus d'activité intéressante"
     },
     {
-      "id": 1018,
+      "id": 1015,
       "text": "Je souhaite proposer de nouvelles activités"
     },
     {
-      "id": 1019,
+      "id": 1016,
       "text": "Choisir passions",
       "actions": "ChoisirPassions"
     },
     {
-      "id": 1020,
+      "id": 1017,
       "text": "Passer à la suite",
       "action": "Skip"
     },
     {
-      "id": 1021,
+      "id": 1018,
       "text": "Je souhaite désactiver toutes les notifications"
+    },
+    {
+      "id": 1019,
+      "text": "Régulièrement",
+      "action": "BigSportif"
+    },
+    {
+      "id": 1020,
+      "text": "De temps en temps",
+      "action": "LittleSportif"
+    },
+    {
+      "id": 1021,
+      "text": "Très peu",
+      "action": "InexistantSportif"
     },
     {
       "id": -1,
@@ -218,62 +233,67 @@
     {
       "from": 5,
       "to": 6,
-      "answer": 1008
+      "answer": 1016
     },
     {
       "from": 5,
       "to": 6,
-      "answer": 1009
+      "answer": 1017
+    },
+    {
+      "from": 5,
+      "to": 6,
+      "answer": 1018
     },
     {
       "from": 7,
       "to": 6,
-      "answer": 1019
+      "answer": 1016
     },
     {
       "from": 6,
-      "to": 16,
+      "to": 13,
       "answer": 1008
     },
     {
       "from": 6,
-      "to": 16,
+      "to": 13,
       "answer": 1009
     },
     {
       "from": 6,
-      "to": 16,
+      "to": 13,
       "answer": 1010
     },
     {
       "from": 8,
-      "to": 16,
+      "to": 13,
       "answer": 1006
     },
     {
       "from": 8,
-      "to": 16,
+      "to": 13,
       "answer": 1002
     },
     {
       "from": 9,
-      "to": 17,
-      "answer": 1021
-    },
-    {
-      "from": 9,
-      "to": 13,
-      "answer": 1016
-    },
-    {
-      "from": 9,
       "to": 14,
-      "answer": 1017
+      "answer": 1018
     },
     {
       "from": 9,
-      "to": 15,
-      "answer": 1018
+      "to": 10,
+      "answer": 1013
+    },
+    {
+      "from": 9,
+      "to": 11,
+      "answer": 1014
+    },
+    {
+      "from": 9,
+      "to": 12,
+      "answer": 1015
     }
   ]
 }

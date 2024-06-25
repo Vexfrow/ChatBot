@@ -38,12 +38,10 @@ class ChatBot : Application() {
     /**
      * Initialize the application :
      * - Init the [Settings]
-     * - Init the [chatbotTree]
      * - Init the [tts]
      * - Init the [userList]
      *
      * @see Settings.init
-     * @see Tree.initTree
      * @see TTS
      * @see loadAllUsersInformation
      */

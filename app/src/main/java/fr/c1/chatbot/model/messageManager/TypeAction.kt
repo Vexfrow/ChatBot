@@ -28,12 +28,16 @@ enum class TypeAction {
     /** Just a suggestion */
     CulturalActivity,
 
-
     DeleteNotifs,
+
+    BigSportif,
+
+    LittleSportif,
+
+    InexistantSportif,
 
     /** Just a suggestion */
     Back,
     Restart,
     ShowFilters,
-    Skip
 }

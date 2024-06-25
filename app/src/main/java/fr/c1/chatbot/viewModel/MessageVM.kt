@@ -1,7 +1,6 @@
 package fr.c1.chatbot.viewModel
 
 import android.annotation.SuppressLint
-import android.app.Application
 import android.content.Context
 import android.location.Location
 import androidx.compose.runtime.mutableStateListOf
@@ -14,7 +13,6 @@ import fr.c1.chatbot.model.messageManager.Message
 import fr.c1.chatbot.model.messageManager.Tree
 import fr.c1.chatbot.model.messageManager.TypeAction
 import fr.c1.chatbot.utils.LocationHandler
-import fr.c1.chatbot.utils.application
 import fr.c1.chatbot.utils.disableNotification
 import java.io.InputStream
 
@@ -31,7 +29,8 @@ class MessageVM(
     private val messageHistory = mutableStateListOf<Message>()
     val messages get() = messageHistory.toList()
 
-    val optionsAvailable: ArrayList<Message> = ArrayList()
+    private val optionsAvailable = mutableStateListOf<String>()
+    val answers get() = optionsAvailable.toList()
 
     @SuppressLint("StaticFieldLeak")
     private val context = ctx
@@ -40,6 +39,7 @@ class MessageVM(
     //Initialise le messageManager (mm)
     fun initMessageManager() {
         chatBotTree.initTree(this, mapScript)
+        chatBotTree.answersId.map { optionsAvailable.add(chatBotTree.getAnswerText(it))}
     }
 
     //Rajoute un message à la liste des message
@@ -48,7 +48,7 @@ class MessageVM(
     }
 
     //S'occupe de gérer les différentes actions
-    fun manageActions(action: TypeAction, app: ChatBot, activitiesVM: ActivitiesVM) {
+    private fun manageActions(action: TypeAction, app: ChatBot, activitiesVM: ActivitiesVM) {
         when (action) {
             TypeAction.None -> {
 
@@ -59,10 +59,13 @@ class MessageVM(
             TypeAction.CityInput -> {}
             TypeAction.ShowResults -> {}
             TypeAction.Geolocate -> {
+                messageHistory.removeLast()
                 app.activitiesRepository.location = LocationHandler.currentLocation ?: Location("")
                 addMessage(
                     Message(
-                        messageContent = "Je suis ici : ${LocationHandler.currentLocation!!.longitude}, ${LocationHandler.currentLocation?.latitude}",
+                        messageContent = "Je suis situé ici :\n" +
+                                "\t ${LocationHandler.currentLocation!!.longitude}\n" +
+                                "\t ${LocationHandler.currentLocation?.latitude}",
                         isUser = true,
                         isScript = false,
                         showing = true
@@ -75,12 +78,27 @@ class MessageVM(
 
             TypeAction.PhysicalActivity -> {
                 messageHistory.removeLast()
-                messageHistory.add(Message("Je souhaite faire une activité physique", isUser = true, isScript = false, showing = true))
+                messageHistory.add(
+                    Message(
+                        "Je souhaite faire une activité physique",
+                        isUser = true,
+                        isScript = false,
+                        showing = true
+                    )
+                )
                 activitiesVM.addType(Type.SPORT)
             }
+
             TypeAction.CulturalActivity -> {
                 messageHistory.removeLast()
-                messageHistory.add(Message("Je souhaite faire une activité culturelle", isUser = true, isScript = false, showing = true))
+                messageHistory.add(
+                    Message(
+                        "Je souhaite faire une activité culturelle",
+                        isUser = true,
+                        isScript = false,
+                        showing = true
+                    )
+                )
                 activitiesVM.addType(Type.CULTURE)
             }
 
@@ -95,6 +113,9 @@ class MessageVM(
                     messageHistory.removeAt(i)
                     i--
                 }
+                if (i > 0)
+                    messageHistory.removeLast()
+
                 activitiesVM.undo()
             }
 
@@ -105,13 +126,28 @@ class MessageVM(
             }
 
             TypeAction.ShowFilters -> {
+                messageHistory.removeLast()
+                messageHistory.add(
+                    Message(
+                        "Je souhaite afficher les filtres utilisés pour ma recherche",
+                        isUser = true,
+                        isScript = false,
+                        showing = true
+                    )
+                )
+
+
                 messageHistory.add(
                     Message(
                         messageContent = "Voici la liste des filtres utilisés : \n" +
-                                if(app.currentUser.cities.isEmpty()) "Villes : ${app.currentUser.cities}\n" else "" +
-                                if(app.currentUser.types.isEmpty()) "Types d'activités : ${app.currentUser.types}\n" else "" +
-                                "Distance : Corenthin ne veut pas me donner la distance\n" +
-                                "Dates: Corenthin est un petit con\n",
+                                if (app.currentUser.cities.isNotEmpty()) "Villes : ${app.currentUser.cities}\n" else {
+                                    "Villes : Aucunes sélectionnées\n\n"
+                                } +
+                                if (app.currentUser.types.isNotEmpty()) "Types d'activités : ${app.currentUser.types}\n" else {
+                                    "Types d'activités : Aucuns sélectionnés\n\n"
+                                } +
+                                "Distance : Corenthin ne veut pas me donner la distance\n\n" +
+                                "Dates: Corenthin est un petit con qui ne veut pas faire de date avec moi ><\n\n",
                         isUser = false,
                         isScript = false,
                         showing = true
@@ -119,17 +155,60 @@ class MessageVM(
                 )
             }
 
-            TypeAction.Skip -> TODO()
+
+            //No differences between all of them
+            TypeAction.BigSportif -> {
+                messageHistory.removeLast()
+                messageHistory.add(
+                    Message(
+                        "Je fait du sport régulièrement",
+                        isUser = true,
+                        isScript = false,
+                        showing = true
+                    )
+                )
+            }
+
+            TypeAction.LittleSportif -> {
+                messageHistory.removeLast()
+                messageHistory.add(
+                    Message(
+                        "Je fait du sport de temps en temps",
+                        isUser = true,
+                        isScript = false,
+                        showing = true
+                    )
+                )
+            }
+
+            TypeAction.InexistantSportif -> {
+                messageHistory.removeLast()
+                messageHistory.add(
+                    Message(
+                        "Je fait très peu d'activités physiques",
+                        isUser = true,
+                        isScript = false,
+                        showing = true
+                    )
+                )
+            }
         }
     }
 
     fun selectAnswer(id: Int, text: String?, user: User, app: ChatBot, activitiesVM: ActivitiesVM) {
-
+        optionsAvailable.removeAll(optionsAvailable.toSet())
         chatBotTree.selectAnswer(id, user)
         if (text != null)
             addMessage(Message(text, isUser = true, isScript = false, showing = true))
         else
-            addMessage(Message(chatBotTree.getAnswerText(id), isUser = true, isScript = false, showing = true))
+            addMessage(
+                Message(
+                    chatBotTree.getAnswerText(id),
+                    isUser = true,
+                    isScript = false,
+                    showing = true
+                )
+            )
 
         manageActions(
             chatBotTree.getUserAction(id),
@@ -139,9 +218,16 @@ class MessageVM(
     }
 
     fun updateQuestion(app: ChatBot, activitiesVM: ActivitiesVM) {
-        addMessage(Message(messageContent = chatBotTree.question, isUser = false, isScript = true, showing = true))
+        addMessage(
+            Message(
+                messageContent = chatBotTree.question,
+                isUser = false,
+                isScript = true,
+                showing = true
+            )
+        )
         manageActions(chatBotTree.botAction, app, activitiesVM)
+
+        chatBotTree.answersId.map { optionsAvailable.add(chatBotTree.getAnswerText(it))}
     }
-
-
 }

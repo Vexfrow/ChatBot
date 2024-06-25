@@ -114,12 +114,6 @@ object ChatBotComp {
                 }
             }
 
-            var answers by rememberMutableStateOf(value = messageVM.chatBotTree.answersId.map {
-                messageVM.chatBotTree.getAnswerText(
-                    it
-                )
-            })
-
             var sbState by rememberMutableStateOf(SearchBarState())
 
             fun enableSearchBar(
@@ -140,9 +134,6 @@ object ChatBotComp {
                     lazyListState.animateScrollToItem(messageVM.messages.size)
                     delay(1.seconds)
                     messageVM.updateQuestion(app, activitiesVM)
-                    answers = messageVM.chatBotTree.answersId.map { i ->
-                        messageVM.chatBotTree.getAnswerText(i)
-                    }
                     lazyListState.animateScrollToItem(messageVM.messages.size)
 
                     if (messageVM.chatBotTree.botAction == TypeAction.ShowResults) {
@@ -153,9 +144,8 @@ object ChatBotComp {
             }
 
             Proposals(
-                proposals = answers,
+                proposals = messageVM.answers,
             ) {
-                answers = emptyList()
                 Log.i(TAG, "Choose '$it'")
                 val i = messageVM.chatBotTree.answersId.first { i ->
                     messageVM.chatBotTree.getAnswerText(i) == it
@@ -181,20 +171,6 @@ object ChatBotComp {
                     TypeAction.ShowResults -> {
                         Log.i(TAG, "MyColumn: Affichage des résultats")
                     }
-//
-//                    TypeAction.Geolocate -> {
-//                        app.activitiesRepository.location =
-//                            LocationHandler.currentLocation ?: Location("")
-//                        addAnswer(
-//                            i,
-//                            "Je suis ici : ${LocationHandler.currentLocation!!.longitude}, ${LocationHandler.currentLocation?.latitude}"
-//                        )
-//                        return@Proposals
-//                    }
-
-
-//                    TypeAction.PhysicalActivity -> activitiesVM.addType(SPORT)
-//                    TypeAction.CulturalActivity -> activitiesVM.addType(CULTURE)
 
                     TypeAction.ChoosePassions -> {
                         val passions = ActivitiesRepository.passionList
@@ -202,8 +178,6 @@ object ChatBotComp {
                         return@Proposals
                     }
 
-//                    TypeAction.Back -> activitiesVM.undo()
-//                    TypeAction.Restart -> activitiesVM.reset()
 
                     else -> Log.i(TAG, "Chat: Action not implemented: $act")
                 }
@@ -315,7 +289,6 @@ object ChatBotComp {
             is Resource.Success -> ActivitiesComp(list = result.data!!)
             is Resource.Failed -> ToDo(name = "Failed: ${result.error}")
 
-            else -> throw NotImplementedError()
         }
     }
 }

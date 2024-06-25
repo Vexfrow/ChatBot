@@ -16,7 +16,6 @@ private const val TAG = "Tree"
 const val back = -1
 const val restartConversation = -2
 const val showFilter = -3
-//const val skip = -4
 
 class Robot {
     var id: Int = 0

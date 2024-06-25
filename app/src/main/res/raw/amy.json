@@ -22,7 +22,7 @@
     },
     {
       "id": 5,
-      "text": "Un activité sportive vous conviendrait-elle ?"
+      "text": "Une activité sportive vous conviendrait-elle ?"
     },
     {
       "id": 6,
@@ -149,6 +149,21 @@
       "text": "Je souhaite désactiver toutes les notifications"
     },
     {
+      "id": 1019,
+      "text": "Régulièrement",
+      "action": "BigSportif"
+    },
+    {
+      "id": 1020,
+      "text": "De temps en temps",
+      "action": "LittleSportif"
+    },
+    {
+      "id": 1021,
+      "text": "Très peu",
+      "action": "InexistantSportif"
+    },
+    {
       "id": -1,
       "text": "Retour",
       "action": "Back"
@@ -218,12 +233,17 @@
     {
       "from": 5,
       "to": 6,
-      "answer": 1008
+      "answer": 1019
     },
     {
       "from": 5,
       "to": 6,
-      "answer": 1009
+      "answer": 1020
+    },
+    {
+      "from": 5,
+      "to": 6,
+      "answer": 1021
     },
     {
       "from": 7,

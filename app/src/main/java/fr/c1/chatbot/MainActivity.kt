@@ -107,10 +107,10 @@ class MainActivity : ComponentActivity() {
         }
 
         val messageManager = remember { MessageVM(this, app.tts) }
-        messageManager.initMessageManager()
 
         UnitLaunchedEffect {
             activitiesVM.load(app)
+            messageManager.initMessageManager()
         }
 
 

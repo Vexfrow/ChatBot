@@ -45,15 +45,15 @@ class ActivitiesVM(
     var result: Resource<List<AbstractActivity>> by mutableStateOf(Resource.None())
         private set
 
-    private var museums: Resource<List<Museum>> = Resource.None()
-    private var sites: Resource<List<Site>> = Resource.None()
-    private var expositions: Resource<List<Exposition>> = Resource.None()
-    private var contents: Resource<List<Content>> = Resource.None()
-    private var buildings: Resource<List<Building>> = Resource.None()
-    private var gardens: Resource<List<Garden>> = Resource.None()
-    private var festivals: Resource<List<Festival>> = Resource.None()
-    private var sportEquipments: Resource<List<SportEquipment>> = Resource.None()
-    private var associations: Resource<List<Association>> = Resource.None()
+    private var museums: Resource<List<Museum>> by mutableStateOf(Resource.None())
+    private var sites: Resource<List<Site>> by mutableStateOf(Resource.None())
+    private var expositions: Resource<List<Exposition>> by mutableStateOf(Resource.None())
+    private var contents: Resource<List<Content>> by mutableStateOf(Resource.None())
+    private var buildings: Resource<List<Building>> by mutableStateOf(Resource.None())
+    private var gardens: Resource<List<Garden>> by mutableStateOf(Resource.None())
+    private var festivals: Resource<List<Festival>> by mutableStateOf(Resource.None())
+    private var sportEquipments: Resource<List<SportEquipment>> by mutableStateOf(Resource.None())
+    private var associations: Resource<List<Association>> by mutableStateOf(Resource.None())
 
     /**
      * All activities

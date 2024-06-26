@@ -85,7 +85,7 @@ class ActivitiesVM(
     /**
      * Load activities
      *
-     * @param app
+     * @param ctx
      */
     fun load(ctx: Context) {
         jobs[0] = Dispatchers.IO.launch {

@@ -140,7 +140,7 @@ object Calendar {
      * Create a calendar of id 99
      * @param context The context
      */
-    fun createCalendar(context: Context): Long? {
+    private fun createCalendar(context: Context): Long? {
         val accountName = "ChatBot"
         val accountType = CalendarContract.ACCOUNT_TYPE_LOCAL
 

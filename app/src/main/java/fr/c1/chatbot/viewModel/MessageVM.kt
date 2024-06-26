@@ -13,7 +13,10 @@ import androidx.lifecycle.ViewModel
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
+import fr.c1.chatbot.model.Settings
+import fr.c1.chatbot.utils.toDate
 import java.io.InputStream
+import java.time.LocalDate
 
 class MessageVM(
     ctx: Context
@@ -39,7 +42,10 @@ class MessageVM(
     fun initMessageManager() {
         chatBotTree.initTree(this, mapScript)
         chatBotTree.answersId.map { optionsAvailable.add(chatBotTree.getAnswerText(it)) }
-        addMessage(Message(chatBotTree.question, isUser = false, isScript = true, showing = true))
+        if(Settings.botName == "Corenthin")
+            addMessage(Message("Bonjour, je suis corenthin et je suis un petit con", isUser = false, isScript = true, showing = true))
+        else
+            addMessage(Message(chatBotTree.question, isUser = false, isScript = true, showing = true))
     }
 
     //Rajoute un message à la liste des message
@@ -249,6 +255,18 @@ class MessageVM(
                         showing = true
                     )
                 )
+            }
+
+            TypeAction.Today -> {
+                messageHistory.removeLast()
+                addMessage(Message("Je souhaite une activité aujourd'hui", isUser = true, isScript = false, showing = true))
+                activitiesVM.date = System.currentTimeMillis().toDate()
+
+            }
+            TypeAction.Tomorrow -> {
+                messageHistory.removeLast()
+                addMessage(Message("Je souhaite une activité demain", isUser = true, isScript = false, showing = true))
+                activitiesVM.date = LocalDate.now().plusDays(1).toString()
             }
         }
     }

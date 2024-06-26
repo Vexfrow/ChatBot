@@ -58,7 +58,7 @@ class ActivitiesVM(
     /**
      * All activities
      */
-    private val all: List<Resource<out List<AbstractActivity>>>
+    val all: List<Resource<out List<AbstractActivity>>>
         get() = listOf(
             museums,
             sites,

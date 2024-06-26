@@ -1,6 +1,7 @@
 package fr.c1.chatbot.composable
 
 import fr.c1.chatbot.ChatBot
+import fr.c1.chatbot.composable.utils.Loading
 import fr.c1.chatbot.composable.utils.MyText
 import fr.c1.chatbot.model.User
 import fr.c1.chatbot.ui.theme.ChatBotPrev
@@ -25,7 +26,6 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircleOutline
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -38,8 +38,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -80,21 +78,6 @@ fun HomeLoading(
         !app.inited -> Loading(message = "Chargement de l'application...")
         else -> onInited()
     }
-}
-
-@Composable
-private fun Loading(
-    message: String
-) = Column(
-    modifier = Modifier.fillMaxSize(),
-    verticalArrangement = Arrangement.Center,
-    horizontalAlignment = Alignment.CenterHorizontally
-) {
-    CircularProgressIndicator(modifier = Modifier.size(96.dp))
-    MyText(
-        text = message,
-        textAlign = TextAlign.Center
-    )
 }
 
 @Composable
@@ -178,6 +161,6 @@ fun NewUser(
     }
 }
 
-@Preview(device = Devices.PIXEL_TABLET)
+@Preview
 @Composable
 private fun Prev() = ChatBotPrev { UserComp(user = User()) {} }

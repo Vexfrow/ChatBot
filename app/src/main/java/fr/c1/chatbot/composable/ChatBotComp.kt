@@ -1,10 +1,8 @@
 package fr.c1.chatbot.composable
 
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
+import fr.c1.chatbot.composable.utils.BotLoading
 import fr.c1.chatbot.composable.utils.MyText
 import fr.c1.chatbot.model.ActivitiesRepository
-import fr.c1.chatbot.model.Settings
 import fr.c1.chatbot.model.messageManager.TypeAction
 import fr.c1.chatbot.utils.Resource
 import fr.c1.chatbot.utils.UnitLaunchedEffect
@@ -14,36 +12,23 @@ import fr.c1.chatbot.viewModel.ActivitiesVM
 import fr.c1.chatbot.viewModel.MessageVM
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.keyframes
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import android.util.Log
 import kotlin.time.Duration.Companion.seconds
 
@@ -223,71 +208,24 @@ object ChatBotComp {
         }
     }
 
-    private const val rotationRange = 45f
-    private const val rotationDuration = 500
-
     @Composable
-    fun Result(activitiesVM: ActivitiesVM) {
-        when (val result = activitiesVM.result) {
-            is Resource.None -> Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                MyText(
-                    text = "Veuillez commencer à échanger avec le robot pour obtenir des résultats",
-                    textAlign = TextAlign.Center
-                )
-            }
-
-            is Resource.Loading -> Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                val ir = rememberInfiniteTransition()
-                val rot by ir.animateFloat(
-                    initialValue = -rotationRange,
-                    targetValue = rotationRange,
-                    animationSpec = infiniteRepeatable(
-                        animation = keyframes {
-                            durationMillis = rotationDuration * 4
-                            0f at 0 using LinearEasing
-                            rotationRange at rotationDuration using LinearEasing
-                            0f at rotationDuration * 2 using LinearEasing
-                            (-rotationRange) at rotationDuration * 3 using LinearEasing
-                            0f at rotationDuration * 4 using LinearEasing
-                        },
-                        repeatMode = RepeatMode.Restart
-                    ),
-                    label = ""
-                )
-
-                CircularProgressIndicator(
-                    modifier = Modifier.size(96.dp)
-                )
-
-                if (Settings.botImage == null) Icon(
-                    modifier = Modifier
-                        .size(48.dp)
-                        .graphicsLayer(rotationZ = rot),
-                    imageVector = Settings.botIcon,
-                    contentDescription = "Robot loading"
-                )
-                else Image(
-                    modifier = Modifier
-                        .size(48.dp)
-                        .graphicsLayer(rotationZ = rot),
-                    painter = rememberAsyncImagePainter(
-                        ImageRequest.Builder(LocalContext.current).data(Settings.botImage).build()
-                    ),
-                    contentDescription = "Robot loading"
-                )
-            }
-
-            is Resource.Success -> ActivitiesComp(list = result.data!!)
-            is Resource.Failed -> ToDo(name = "Failed: ${result.error}")
-
-            else -> throw NotImplementedError()
+    fun Result(activitiesVM: ActivitiesVM) = when (val result = activitiesVM.result) {
+        is Resource.None -> Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            MyText(
+                text = "Veuillez commencer à échanger avec le robot pour obtenir des résultats",
+                textAlign = TextAlign.Center
+            )
         }
+
+        is Resource.Loading -> BotLoading()
+
+        is Resource.Success -> ActivitiesComp(list = result.data!!)
+        is Resource.Failed -> ToDo(name = "Failed: ${result.error}")
+
+        else -> throw NotImplementedError()
     }
 }
 

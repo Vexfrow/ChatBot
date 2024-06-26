@@ -32,3 +32,5 @@ fun Boolean.toFloat(): Float = if (this) 1f else 0f
  */
 fun Long.toDate(): String =
     SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date(this))
+
+fun <T> Collection<T>.randoms(count: Int): List<T> = List(count) { random() }

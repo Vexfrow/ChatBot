@@ -157,7 +157,7 @@ class MainActivity : ComponentActivity() {
                     Tab.AccountData -> AccountComp.Data(userVM.currentUser!!)
                     Tab.AccountPreferences -> AccountComp.Preferences()
                     Tab.ChatBotMap -> OsmdroidMapView()
-                    Tab.Suggestion -> Suggestion()
+                    Tab.Suggestion -> Suggestion(activitiesVM)
                     Tab.History -> History()
 
                     else -> throw NotImplementedError("The $tab tab is not implemented yet")

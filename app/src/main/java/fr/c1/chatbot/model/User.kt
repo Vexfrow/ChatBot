@@ -48,8 +48,8 @@ class User private constructor(
 
         val DEFAULT = User(
             id = UUID(0x123456789ABCDEF, 0xFEDCBA987654321).toString(),
-            firstName = "Default",
-            lastName = "user",
+            firstName = "Utilisateur",
+            lastName = "par défaut",
             age = 60
         )
     }
@@ -183,5 +183,28 @@ class User private constructor(
 
     override fun toString(): String {
         return "User(id='$id', lastName='$lastName', firstName='$firstName', age=$age, _cities=$_cities, _types=$_types, _passions=$_passions, _weeklyPreferences=$_weeklyPreferences)"
+    }
+
+    override fun equals(other: Any?): Boolean = this === other || (other as? User)?.let {
+        id == it.id &&
+                lastName == it.lastName &&
+                firstName == it.firstName &&
+                age == it.age &&
+                _cities == it._cities &&
+                _types == it._types &&
+                _passions == it._passions &&
+                _weeklyPreferences == it._weeklyPreferences
+    } ?: false
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + lastName.hashCode()
+        result = 31 * result + firstName.hashCode()
+        result = 31 * result + age
+        result = 31 * result + _cities.hashCode()
+        result = 31 * result + _types.hashCode()
+        result = 31 * result + _passions.hashCode()
+        result = 31 * result + _weeklyPreferences.hashCode()
+        return result
     }
 }

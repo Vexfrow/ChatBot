@@ -71,4 +71,8 @@ object UserRepository {
 
         Log.i(TAG, "store: $user stored")
     }
+
+    fun delete(user: User, context: Context) {
+        context.deleteFile("${user.id}.json")
+    }
 }

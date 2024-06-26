@@ -383,8 +383,8 @@ fun SettingsComp() {
                                     },
                             ) {
                                 Text(
-                                    text = name,
-                                    style = MaterialTheme.typography.bodySmall
+                                    text = if(name == "Georges") "Blagueur" else if(name == "Rob") "Formel" else if(name == "Amy") "Attentionné" else name,
+                                    style = MaterialTheme.typography.bodyMedium
                                 )
                             }
                         }

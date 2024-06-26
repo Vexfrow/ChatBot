@@ -30,14 +30,20 @@ enum class TypeAction {
 
     DeleteNotifs,
 
+
+    /** Sport (no changes) **/
     BigSportif,
-
     LittleSportif,
-
     InexistantSportif,
+
+    /** Meeting (no changes) **/
     Meeting,
     NoMeeting,
     PerhapsMeeting,
+
+    /** For the date **/
+    Today,
+    Tomorrow,
 
     /** Just a suggestion */
     Back,

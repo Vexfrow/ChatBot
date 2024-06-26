@@ -126,7 +126,6 @@ class Tree {
                     currentAnswers.add(r.answer)
                 }
             }
-            //currentAnswers.add(skip)
             currentAnswers.add(showFilter)
             return currentAnswers
         }
@@ -147,7 +146,6 @@ class Tree {
      * Select answer, update the current question and execute the action link to the answer chosen
      *
      * @param idAnswer
-     * @param user
      */
     fun selectAnswer(idAnswer: Int) {
 

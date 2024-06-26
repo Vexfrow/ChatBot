@@ -116,6 +116,7 @@ object ChatBotComp {
                     lazyListState.animateScrollToItem(messageVM.messages.size)
 
                     if (messageVM.chatBotTree.botAction == TypeAction.ShowResults) {
+                        Log.i(TAG,"Results should be displayed now")
                         delay(5.seconds)
                         onResult()
                     }

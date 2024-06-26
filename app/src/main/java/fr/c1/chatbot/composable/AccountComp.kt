@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -120,8 +121,9 @@ object AccountComp {
         val selection = remember { list.map { it to selected(it) }.toMutableStateMap() }
 
         LazyVerticalGrid(
-            columns = GridCells.Fixed(5),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+            columns = GridCells.Fixed(4),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalArrangement = Arrangement.spacedBy(15.dp)
         ) {
             val coll = Collator.getInstance(Locale.FRENCH).apply { strength = Collator.PRIMARY }
             items(list.sortedWith { left, right -> coll.compare(left, right) }) {
@@ -138,7 +140,7 @@ object AccountComp {
                     label = {
                         Text(text = it.replaceFirstChar { c ->
                             if (c.isLowerCase()) c.titlecase(Locale.getDefault()) else c.toString()
-                        })
+                        }, style = MaterialTheme.typography.titleLarge)
                     })
             }
         }

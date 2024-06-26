@@ -7,17 +7,17 @@ import fr.c1.chatbot.model.ActivitiesRepository
 import fr.c1.chatbot.model.Settings
 import fr.c1.chatbot.model.messageManager.TypeAction
 import fr.c1.chatbot.utils.Resource
+import fr.c1.chatbot.utils.UnitLaunchedEffect
 import fr.c1.chatbot.utils.application
 import fr.c1.chatbot.utils.rememberMutableStateOf
 import fr.c1.chatbot.viewModel.ActivitiesVM
 import fr.c1.chatbot.viewModel.MessageVM
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
@@ -34,9 +34,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -64,14 +62,6 @@ object ChatBotComp {
         val crtScope = rememberCoroutineScope()
         val lazyListState = rememberLazyListState()
 
-        val tts = application.tts
-
-        LaunchedEffect(key1 = messageVM.messages.size) {
-            if (Settings.tts && messageVM.messages.isNotEmpty() && !messageVM.messages.last().isUser) tts.speak(
-                messageVM.messages.last().messageContent
-            )
-        }
-
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -83,17 +73,18 @@ object ChatBotComp {
                 state = lazyListState
             ) {
                 items(messageVM.messages) { message ->
-                    val scale: Animatable<Float, AnimationVector1D> = remember { Animatable(0f) }
-                    LaunchedEffect(key1 = Unit) {
-                        scale.animateTo(
-                            1f, animationSpec = tween(durationMillis = 500)
-                        ) {
-                            if (value == 1f) animated.add(true)
+                    val scale by animateFloatAsState(
+                        targetValue = if (message.showed) 1f else 0f,
+                        animationSpec = tween(500)
+                    )
+
+                    if (!message.showed)
+                        UnitLaunchedEffect {
+                            message.showed = true
                         }
-                    }
 
                     val mod = Modifier.graphicsLayer(
-                        scaleX = scale.value, scaleY = scale.value
+                        scaleX = scale, scaleY = scale
                     )
 
                     if (!message.isUser) MessageComponent(

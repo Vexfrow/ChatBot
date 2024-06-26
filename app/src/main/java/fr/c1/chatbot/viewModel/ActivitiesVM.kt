@@ -90,54 +90,63 @@ class ActivitiesVM(
     fun load(ctx: Context) {
         jobs[0] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start museums")
+            withMain { museums = Resource.Loading(emptyList()) }
             val tmp = repo.getMuseums(user, ctx)
             withMain { museums = Resource.Success(tmp) }
             Log.i(TAG, "load: Finished museums")
         }
         jobs[1] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start sites")
+            withMain { sites = Resource.Loading(emptyList()) }
             val tmp = repo.getSites(user, ctx)
             withMain { sites = Resource.Success(tmp) }
             Log.i(TAG, "load: Finished sites")
         }
         jobs[2] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start expositions")
+            withMain { expositions = Resource.Loading(emptyList()) }
             val tmp = repo.getExpositions(user, ctx)
             withMain { expositions = Resource.Success(tmp) }
             Log.i(TAG, "load: Finished expositions")
         }
         jobs[3] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start contents")
+            withMain { contents = Resource.Loading(emptyList()) }
             val tmp = repo.getContents(user, ctx)
             withMain { contents = Resource.Success(tmp) }
             Log.i(TAG, "load: Finished contents")
         }
         jobs[4] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start buildings")
+            withMain { buildings = Resource.Loading(emptyList()) }
             val tmp = repo.getBuildings(user, ctx)
             withMain { buildings = Resource.Success(tmp) }
             Log.i(TAG, "load: Finished buildings")
         }
         jobs[5] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start gardens")
+            withMain { gardens = Resource.Loading(emptyList()) }
             val tmp = repo.getGardens(user, ctx)
             withMain { gardens = Resource.Success(tmp) }
             Log.i(TAG, "load: Finished gardens")
         }
         jobs[6] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start festivals")
+            withMain { festivals = Resource.Loading(emptyList()) }
             val tmp = repo.getFestivals(user, ctx)
             withMain { festivals = Resource.Success(tmp) }
             Log.i(TAG, "load: Finished festivals")
         }
         jobs[7] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start sportEquipments")
+            withMain { sportEquipments = Resource.Loading(emptyList()) }
             val tmp = repo.getSportEquipments(user, ctx)
             withMain { sportEquipments = Resource.Success(tmp) }
             Log.i(TAG, "load: Finished sportEquipments")
         }
         jobs[8] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start associations")
+            withMain { associations = Resource.Loading(emptyList()) }
             val tmp = repo.getAssociations(user, ctx)
             withMain { associations = Resource.Success(tmp) }
             Log.i(TAG, "load: Finished associations")

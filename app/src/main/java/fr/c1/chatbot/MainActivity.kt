@@ -15,7 +15,6 @@ import fr.c1.chatbot.repositories.UserRepository
 import fr.c1.chatbot.ui.theme.ChatBotTheme
 import fr.c1.chatbot.utils.UnitLaunchedEffect
 import fr.c1.chatbot.utils.app
-import fr.c1.chatbot.utils.rememberMutableStateListOf
 import fr.c1.chatbot.utils.rememberMutableStateOf
 import fr.c1.chatbot.viewModel.ActivitiesVM
 import fr.c1.chatbot.viewModel.MessageVM
@@ -141,11 +140,8 @@ class MainActivity : ComponentActivity() {
                     .background(Settings.backgroundColor)
                     .fillMaxSize()
             ) {
-                val animated = rememberMutableStateListOf<Boolean>()
-
                 when (tab) {
                     Tab.ChatBotChat -> ChatBotComp.Chat(
-                        animated = animated,
                         activitiesVM = activitiesVM,
                         messageVM = messageManager
                     ) { tab = Tab.ChatBotResults }

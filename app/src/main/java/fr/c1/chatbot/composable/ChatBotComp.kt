@@ -52,7 +52,6 @@ private const val TAG = "ChatBotComp"
 object ChatBotComp {
     @Composable
     fun Chat(
-        animated: SnapshotStateList<Boolean>,
         activitiesVM: ActivitiesVM,
         messageVM: MessageVM,
         modifier: Modifier = Modifier,

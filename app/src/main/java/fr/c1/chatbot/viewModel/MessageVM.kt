@@ -44,16 +44,13 @@ class MessageVM(
     fun initMessageManager() {
         chatBotTree.initTree(this, mapScript)
         chatBotTree.answersId.map { optionsAvailable.add(chatBotTree.getAnswerText(it)) }
-        if(Settings.botName == "Corenthin")
-            addMessage(Message("Bonjour, je suis corenthin et je suis un petit con", isUser = false, isScript = true))
-        else
-            addMessage(Message(chatBotTree.question, isUser = false, isScript = true))
+        addMessage(Message(chatBotTree.question, isUser = false, isScript = true))
     }
 
     //Rajoute un message à la liste des message
     private fun addMessage(message: Message) {
         messageHistory.add(message)
-        if (!message.isUser)
+        if (!message.isUser && Settings.tts)
             tts.speak(message.messageContent)
     }
 
@@ -83,7 +80,7 @@ class MessageVM(
 
             TypeAction.PhysicalActivity -> {
                 messageHistory.removeLast()
-                messageHistory.add(
+                addMessage(
                     Message(
                         "Je souhaite faire une activité physique",
                         isUser = true,
@@ -95,7 +92,7 @@ class MessageVM(
 
             TypeAction.CulturalActivity -> {
                 messageHistory.removeLast()
-                messageHistory.add(
+                addMessage(
                     Message(
                         "Je souhaite faire une activité culturelle",
                         isUser = true,
@@ -134,7 +131,7 @@ class MessageVM(
 
             TypeAction.ShowFilters -> {
                 messageHistory.removeLast()
-                messageHistory.add(
+                addMessage(
                     Message(
                         "Je souhaite afficher les filtres utilisés pour ma recherche",
                         isUser = true,
@@ -182,7 +179,7 @@ class MessageVM(
             //No differences between all of them
             TypeAction.BigSportif -> {
                 messageHistory.removeLast()
-                messageHistory.add(
+                addMessage(
                     Message(
                         "Je fait du sport régulièrement",
                         isUser = true,
@@ -193,7 +190,7 @@ class MessageVM(
 
             TypeAction.LittleSportif -> {
                 messageHistory.removeLast()
-                messageHistory.add(
+                addMessage(
                     Message(
                         "Je fait du sport de temps en temps",
                         isUser = true,
@@ -204,7 +201,7 @@ class MessageVM(
 
             TypeAction.InexistantSportif -> {
                 messageHistory.removeLast()
-                messageHistory.add(
+                addMessage(
                     Message(
                         "Je fait très peu d'activités physiques",
                         isUser = true,
@@ -215,7 +212,7 @@ class MessageVM(
 
             TypeAction.Meeting -> {
                 messageHistory.removeLast()
-                messageHistory.add(
+                addMessage(
                     Message(
                         "Je souhaite rencontrer d'autres personnes",
                         isUser = true,
@@ -226,7 +223,7 @@ class MessageVM(
 
             TypeAction.NoMeeting -> {
                 messageHistory.removeLast()
-                messageHistory.add(
+                addMessage(
                     Message(
                         "Je ne souhaite pas rencontrer d'autres personnes",
                         isUser = true,
@@ -237,7 +234,7 @@ class MessageVM(
 
             TypeAction.PerhapsMeeting -> {
                 messageHistory.removeLast()
-                messageHistory.add(
+                addMessage(
                     Message(
                         "Cela m'importe peu",
                         isUser = true,
@@ -248,13 +245,13 @@ class MessageVM(
 
             TypeAction.Today -> {
                 messageHistory.removeLast()
-                addMessage(Message("Je souhaite une activité aujourd'hui", isUser = true, isScript = false, showing = true))
+                addMessage(Message("Je souhaite faire une activité aujourd'hui", isUser = true, isScript = false))
                 activitiesVM.date = System.currentTimeMillis().toDate()
 
             }
             TypeAction.Tomorrow -> {
                 messageHistory.removeLast()
-                addMessage(Message("Je souhaite une activité demain", isUser = true, isScript = false, showing = true))
+                addMessage(Message("Je souhaite faire une activité demain", isUser = true, isScript = false))
                 activitiesVM.date = LocalDate.now().plusDays(1).toString()
             }
         }

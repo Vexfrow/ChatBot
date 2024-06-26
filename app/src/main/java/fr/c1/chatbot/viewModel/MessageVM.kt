@@ -7,6 +7,7 @@ import fr.c1.chatbot.model.messageManager.Message
 import fr.c1.chatbot.model.messageManager.Tree
 import fr.c1.chatbot.model.messageManager.TypeAction
 import fr.c1.chatbot.utils.LocationHandler
+import fr.c1.chatbot.utils.TTS
 import fr.c1.chatbot.utils.disableNotification
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
@@ -19,7 +20,8 @@ import java.io.InputStream
 import java.time.LocalDate
 
 class MessageVM(
-    ctx: Context
+    ctx: Context,
+    private val tts: TTS
 ) : ViewModel() {
 
     val chatBotTree = Tree()
@@ -43,14 +45,16 @@ class MessageVM(
         chatBotTree.initTree(this, mapScript)
         chatBotTree.answersId.map { optionsAvailable.add(chatBotTree.getAnswerText(it)) }
         if(Settings.botName == "Corenthin")
-            addMessage(Message("Bonjour, je suis corenthin et je suis un petit con", isUser = false, isScript = true, showing = true))
+            addMessage(Message("Bonjour, je suis corenthin et je suis un petit con", isUser = false, isScript = true))
         else
-            addMessage(Message(chatBotTree.question, isUser = false, isScript = true, showing = true))
+            addMessage(Message(chatBotTree.question, isUser = false, isScript = true))
     }
 
     //Rajoute un message à la liste des message
     private fun addMessage(message: Message) {
         messageHistory.add(message)
+        if (!message.isUser)
+            tts.speak(message.messageContent)
     }
 
     //S'occupe de gérer les différentes actions
@@ -70,8 +74,7 @@ class MessageVM(
                                 "\t ${LocationHandler.currentLocation!!.longitude}\n" +
                                 "\t ${LocationHandler.currentLocation?.latitude}",
                         isUser = true,
-                        isScript = false,
-                        showing = true
+                        isScript = false
                     )
                 )
             }
@@ -84,8 +87,7 @@ class MessageVM(
                     Message(
                         "Je souhaite faire une activité physique",
                         isUser = true,
-                        isScript = false,
-                        showing = true
+                        isScript = false
                     )
                 )
                 activitiesVM.addType(Type.SPORT)
@@ -97,8 +99,7 @@ class MessageVM(
                     Message(
                         "Je souhaite faire une activité culturelle",
                         isUser = true,
-                        isScript = false,
-                        showing = true
+                        isScript = false
                     )
                 )
                 activitiesVM.addType(Type.CULTURE)
@@ -137,48 +138,42 @@ class MessageVM(
                     Message(
                         "Je souhaite afficher les filtres utilisés pour ma recherche",
                         isUser = true,
-                        isScript = false,
-                        showing = true
+                        isScript = false
                     )
                 )
                 addMessage(
                     Message(
                         messageContent = "Voici la liste des filtres utilisés",
                         isUser = false,
-                        isScript = false,
-                        showing = true
+                        isScript = false
                     )
                 )
                 addMessage(
                     Message(
                         messageContent = if (activitiesVM.user.cities.isNotEmpty()) "Villes : ${activitiesVM.user.cities}" else "Villes : Aucunes villes sélectionnées",
                         isUser = false,
-                        isScript = false,
-                        showing = true
+                        isScript = false
                     )
                 )
                 addMessage(
                     Message(
                         messageContent = if (activitiesVM.user.types.isNotEmpty()) "Types d'activités : ${activitiesVM.user.types}" else "Types d'activités : Aucuns type d'activités sélectionnés",
                         isUser = false,
-                        isScript = false,
-                        showing = true
+                        isScript = false
                     )
                 )
                 addMessage(
                     Message(
                         messageContent = if (activitiesVM.distance > -1) "Distance : ${activitiesVM.distance}" else "Distance : Aucune distance sélectionnée",
                         isUser = false,
-                        isScript = false,
-                        showing = true
+                        isScript = false
                     )
                 )
                 addMessage(
                     Message(
                         messageContent = if (activitiesVM.date.isNotEmpty()) "Date : ${activitiesVM.date}" else "Date : Aucune date sélectionnée",
                         isUser = false,
-                        isScript = false,
-                        showing = true
+                        isScript = false
                     )
                 )
             }
@@ -191,8 +186,7 @@ class MessageVM(
                     Message(
                         "Je fait du sport régulièrement",
                         isUser = true,
-                        isScript = false,
-                        showing = true
+                        isScript = false
                     )
                 )
             }
@@ -203,8 +197,7 @@ class MessageVM(
                     Message(
                         "Je fait du sport de temps en temps",
                         isUser = true,
-                        isScript = false,
-                        showing = true
+                        isScript = false
                     )
                 )
             }
@@ -215,8 +208,7 @@ class MessageVM(
                     Message(
                         "Je fait très peu d'activités physiques",
                         isUser = true,
-                        isScript = false,
-                        showing = true
+                        isScript = false
                     )
                 )
             }
@@ -227,8 +219,7 @@ class MessageVM(
                     Message(
                         "Je souhaite rencontrer d'autres personnes",
                         isUser = true,
-                        isScript = false,
-                        showing = true
+                        isScript = false
                     )
                 )
             }
@@ -239,8 +230,7 @@ class MessageVM(
                     Message(
                         "Je ne souhaite pas rencontrer d'autres personnes",
                         isUser = true,
-                        isScript = false,
-                        showing = true
+                        isScript = false
                     )
                 )
             }
@@ -251,8 +241,7 @@ class MessageVM(
                     Message(
                         "Cela m'importe peu",
                         isUser = true,
-                        isScript = false,
-                        showing = true
+                        isScript = false
                     )
                 )
             }
@@ -275,14 +264,13 @@ class MessageVM(
         optionsAvailable.removeAll(optionsAvailable.toSet())
         chatBotTree.selectAnswer(id)
         if (text != null)
-            addMessage(Message(text, isUser = true, isScript = false, showing = true))
+            addMessage(Message(text, isUser = true, isScript = false))
         else
             addMessage(
                 Message(
                     chatBotTree.getAnswerText(id),
                     isUser = true,
-                    isScript = false,
-                    showing = true
+                    isScript = false
                 )
             )
 
@@ -298,8 +286,7 @@ class MessageVM(
             Message(
                 messageContent = chatBotTree.question,
                 isUser = false,
-                isScript = true,
-                showing = true
+                isScript = true
             )
         )
         manageActions(chatBotTree.botAction, app, activitiesVM)

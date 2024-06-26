@@ -1,12 +1,24 @@
 package fr.c1.chatbot.composable
 
+import fr.c1.chatbot.composable.utils.BotLoading
 import fr.c1.chatbot.ui.theme.ChatBotPrev
+import fr.c1.chatbot.utils.Resource
+import fr.c1.chatbot.utils.randoms
+import fr.c1.chatbot.viewModel.ActivitiesVM
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun Suggestion(modifier: Modifier = Modifier) = ToDo(name = "Afficher les suggestions de la journée")
+fun Suggestion(
+    activitiesVM: ActivitiesVM,
+    count: Int = 10
+) {
+    val all = activitiesVM.all
+    when {
+        all.any { it is Resource.Loading } -> BotLoading()
+        else -> ActivitiesComp(all.map { it.data!! }.flatten().randoms(count))
+    }
+}
 
 @Preview
 @Composable

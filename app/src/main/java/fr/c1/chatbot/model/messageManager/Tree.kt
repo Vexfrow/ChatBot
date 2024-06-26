@@ -1,8 +1,10 @@
-package fr.c1.chatbot.model
+package fr.c1.chatbot.model.messageManager
 
-import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import fr.c1.chatbot.model.Settings
+import fr.c1.chatbot.viewModel.MessageVM
+import android.util.Log
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
@@ -10,9 +12,9 @@ import java.io.InputStreamReader
 import java.lang.reflect.Type
 
 private const val TAG = "Tree"
-const val retour = -1
-const val recommencerConversation = -2
-const val afficherFiltre = -3
+const val back = -1
+const val restartConversation = -2
+const val showFilter = -3
 
 /**
  * Robot
@@ -70,13 +72,17 @@ class Tree {
     private var questionsHistory: ArrayList<Int> = ArrayList()
     private var currentScript = "Rob"
     private var currentData: Data? = null
+    private var messageManager: MessageVM? = null
 
     /**
      * Init tree
      *
+     * @param mvm : MessageVM : Object used for managing the messages
      * @param mapScript : Map<String, InputStream> : map of name and json file of the script
      */
-    fun initTree(mapScript: Map<String, InputStream>) {
+    //Take a json file in parameter
+    fun initTree(mvm: MessageVM, mapScript: Map<String, InputStream>) {
+        messageManager = mvm
         val gson = Gson()
         try {
             mapScript.entries
@@ -101,8 +107,7 @@ class Tree {
      */
     val question: String
         get() {
-            return currentData?.robot?.get(questionsHistory.last())?.text + "${currentScript}"
-            //return currentData?.robot?.get(questionsHistory.last())?.text ?: ""
+            return currentData?.robot?.get(questionsHistory.last())?.text ?: ""
         }
 
     /**
@@ -112,8 +117,8 @@ class Tree {
         get() {
             val currentAnswers = ArrayList<Int>()
             if (questionsHistory.size != 1) {
-                currentAnswers.add(recommencerConversation)
-                currentAnswers.add(retour)
+                currentAnswers.add(restartConversation)
+                currentAnswers.add(back)
             }
 
             for (r in currentData?.link!!) {
@@ -121,9 +126,21 @@ class Tree {
                     currentAnswers.add(r.answer)
                 }
             }
-            currentAnswers.add(afficherFiltre)
+            //currentAnswers.add(skip)
+            currentAnswers.add(showFilter)
             return currentAnswers
         }
+
+    fun restart() {
+        questionsHistory.removeAll(questionsHistory.toSet())
+        questionsHistory.add(0)
+    }
+
+    fun back() {
+        if (questionsHistory.size > 1) {
+            questionsHistory.removeLast()
+        }
+    }
 
 
     /**
@@ -132,34 +149,22 @@ class Tree {
      * @param idAnswer
      * @param user
      */
-    fun selectAnswer(idAnswer: Int, user: User) {
+    fun selectAnswer(idAnswer: Int) {
 
         if (currentScript != Settings.botPersonality) {
             currentScript = Settings.botPersonality
             currentData = dataList[currentScript]
         }
 
-        if (idAnswer == retour && questionsHistory.size > 1) questionsHistory.removeLast()
-        else if (idAnswer == recommencerConversation) { //Clear previous messages ?
-            questionsHistory.removeAll(questionsHistory.toSet())
-            questionsHistory.add(0)
-        } else if (idAnswer == afficherFiltre) {
-            //val text = "Voici les filtres utilisés pour le moment : \nVilles : ${user.getVilles()}\nTypes d'activités : ${user.getTypes()}\n Distance préféré : ${getDistance()}\n Date voulue : ${app.getDate()}"
-            //val saveText = getQuestion()
+        for (r in currentData?.link!!) {
+            if (r.from == questionsHistory.last() && r.answer == idAnswer) {
+                questionsHistory.add(r.to)
+                // Print the answer's text
+                Log.d(TAG, "selectAnswer: ${getAnswerText(idAnswer)}")
+                // Fill the ActivitiesRepository according to the answer selected
+                Log.d(TAG, "selectAnswer: ${getUserAction(idAnswer)}")
 
-            Log.d(TAG, "selectAnswer: afficherFiltre")
-        } else {
-            for (r in currentData?.link!!) {
-                if (r.from == questionsHistory.last() && r.answer == idAnswer) {
-                    questionsHistory.add(r.to)
-                    // Print the answer's text
-                    Log.d(TAG, "selectAnswer: ${getAnswerText(idAnswer)}")
-                    // Fill the ActivitiesRepository according to the answer selected
-                    Log.d(TAG, "selectAnswer: ${getUserAction(idAnswer)}")
-
-                }
             }
-            Log.d(TAG, "selectAnswer: new type : ${user.types}")
         }
     }
 
@@ -191,4 +196,5 @@ class Tree {
                 currentData?.robot!!.first { h -> h.id == questionsHistory.last() }.action
             return if (actionStr == null) TypeAction.None else enumValueOf<TypeAction>(actionStr)
         }
+
 }

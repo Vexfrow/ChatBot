@@ -109,7 +109,7 @@ fun SpeechBubble(
 
 
 @Composable
-fun Message(
+fun MessageComponent(
     text: String,
     modifier: Modifier = Modifier,
     isUser: Boolean = false
@@ -190,7 +190,7 @@ fun Message(
 @Preview(device = Devices.PIXEL_TABLET)
 @Composable
 private fun Prev() = ChatBotPrev {
-    Message(
+    MessageComponent(
         "Oui",
         Modifier.align(Alignment.TopStart), isUser = true
     )

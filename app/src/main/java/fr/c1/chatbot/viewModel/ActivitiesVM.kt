@@ -1,6 +1,5 @@
 package fr.c1.chatbot.viewModel
 
-import fr.c1.chatbot.ChatBot
 import fr.c1.chatbot.model.ActivitiesRepository
 import fr.c1.chatbot.model.User
 import fr.c1.chatbot.model.activity.AbstractActivity
@@ -26,13 +25,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import android.content.Context
 import android.util.Log
 import kotlin.coroutines.CoroutineContext
 
 private const val TAG = "ActivitiesVM"
 
 /**
- * Activities v m
+ * Activities view model
  *
  * @property user
  * @property repo
@@ -45,20 +45,20 @@ class ActivitiesVM(
     var result: Resource<List<AbstractActivity>> by mutableStateOf(Resource.None())
         private set
 
-    private var museums: Resource<List<Museum>> = Resource.None()
-    private var sites: Resource<List<Site>> = Resource.None()
-    private var expositions: Resource<List<Exposition>> = Resource.None()
-    private var contents: Resource<List<Content>> = Resource.None()
-    private var buildings: Resource<List<Building>> = Resource.None()
-    private var gardens: Resource<List<Garden>> = Resource.None()
-    private var festivals: Resource<List<Festival>> = Resource.None()
-    private var sportEquipments: Resource<List<SportEquipment>> = Resource.None()
-    private var associations: Resource<List<Association>> = Resource.None()
+    private var museums: Resource<List<Museum>> by mutableStateOf(Resource.None())
+    private var sites: Resource<List<Site>> by mutableStateOf(Resource.None())
+    private var expositions: Resource<List<Exposition>> by mutableStateOf(Resource.None())
+    private var contents: Resource<List<Content>> by mutableStateOf(Resource.None())
+    private var buildings: Resource<List<Building>> by mutableStateOf(Resource.None())
+    private var gardens: Resource<List<Garden>> by mutableStateOf(Resource.None())
+    private var festivals: Resource<List<Festival>> by mutableStateOf(Resource.None())
+    private var sportEquipments: Resource<List<SportEquipment>> by mutableStateOf(Resource.None())
+    private var associations: Resource<List<Association>> by mutableStateOf(Resource.None())
 
     /**
      * All activities
      */
-    private val all: List<Resource<out List<AbstractActivity>>>
+    val all: List<Resource<out List<AbstractActivity>>>
         get() = listOf(
             museums,
             sites,
@@ -71,8 +71,8 @@ class ActivitiesVM(
             associations,
         )
 
-    val jobs: Array<Job?> = Array(all.size) { null }
-    var resultJob: Job? = null
+    private val jobs: Array<Job?> = Array(all.size) { null }
+    private var resultJob: Job? = null
 
     private fun CoroutineContext.launch(
         start: CoroutineStart = CoroutineStart.DEFAULT,
@@ -87,58 +87,67 @@ class ActivitiesVM(
      *
      * @param app
      */
-    fun load(app: ChatBot) {
+    fun load(ctx: Context) {
         jobs[0] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start museums")
-            val tmp = repo.getMuseums(app)
+            withMain { museums = Resource.Loading(emptyList()) }
+            val tmp = repo.getMuseums(user, ctx)
             withMain { museums = Resource.Success(tmp) }
             Log.i(TAG, "load: Finished museums")
         }
         jobs[1] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start sites")
-            val tmp = repo.getSites(app)
+            withMain { sites = Resource.Loading(emptyList()) }
+            val tmp = repo.getSites(user, ctx)
             withMain { sites = Resource.Success(tmp) }
             Log.i(TAG, "load: Finished sites")
         }
         jobs[2] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start expositions")
-            val tmp = repo.getExpositions(app)
+            withMain { expositions = Resource.Loading(emptyList()) }
+            val tmp = repo.getExpositions(user, ctx)
             withMain { expositions = Resource.Success(tmp) }
             Log.i(TAG, "load: Finished expositions")
         }
         jobs[3] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start contents")
-            val tmp = repo.getContents(app)
+            withMain { contents = Resource.Loading(emptyList()) }
+            val tmp = repo.getContents(user, ctx)
             withMain { contents = Resource.Success(tmp) }
             Log.i(TAG, "load: Finished contents")
         }
         jobs[4] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start buildings")
-            val tmp = repo.getBuildings(app)
+            withMain { buildings = Resource.Loading(emptyList()) }
+            val tmp = repo.getBuildings(user, ctx)
             withMain { buildings = Resource.Success(tmp) }
             Log.i(TAG, "load: Finished buildings")
         }
         jobs[5] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start gardens")
-            val tmp = repo.getGardens(app)
+            withMain { gardens = Resource.Loading(emptyList()) }
+            val tmp = repo.getGardens(user, ctx)
             withMain { gardens = Resource.Success(tmp) }
             Log.i(TAG, "load: Finished gardens")
         }
         jobs[6] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start festivals")
-            val tmp = repo.getFestivals(app)
+            withMain { festivals = Resource.Loading(emptyList()) }
+            val tmp = repo.getFestivals(user, ctx)
             withMain { festivals = Resource.Success(tmp) }
             Log.i(TAG, "load: Finished festivals")
         }
         jobs[7] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start sportEquipments")
-            val tmp = repo.getSportEquipments(app)
+            withMain { sportEquipments = Resource.Loading(emptyList()) }
+            val tmp = repo.getSportEquipments(user, ctx)
             withMain { sportEquipments = Resource.Success(tmp) }
             Log.i(TAG, "load: Finished sportEquipments")
         }
         jobs[8] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start associations")
-            val tmp = repo.getAssociations(app)
+            withMain { associations = Resource.Loading(emptyList()) }
+            val tmp = repo.getAssociations(user, ctx)
             withMain { associations = Resource.Success(tmp) }
             Log.i(TAG, "load: Finished associations")
         }
@@ -201,8 +210,8 @@ class ActivitiesVM(
         result = Resource.None()
     }
 
-    var date: String
-        get() = throw Exception()
+    var date: String = ""
+        get() = field
         set(value) {
             // ToDo: Filter by date
             updateResult {
@@ -211,6 +220,7 @@ class ActivitiesVM(
                 Log.i(TAG, "addType: Filter by date finished")
                 result
             }
+            field = value
         }
 
     /**
@@ -239,8 +249,8 @@ class ActivitiesVM(
             user.addCity(value)
         }
 
-    var distance: Int
-        get() = throw Exception()
+    var distance: Int = -1
+        get() = field
         set(value) {
             updateResult {
                 Log.i(TAG, "addType: Filter by distance started")
@@ -248,5 +258,6 @@ class ActivitiesVM(
                 Log.i(TAG, "addType: Filter by distance finished")
                 result
             }
+            field = value
         }
 }

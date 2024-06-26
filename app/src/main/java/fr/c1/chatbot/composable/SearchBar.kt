@@ -1,7 +1,7 @@
 package fr.c1.chatbot.composable
 
 import fr.c1.chatbot.MainActivity
-import fr.c1.chatbot.model.TypeAction
+import fr.c1.chatbot.model.messageManager.TypeAction
 import fr.c1.chatbot.ui.theme.ChatBotPrev
 import fr.c1.chatbot.utils.UnitLaunchedEffect
 import fr.c1.chatbot.utils.focusRequesterIfNotNull
@@ -37,6 +37,7 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBarColors
 import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -70,6 +71,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import android.util.Log
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.ZoneOffset
 import java.util.Date
 import java.util.Locale
 
@@ -96,7 +99,7 @@ fun SearchBar(
 ) {
     Surface(
         shape = shape,
-                            color = colors.containerColor,
+        color = colors.containerColor,
         contentColor = Color.Red,
         tonalElevation = tonalElevation,
         shadowElevation = shadowElevation,
@@ -192,7 +195,16 @@ fun MySearchBar(
         else -> mod
     }
 
-    val dpState = rememberDatePickerState()
+    val dpState = rememberDatePickerState(
+        selectableDates = object : SelectableDates {
+            private val today = LocalDate.now()
+            private val todayEpoch =
+                LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli()
+
+            override fun isSelectableDate(utcTimeMillis: Long) = utcTimeMillis >= todayEpoch
+            override fun isSelectableYear(year: Int) = year >= today.year
+        }
+    )
     var currentMillis by remember { mutableLongStateOf(-1L) }
 
     if (showDp)

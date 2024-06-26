@@ -1,4 +1,4 @@
-package fr.c1.chatbot.model
+package fr.c1.chatbot.model.messageManager
 
 import android.util.Log
 import androidx.activity.ComponentActivity

@@ -6,7 +6,7 @@ import android.content.Context
 import android.net.Uri
 import android.provider.CalendarContract
 import android.util.Log
-import fr.c1.chatbot.model.Event
+import fr.c1.chatbot.model.messageManager.Event
 import fr.c1.chatbot.utils.Calendar.PermissionsRequest.hasReadCalendarPermission
 import fr.c1.chatbot.utils.Calendar.PermissionsRequest.hasWriteCalendarPermission
 

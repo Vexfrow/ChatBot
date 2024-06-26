@@ -1,11 +1,9 @@
 package fr.c1.chatbot.model
 
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import fr.c1.chatbot.model.activity.Type
-import android.content.Context
-import android.util.Log
-import java.io.File
-import java.io.FileFilter
+import java.util.UUID
 
 private const val TAG = "UserProfile"
 
@@ -21,24 +19,42 @@ private const val TAG = "UserProfile"
  * @property _weeklyPreferences
  * @constructor Create User
  */
-class User(
-    var lastName: String = "",
-    var firstName: String = "",
-    var age: Int = -1,
+class User private constructor(
+    val id: String,
+    var lastName: String,
+    var firstName: String,
+    var age: Int,
     private val _cities: MutableList<String> = mutableListOf(),
     private var _types: MutableList<Type> = mutableListOf(),
     private val _passions: MutableList<String> = mutableListOf(),
-    private var _weeklyPreferences: MutableList<WeeklyPreference> = mutableListOf()
+    private val _weeklyPreferences: MutableList<WeeklyPreference> = mutableListOf(),
 ) {
+    companion object {
+        fun from(id: String, obj: JsonObject): User {
+            val gson = Gson()
+            return User(
+                id = id,
+                lastName = obj[User::lastName.name].asString,
+                firstName = obj[User::firstName.name].asString,
+                age = obj[User::age.name].asInt,
+                _cities = obj["cities"].asJsonArray.map { it.asString }.toMutableList(),
+                _types = obj["types"].asJsonArray.map { Type.valueOf(it.asString) }.toMutableList(),
+                _passions = obj["passions"].asJsonArray.map { it.asString }.toMutableList(),
+                _weeklyPreferences = obj["weeklyPreferences"].asJsonArray.map {
+                    gson.fromJson(it, WeeklyPreference::class.java)
+                }.toMutableList()
+            )
+        }
 
-    /**
-     * 2nd constructor
-     */
-    constructor(lastName: String, firstName: String, age: Int) : this() {
-        this.lastName = lastName
-        this.firstName = firstName
-        this.age = age
+        val DEFAULT = User(
+            id = UUID(0x123456789ABCDEF, 0xFEDCBA987654321).toString(),
+            firstName = "Default",
+            lastName = "user",
+            age = 60
+        )
     }
+
+    constructor() : this(UUID.randomUUID().toString(), "", "", 60)
 
     /**
      * Add city
@@ -165,102 +181,7 @@ class User(
      */
     val weeklyPreferences: List<WeeklyPreference> get() = _weeklyPreferences
 
-    /**
-     * Store user information
-     *
-     * @param context
-     */
-    fun storeUserInformation(context: Context) {
-        val fileName = "${lastName.lowercase()}_${firstName.lowercase()}.json"
-
-        // Build the JSON content
-        val jsonContent = """
-        {
-            "nom": "$lastName",
-            "prenom": "$firstName",
-            "age": $age,
-            "villes": ${_cities.joinToString(prefix = "[", postfix = "]") { "\"$it\"" }},
-            "types": ${_types.joinToString(prefix = "[", postfix = "]") { "\"$it\"" }},
-            "passions": ${passions.joinToString(prefix = "[", postfix = "]") { "\"$it\"" }},
-            "preferencesHebdo": ${
-            weeklyPreferences.joinToString(
-                prefix = "[",
-                postfix = "]"
-            ) { "\"$it\"" }
-        }
-        }
-    """.trimIndent()
-
-        // Write the JSON content to the file
-        context.openFileOutput(fileName, Context.MODE_PRIVATE).use { output ->
-            output.write(jsonContent.toByteArray())
-        }
+    override fun toString(): String {
+        return "User(id='$id', lastName='$lastName', firstName='$firstName', age=$age, _cities=$_cities, _types=$_types, _passions=$_passions, _weeklyPreferences=$_weeklyPreferences)"
     }
-
-    /**
-     * Load user information
-     *
-     * @param context
-     * @param firstName
-     * @param lastName
-     * @return
-     */
-    fun loadUserInformation(context: Context, firstName: String, lastName: String): User? {
-        val gson = Gson()
-        lateinit var user: User
-        val fileName = "${firstName.lowercase()}_${lastName.lowercase()}.json"
-        val file = File(context.filesDir, fileName)
-
-        return if (file.exists() && file.isFile) {
-            val content = file.readText()
-            user = gson.fromJson(content, User::class.java).also {
-                Log.d(TAG, "loadAllUsersInformation: Loaded user profile from ${file.name}")
-            }
-            user
-        } else {
-            Log.d(TAG, "loadUserInformation: User $firstName $lastName does not exist")
-            null
-        }
-    }
-}
-
-/**
- * Load all users information
- *
- * @param context
- * @return
- */
-fun loadAllUsersInformation(context: Context): MutableList<User> {
-    val gson = Gson()
-    val userList = mutableListOf<User>()
-    val regex = Regex("""\w+_\w+.json""")
-
-    val files = context.filesDir.listFiles(FileFilter { it.isFile && regex.matches(it.name) })!!
-    if (files.isEmpty())
-        Log.i(TAG, "loadAllUsersInformation: No user file found !")
-    else
-        files.forEach { file ->
-            val content = file.readText()
-            val user = gson.fromJson(content, User::class.java)
-            userList.add(user)
-            Log.d(
-                TAG,
-                "loadAllUsersInformation: Loaded user profile from ${file.name}\nUtilisateur : ${user.firstName} ${user.lastName}, ${user.age} ans"
-            )
-        }
-
-    return userList
-}
-
-/**
- * Store all users information
- *
- * @param context
- * @param userList
- */
-fun storeAllUsersInformation(context: Context, userList: MutableList<User>) {
-    userList.forEach { user ->
-        user.storeUserInformation(context)
-    }
-    Log.d(TAG, "storeAllUsersInformation: Stored all user profiles")
 }

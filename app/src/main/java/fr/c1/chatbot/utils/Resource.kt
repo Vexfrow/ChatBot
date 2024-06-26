@@ -20,7 +20,7 @@ sealed class Resource<T>(
      * @param T
      * @constructor Create empty None
      */
-    class None<T>() : Resource<T>()
+    class None<T> : Resource<T>()
 
     /**
      * Success
@@ -51,16 +51,23 @@ sealed class Resource<T>(
      * @param error
      * @param data
      */
-    class Failed<T>(error: Throwable, data: T? = null) : Resource<T>(error = error)
+    class Failed<T>(error: Throwable, data: T? = null) : Resource<T>(error = error, data = data)
 
     /**
      * Succeed
      *
      */
-    fun succeed() = when(this) {
+    fun succeed() = when (this) {
         is Success -> this
         is None -> Success(null)
         is Loading -> Success(data)
         is Failed -> throw IllegalStateException()
+    }
+
+    override fun toString(): String = this::class.qualifiedName + when (this) {
+        is None -> ""
+        is Success -> "$data"
+        is Loading -> "$data"
+        is Failed -> "error=$error, data=$data"
     }
 }

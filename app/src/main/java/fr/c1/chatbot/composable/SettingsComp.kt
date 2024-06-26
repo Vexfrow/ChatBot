@@ -171,7 +171,7 @@ fun SettingsComp() {
 
         Spacer(modifier = Modifier.height(50.dp))
         Text(
-            text = "Faîte glisser le curseur pour changer la taille du texte",
+            text = "Faites glisser le curseur pour changer la taille du texte",
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(16.dp)
         )
@@ -208,9 +208,8 @@ fun SettingsComp() {
             Button(colors = ButtonDefaults.buttonColors(containerColor = with(Color) { if (Settings.notifications) Green else Red }),
                 onClick = {
                     Settings.notifications = !Settings.notifications
-                    if (Settings.notifications) enableNotification(context) else disableNotification(
-                        context
-                    )
+                    if (Settings.notifications) enableNotification(context)
+                    else disableNotification(context)
                 }) { Text(text = "Notifications : ${if (Settings.notifications) "Activé" else "Désactivé"}") }
 
         }
@@ -367,8 +366,7 @@ fun SettingsComp() {
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     Text(
-                        text = "Quelle personnalité voulez-vous que le robot ait ?\n" +
-                                "Attention, vous devrait recommencer la conversation depuis le début en cas de changement de personnalité",
+                        text = "Quelle personnalité voulez-vous que le robot ait ?",
                         style = MaterialTheme.typography.titleLarge
                     )
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {

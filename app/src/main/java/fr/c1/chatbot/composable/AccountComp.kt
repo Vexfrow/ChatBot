@@ -1,9 +1,10 @@
 package fr.c1.chatbot.composable
 
 import fr.c1.chatbot.model.ActivitiesRepository
-import fr.c1.chatbot.utils.application
+import fr.c1.chatbot.model.User
 import fr.c1.chatbot.utils.items
 import fr.c1.chatbot.utils.rememberMutableStateOf
+import fr.c1.chatbot.viewModel.UserVM
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Text
@@ -40,7 +42,10 @@ private const val TAG = "AccountComp"
  */
 object AccountComp {
     @Composable
-    fun Data(modifier: Modifier = Modifier) = Box(
+    fun Data(
+        user: User,
+        modifier: Modifier = Modifier
+    ) = Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
@@ -48,8 +53,6 @@ object AccountComp {
             verticalArrangement = Arrangement.spacedBy(25.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val user = application.currentUser
-
             var firstName by rememberMutableStateOf(value = user.firstName)
             var lastName by rememberMutableStateOf(value = user.lastName)
             var age by remember { mutableIntStateOf(user.age) }
@@ -91,9 +94,15 @@ object AccountComp {
                         age = range.first
                     else if (age > range.last)
                         age = range.last
+
+                    user.age = age
                 },
                 label = { Text(text = "Âge") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword)
+                keyboardActions = KeyboardActions.Default,
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.NumberPassword
+                )
             )
         }
     }
@@ -104,8 +113,8 @@ object AccountComp {
 
     @Composable
     fun PassionsList(
+        userVM: UserVM,
         selected: (String) -> Boolean,
-        onSelectionChanged: (String, Boolean) -> Unit
     ) {
         val list = remember { ActivitiesRepository.passionList }
         val selection = remember { list.map { it to selected(it) }.toMutableStateMap() }
@@ -119,8 +128,12 @@ object AccountComp {
                 FilterChip(
                     selected = selection[it]!!,
                     onClick = {
-                        selection[it] = !selection[it]!!
-                        onSelectionChanged(it, selection[it]!!)
+                        val newSelection = !selection[it]!!
+                        selection[it] = newSelection
+                        with(userVM.currentUser!!) {
+                            if (newSelection) addPassion(it)
+                            else removePassion(it)
+                        }
                     },
                     label = {
                         Text(text = it.replaceFirstChar { c ->

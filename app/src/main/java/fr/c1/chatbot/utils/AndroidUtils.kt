@@ -3,7 +3,6 @@ package fr.c1.chatbot.utils
 import com.opencsv.CSVParserBuilder
 import com.opencsv.CSVReaderBuilder
 import fr.c1.chatbot.ChatBot
-import fr.c1.chatbot.model.Event
 import kotlinx.coroutines.CoroutineScope
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
@@ -37,6 +36,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
+import fr.c1.chatbot.model.messageManager.Event
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream

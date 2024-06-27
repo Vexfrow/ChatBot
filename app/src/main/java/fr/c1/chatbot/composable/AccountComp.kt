@@ -1,5 +1,6 @@
 package fr.c1.chatbot.composable
 
+import fr.c1.chatbot.composable.utils.MyText
 import fr.c1.chatbot.model.ActivitiesRepository
 import fr.c1.chatbot.model.User
 import fr.c1.chatbot.utils.items
@@ -29,21 +30,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import fr.c1.chatbot.composable.utils.MyText
 import java.text.Collator
 import java.util.Locale
 
-/**
- * Tag coucou
- */
 private const val TAG = "AccountComp"
 
-/**
- * Account comp Test
- *
- * @constructor Create empty Account comp
- */
+/** All components of the [Tab.Account] tab */
 object AccountComp {
+    /**
+     * Component of the [Tab.AccountData] tab
+     *
+     * @param user User account
+     */
     @Composable
     fun Data(
         user: User,
@@ -110,6 +108,7 @@ object AccountComp {
         }
     }
 
+    /** Component of the [Tab.AccountPreferences] tab, not implemented yet */
     @Composable
     fun Preferences(modifier: Modifier = Modifier) =
         MyText(
@@ -120,7 +119,13 @@ object AccountComp {
             textAlign = TextAlign.Center
         )
 
-
+    /**
+     * Component of the [Tab.AccountPassions] tab
+     *
+     * @param userVM View model to manage the users
+     * @param selected Callback when a passion is selected
+     * @receiver
+     */
     @Composable
     fun PassionsList(
         userVM: UserVM,

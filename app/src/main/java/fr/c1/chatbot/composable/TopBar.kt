@@ -43,7 +43,7 @@ enum class Tab(
     Suggestion(1, "Suggestion", Icons.Default.Lightbulb),
     History(2, "Historique", Icons.Default.History),
     Account(3, "Compte", Icons.Default.AccountCircle),
-    AccountData(3.0f, "Données", Icons.Default.AccountCircle),
+    AccountData(3.0f, "Informations", Icons.Default.AccountCircle),
     AccountPreferences(3.1f, "Préférences hebdomadaire", Icons.Default.DateRange),
     AccountPassions(3.2f, "Centres d'intérêt", Icons.Default.SentimentVerySatisfied),
     Settings(4, "Paramètres", Icons.Default.Settings);

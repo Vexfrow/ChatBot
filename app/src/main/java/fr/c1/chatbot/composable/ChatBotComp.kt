@@ -16,8 +16,10 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -29,15 +31,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
-import android.util.Log
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.ui.unit.dp
+import android.util.Log
 import kotlin.time.Duration.Companion.seconds
 
 private const val TAG = "ChatBotComp"
 
+/** All components of the [Tab.ChatBot] tab */
 object ChatBotComp {
+    /**
+     * Component of the [Tab.ChatBotChat] tab
+     *
+     * @param activitiesVM View model to filter the activities
+     * @param messageVM View model to manage the messages
+     * @param onResult Callback when the results are displayed
+     */
     @Composable
     fun Chat(
         activitiesVM: ActivitiesVM,
@@ -119,7 +127,7 @@ object ChatBotComp {
                     lazyListState.animateScrollToItem(messageVM.messages.size)
 
                     if (messageVM.chatBotTree.botAction == TypeAction.ShowResults) {
-                        Log.i(TAG,"Results should be displayed now")
+                        Log.i(TAG, "Results should be displayed now")
                         delay(5.seconds)
                         onResult()
                     }
@@ -213,6 +221,11 @@ object ChatBotComp {
         }
     }
 
+    /**
+     * Component of the [Tab.ChatBotResults] tab
+     *
+     * @param activitiesVM View model to get the [ActivitiesVM.result]
+     */
     @Composable
     fun Result(activitiesVM: ActivitiesVM) = when (val result = activitiesVM.result) {
         is Resource.None -> Box(
@@ -234,6 +247,19 @@ object ChatBotComp {
     }
 }
 
+/**
+ * State of [MySearchBar] component
+ *
+ * @property enabled Indicate if the search bar is enable
+ * @property text Indicate the placeholder of the search bar
+ * @property action Indicate the [TypeAction] of the search bar
+ * @property answerId Indicate tha id corresponding to the current answer
+ * @property list If not null, indicate the list of the search bar [DropDown]
+ *
+ * @constructor Create a SearchBarState with all his properties
+ *
+ * @see MySearchBar
+ */
 private data class SearchBarState(
     val enabled: Boolean,
     val text: String,
@@ -241,6 +267,15 @@ private data class SearchBarState(
     val answerId: Int,
     val list: Collection<String>?
 ) {
+    /**
+     * Construct a default SearchBarState
+     *
+     * - Disabled
+     * - "Choisissez une option ci-dessus" as [text]
+     * - No action ([TypeAction.None])
+     * - No answer (0)
+     * - No [DropDown]
+     */
     constructor() : this(
         false,
         "Choisissez une option ci-dessus",

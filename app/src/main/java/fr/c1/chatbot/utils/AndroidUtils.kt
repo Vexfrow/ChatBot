@@ -3,6 +3,7 @@ package fr.c1.chatbot.utils
 import com.opencsv.CSVParserBuilder
 import com.opencsv.CSVReaderBuilder
 import fr.c1.chatbot.ChatBot
+import fr.c1.chatbot.model.messageManager.Event
 import kotlinx.coroutines.CoroutineScope
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
@@ -36,7 +37,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
-import fr.c1.chatbot.model.messageManager.Event
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -50,22 +50,14 @@ val application: ChatBot
 
 val Activity.app: ChatBot get() = application as ChatBot
 
-/**
- * Unit launched effect
- *
- * @param block
- * @receiver
- */
+/** [LaunchedEffect] with [Unit] as single key */
 @Composable
 fun UnitLaunchedEffect(block: suspend CoroutineScope.() -> Unit) = LaunchedEffect(Unit, block)
 
 /**
- * Remember mutable state of
+ * [remember] a [MutableState] without any key
  *
- * @param T
- * @param value
- * @param policy
- * @return
+ * @see mutableStateOf
  */
 @Composable
 fun <T> rememberMutableStateOf(
@@ -74,13 +66,9 @@ fun <T> rememberMutableStateOf(
 ): MutableState<T> = remember { mutableStateOf(value, policy) }
 
 /**
- * Remember mutable state of
+ * [remember] a [MutableState] with a single key
  *
- * @param T
- * @param key1
- * @param value
- * @param policy
- * @return
+ * @see mutableStateOf
  */
 @Composable
 fun <T> rememberMutableStateOf(
@@ -89,48 +77,26 @@ fun <T> rememberMutableStateOf(
     policy: SnapshotMutationPolicy<T> = structuralEqualityPolicy()
 ): MutableState<T> = remember(key1) { mutableStateOf(value, policy) }
 
-/**
- * Remember mutable state list of
- *
- * @param T
- * @return
- */
+/** [remember] a [MutableState] with a single key */
 @Composable
 fun <T> rememberMutableStateListOf(): SnapshotStateList<T> = remember { mutableStateListOf() }
 
 /**
- * Remember mutable state list of
+ * [remember] a [SnapshotStateList] without any key
  *
- * @param T
- * @param elements
- * @return
+ * @see mutableStateListOf
  */
 @Composable
 fun <T> rememberMutableStateListOf(vararg elements: T): SnapshotStateList<T> =
     remember { mutableStateListOf(*elements) }
 
-/**
- * Has permission
- *
- * @param permission
- */
+/** Check if the user have [PackageManager.PERMISSION_GRANTED] a specified [permission] */
 fun Context.hasPermission(permission: String) = ContextCompat.checkSelfPermission(
     this,
     permission
 ) == PackageManager.PERMISSION_GRANTED
 
-/**
- * Plus
- *
- * @param f
- */
 operator fun TextUnit.plus(f: Float) = (this.value + f).sp
-
-/**
- * Minus
- *
- * @param f
- */
 operator fun TextUnit.minus(f: Float) = (this.value - f).sp
 
 /**
@@ -345,26 +311,24 @@ fun <T> parseCsv(csvIS: InputStream, onLine: (Array<String>) -> T): List<T> {
         .toList()
 }
 
-/**
- * Put color
- *
- * @param ref
- * @return
- */
-fun SharedPreferences.Editor.putColor(
-    ref: KMutableProperty0<Color>
-): SharedPreferences.Editor = putInt(ref.name, ref.get().value.toInt())
+fun SharedPreferences.getColor(
+    key: String,
+    default: Color
+) = Color(getInt(key, default.toArgb()))
 
-/**
- * Get color
- *
- * @param ref
- * @param defaultValue
- */
 fun SharedPreferences.getColor(
     ref: KMutableProperty0<Color>,
-    defaultValue: Int
-) = getInt(ref.name, defaultValue)
+    defaultValue: Color
+) = ref.set(getColor(ref.name, defaultValue))
+
+fun SharedPreferences.Editor.putColor(
+    key: String,
+    value: Color
+) = putInt(key, value.toArgb())
+
+fun SharedPreferences.Editor.putColor(
+    ref: KProperty0<Color>
+): SharedPreferences.Editor = putColor(ref.name, ref.get())
 
 /**
  * Disable notification

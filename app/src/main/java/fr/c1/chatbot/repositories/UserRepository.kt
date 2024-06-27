@@ -10,9 +10,7 @@ import java.io.FileFilter
 private const val TAG = "UserRepository"
 
 object UserRepository {
-    /**
-     * Load all users information
-     */
+    /** Load all users informations */
     fun loadAll(context: Context): List<User> {
         val gson = Gson()
         val userList = mutableListOf<User>()
@@ -37,7 +35,9 @@ object UserRepository {
     }
 
     /**
-     * Store all users information
+     * Store all [userList] informations
+     *
+     * @see UserRepository.store
      */
     fun storeAll(context: Context, userList: List<User>) {
         userList.forEach { user -> store(user, context) }
@@ -45,7 +45,9 @@ object UserRepository {
     }
 
     /**
-     * Store the user information in a json file
+     * Store the specified [user] informations in a json file
+     *
+     * The file name correspond to the [User.id] with the json extension
      */
     fun store(user: User, context: Context) {
         fun <T> Iterable<T>.toJson() = joinToString(prefix = "[", postfix = "]") { "\"$it\"" }
@@ -70,5 +72,10 @@ object UserRepository {
         }
 
         Log.i(TAG, "store: $user stored")
+    }
+
+    /** Delete the spicified [user] */
+    fun delete(user: User, context: Context) {
+        context.deleteFile("${user.id}.json")
     }
 }

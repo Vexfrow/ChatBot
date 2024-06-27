@@ -169,22 +169,22 @@ fun SettingsComp() {
 
         }
 
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(25.dp))
         Text(
             text = "Faites glisser le curseur pour changer la taille du texte",
             style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(8.dp)
         )
 
         Slider(
             value = Settings.textSize.value,
             onValueChange = { Settings.textSize = it.sp },
             valueRange = 30f..50f,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 50.dp)
         )
 
 
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(25.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             Button(onClick = {
                 botColorPicker = false
@@ -382,7 +382,10 @@ fun SettingsComp() {
                                         isBotPersonalityChooserOpen = false
                                     },
                             ) {
-                                Text(text = name)
+                                Text(
+                                    text = if(name == "Georges") "Blagueur" else if(name == "Rob") "Formel" else if(name == "Amy") "Attentionné" else name,
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
                             }
                         }
                     }

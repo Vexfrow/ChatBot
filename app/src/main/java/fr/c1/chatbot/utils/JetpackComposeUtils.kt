@@ -1,5 +1,6 @@
 package fr.c1.chatbot.utils
 
+import fr.c1.chatbot.model.Settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridItemScope
@@ -59,3 +60,5 @@ fun Modifier.focusRequesterIfNotNull(fr: FocusRequester?) =
 fun Modifier.backgroundIf(color: Color, condition: Boolean) =
     if (condition) background(color)
     else this
+
+fun Modifier.boxBackground() = this.background(Settings.backgroundColor)

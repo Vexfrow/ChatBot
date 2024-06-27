@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -26,7 +27,9 @@ import androidx.compose.runtime.toMutableStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import fr.c1.chatbot.composable.utils.MyText
 import java.text.Collator
 import java.util.Locale
 
@@ -62,7 +65,7 @@ object AccountComp {
                     value = firstName,
                     onValueChange = {
                         firstName = it
-                        user.firstName = it
+                        user.firstName = it.ifBlank { User.DEFAULT.firstName }
                     },
                     label = { Text(text = "Prénom") },
                     singleLine = true
@@ -72,7 +75,7 @@ object AccountComp {
                     value = lastName,
                     onValueChange = {
                         lastName = it
-                        user.lastName = it
+                        user.lastName = it.ifBlank { User.DEFAULT.lastName }
                     },
                     label = { Text(text = "Nom de famille") },
                     singleLine = true
@@ -109,7 +112,14 @@ object AccountComp {
 
     @Composable
     fun Preferences(modifier: Modifier = Modifier) =
-        ToDo(name = "Afficher les différentes préférences hebdomadaires")
+        MyText(
+            text = "Cet onglet permet à l'utilisateur de préciser ses préférences d'horaires pour chaque semaine.\n" +
+                    "Par exemple, l'utilisateur peut préciser qu'il est libre tous les lundi matin\n" +
+                    "Cela permet de pouvoir proposer des activités à l'utilisateur pendant les périodes marqués comme étant \"libres\" \n" +
+                    "Ce n'est pas encore implémenté",
+            textAlign = TextAlign.Center
+        )
+
 
     @Composable
     fun PassionsList(
@@ -120,8 +130,9 @@ object AccountComp {
         val selection = remember { list.map { it to selected(it) }.toMutableStateMap() }
 
         LazyVerticalGrid(
-            columns = GridCells.Fixed(5),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+            columns = GridCells.Fixed(4),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalArrangement = Arrangement.spacedBy(15.dp)
         ) {
             val coll = Collator.getInstance(Locale.FRENCH).apply { strength = Collator.PRIMARY }
             items(list.sortedWith { left, right -> coll.compare(left, right) }) {
@@ -138,7 +149,7 @@ object AccountComp {
                     label = {
                         Text(text = it.replaceFirstChar { c ->
                             if (c.isLowerCase()) c.titlecase(Locale.getDefault()) else c.toString()
-                        })
+                        }, style = MaterialTheme.typography.titleLarge)
                     })
             }
         }

@@ -1,12 +1,14 @@
 package fr.c1.chatbot.composable
 
 import fr.c1.chatbot.ChatBot
+import fr.c1.chatbot.R
 import fr.c1.chatbot.composable.utils.Loading
 import fr.c1.chatbot.composable.utils.MyText
 import fr.c1.chatbot.model.User
 import fr.c1.chatbot.ui.theme.ChatBotPrev
 import fr.c1.chatbot.utils.Resource
 import fr.c1.chatbot.utils.UnitLaunchedEffect
+import fr.c1.chatbot.utils.boxBackground
 import fr.c1.chatbot.utils.rememberMutableStateOf
 import fr.c1.chatbot.viewModel.UserVM
 import kotlinx.coroutines.Dispatchers
@@ -16,6 +18,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -24,9 +27,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircleOutline
+import androidx.compose.material.icons.filled.RemoveCircleOutline
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -46,6 +53,10 @@ fun HomeLoading(
     app: ChatBot,
     userVM: UserVM,
     onInited: () -> Unit
+) = Box(
+    modifier = Modifier
+        .fillMaxSize()
+        .boxBackground()
 ) {
     val ctx = LocalContext.current
 
@@ -84,51 +95,106 @@ fun HomeLoading(
 private fun UserList(
     userVM: UserVM,
     onCreate: () -> Unit
-) = LazyRow(
-    verticalAlignment = Alignment.CenterVertically,
-    horizontalArrangement = Arrangement.spacedBy(50.dp, Alignment.CenterHorizontally)
-) {
-    items(userVM.users.data!!) { UserComp(it) { userVM.setCurrentUser(it) } }
-    item {
-        UserComp(
-            icon = Icons.Default.AddCircleOutline,
-            firstName = "Créer un",
-            lastName = "compte",
-            onClick = onCreate
+) = Box(modifier = Modifier.fillMaxSize()) {
+    val ctx = LocalContext.current
+
+    Text(
+        modifier = Modifier.align(Alignment.TopCenter),
+        text = stringResource(R.string.app_name)
+    )
+
+    Box(
+        modifier = Modifier
+            .fillMaxHeight(.5f)
+            .fillMaxWidth()
+    ) {
+        Text(
+            modifier = Modifier
+                .align(Alignment.Center),
+            text = "Veuillez sélectionner un compte",
+            style = MaterialTheme.typography.bodyMedium
         )
+    }
+
+    LazyRow(
+        modifier = Modifier.fillMaxSize(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(50.dp, Alignment.CenterHorizontally)
+    ) {
+        items(userVM.users.data!!) {
+            UserComp(
+                user = it,
+                onSelect = { userVM.setCurrentUser(it) },
+                onDelete = if (it != User.DEFAULT) {
+                    { userVM.deleteUser(it, ctx) }
+                } else null
+            )
+        }
+        item {
+            UserComp(
+                icon = Icons.Default.AddCircleOutline,
+                firstName = "Créer un",
+                lastName = "compte",
+                onSelect = onCreate
+            )
+        }
     }
 }
 
 @Composable
 fun UserComp(
     user: User,
-    onClick: () -> Unit
-) = UserComp(firstName = user.firstName, lastName = user.lastName, onClick = onClick)
+    onSelect: (() -> Unit),
+    onDelete: (() -> Unit)? = null,
+) = UserComp(
+    firstName = user.firstName, lastName = user.lastName,
+    onDelete = onDelete, onSelect = onSelect
+)
 
 @Composable
 fun UserComp(
     icon: ImageVector = Icons.Default.AccountCircle,
     firstName: String,
     lastName: String,
-    onClick: () -> Unit
+    onSelect: () -> Unit,
+    onDelete: (() -> Unit)? = null,
 ) = Column(
-    modifier = Modifier
-        .clickable(onClick = onClick),
-    horizontalAlignment = Alignment.CenterHorizontally
+    horizontalAlignment = Alignment.CenterHorizontally,
+    verticalArrangement = Arrangement.spacedBy(25.dp)
 ) {
-    Icon(
-        modifier = Modifier.size(72.dp),
-        imageVector = icon,
-        contentDescription = firstName
-    )
-    MyText(
-        text = firstName,
-        style = MaterialTheme.typography.bodyMedium
-    )
-    MyText(
-        text = lastName,
-        style = MaterialTheme.typography.bodyMedium
-    )
+    Column(
+        modifier = Modifier.clickable(onClick = onSelect),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            modifier = Modifier.size(72.dp),
+            imageVector = icon,
+            contentDescription = firstName
+        )
+        MyText(
+            text = firstName,
+            style = MaterialTheme.typography.bodyMedium
+        )
+        MyText(
+            text = lastName,
+            style = MaterialTheme.typography.bodyMedium
+        )
+    }
+
+    if (onDelete != null)
+        IconButton(
+            modifier = Modifier.size(48.dp),
+            colors = IconButtonDefaults.iconButtonColors(
+                contentColor = Color.Red
+            ),
+            onClick = onDelete
+        ) {
+            Icon(
+                modifier = Modifier.fillMaxSize(),
+                imageVector = Icons.Default.RemoveCircleOutline,
+                contentDescription = "Delete user"
+            )
+        }
 }
 
 @Composable
@@ -163,4 +229,4 @@ fun NewUser(
 
 @Preview
 @Composable
-private fun Prev() = ChatBotPrev { UserComp(user = User()) {} }
+private fun Prev() = ChatBotPrev { UserComp(user = User(), {}, {}) }

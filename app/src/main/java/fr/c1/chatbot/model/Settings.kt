@@ -71,8 +71,9 @@ object Settings {
 
     fun init(ctx: Context) {
         val pref = ctx.getSharedPreferences("Settings", Context.MODE_PRIVATE)
-        if (pref.contains("init")) from(pref)
-        else reset(ctx.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES)
+        val night = ctx.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+        if (pref.contains("init")) from(pref, night)
+        else reset(night)
     }
 
     private fun reset(night: Boolean) {
@@ -93,7 +94,7 @@ object Settings {
 
     }
 
-    private fun from(pref: SharedPreferences) = pref.run {
+    private fun from(pref: SharedPreferences, night: Boolean) = pref.run {
         getSp(::textSize, 40.sp)
         getBool(::tts, false)
         botIcon = iconFromName(getString(::botIcon.name, "Filled.Bot")!!)
@@ -104,9 +105,11 @@ object Settings {
         getNullable(
             ::userImage, ::getUri, "https://upload.wikimedia.org/wikipedia/commons/4/41/Noimage.svg"
         )
-        getColor(::bubbleSpeechBotColor, Default.defaultBubbleSpeechColor.value.toInt())
-        getColor(::bubbleSpeechUserColor, Default.defaultBubbleSpeechColor.value.toInt())
-        getColor(::backgroundColor, Default.defaultBackgroundColor.value.toInt())
+        val tmp = getColorList(night)
+
+        getColor(::bubbleSpeechBotColor, tmp[0])
+        getColor(::bubbleSpeechUserColor, tmp[1])
+        getColor(::backgroundColor, Default.defaultBackgroundColor)
         getString(::botName, Default.defaultBotName)
         getString(::botPersonality, Default.defaultBotPersonality)
         getBool(::notifications, false)

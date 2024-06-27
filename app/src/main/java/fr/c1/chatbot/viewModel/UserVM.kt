@@ -54,4 +54,10 @@ class UserVM(
         val tmp = users.data!!.toMutableList().apply { add(user) }
         users = Resource.Success(tmp)
     }
+
+    fun deleteUser(user: User, ctx: Context) {
+        repo.delete(user, ctx)
+        val tmp = users.data!!.toMutableList().apply { remove(user) }
+        users = Resource.Success(tmp)
+    }
 }

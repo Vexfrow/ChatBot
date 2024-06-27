@@ -63,7 +63,7 @@ object AccountComp {
                     value = firstName,
                     onValueChange = {
                         firstName = it
-                        user.firstName = it
+                        user.firstName = it.ifBlank { User.DEFAULT.firstName }
                     },
                     label = { Text(text = "Prénom") },
                     singleLine = true
@@ -73,7 +73,7 @@ object AccountComp {
                     value = lastName,
                     onValueChange = {
                         lastName = it
-                        user.lastName = it
+                        user.lastName = it.ifBlank { User.DEFAULT.lastName }
                     },
                     label = { Text(text = "Nom de famille") },
                     singleLine = true

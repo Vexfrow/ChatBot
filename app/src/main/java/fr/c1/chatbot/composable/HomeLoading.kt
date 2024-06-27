@@ -1,12 +1,14 @@
 package fr.c1.chatbot.composable
 
 import fr.c1.chatbot.ChatBot
+import fr.c1.chatbot.R
 import fr.c1.chatbot.composable.utils.Loading
 import fr.c1.chatbot.composable.utils.MyText
 import fr.c1.chatbot.model.User
 import fr.c1.chatbot.ui.theme.ChatBotPrev
 import fr.c1.chatbot.utils.Resource
 import fr.c1.chatbot.utils.UnitLaunchedEffect
+import fr.c1.chatbot.utils.boxBackground
 import fr.c1.chatbot.utils.rememberMutableStateOf
 import fr.c1.chatbot.viewModel.UserVM
 import kotlinx.coroutines.Dispatchers
@@ -16,6 +18,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -41,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -49,6 +53,10 @@ fun HomeLoading(
     app: ChatBot,
     userVM: UserVM,
     onInited: () -> Unit
+) = Box(
+    modifier = Modifier
+        .fillMaxSize()
+        .boxBackground()
 ) {
     val ctx = LocalContext.current
 
@@ -87,7 +95,7 @@ fun HomeLoading(
 private fun UserList(
     userVM: UserVM,
     onCreate: () -> Unit
-) {
+) = Box(modifier = Modifier.fillMaxSize()) {
     val ctx = LocalContext.current
 
     LazyRow(

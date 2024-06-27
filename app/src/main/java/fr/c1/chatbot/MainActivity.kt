@@ -15,6 +15,7 @@ import fr.c1.chatbot.repositories.UserRepository
 import fr.c1.chatbot.ui.theme.ChatBotTheme
 import fr.c1.chatbot.utils.UnitLaunchedEffect
 import fr.c1.chatbot.utils.app
+import fr.c1.chatbot.utils.boxBackground
 import fr.c1.chatbot.utils.rememberMutableStateOf
 import fr.c1.chatbot.viewModel.ActivitiesVM
 import fr.c1.chatbot.viewModel.MessageVM
@@ -23,7 +24,6 @@ import org.osmdroid.config.Configuration
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -91,11 +91,13 @@ class MainActivity : ComponentActivity() {
 
         // Request all needed permissions
         if (!inited) {
-            Scaffold { padding ->
+            Scaffold(
+                containerColor = MaterialTheme.colorScheme.surface
+            ) { padding ->
                 Surface(
                     modifier = Modifier
                         .padding(padding)
-                        .fillMaxSize()
+                        .fillMaxSize(),
                 ) { HomeLoading(app, userVM) { inited = true } }
             }
             PermissionsContent(context = this)
@@ -137,7 +139,7 @@ class MainActivity : ComponentActivity() {
             Box(
                 modifier = Modifier
                     .padding(innerPadding)
-                    .background(Settings.backgroundColor)
+                    .boxBackground()
                     .fillMaxSize()
             ) {
                 when (tab) {

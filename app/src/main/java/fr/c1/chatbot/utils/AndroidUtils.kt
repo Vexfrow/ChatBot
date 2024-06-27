@@ -311,26 +311,24 @@ fun <T> parseCsv(csvIS: InputStream, onLine: (Array<String>) -> T): List<T> {
         .toList()
 }
 
-/**
- * Put color
- *
- * @param ref
- * @return
- */
-fun SharedPreferences.Editor.putColor(
-    ref: KMutableProperty0<Color>
-): SharedPreferences.Editor = putInt(ref.name, ref.get().value.toInt())
+fun SharedPreferences.getColor(
+    key: String,
+    default: Color
+) = Color(getInt(key, default.toArgb()))
 
-/**
- * Get color
- *
- * @param ref
- * @param defaultValue
- */
 fun SharedPreferences.getColor(
     ref: KMutableProperty0<Color>,
-    defaultValue: Int
-) = getInt(ref.name, defaultValue)
+    defaultValue: Color
+) = ref.set(getColor(ref.name, defaultValue))
+
+fun SharedPreferences.Editor.putColor(
+    key: String,
+    value: Color
+) = putInt(key, value.toArgb())
+
+fun SharedPreferences.Editor.putColor(
+    ref: KProperty0<Color>
+): SharedPreferences.Editor = putColor(ref.name, ref.get())
 
 /**
  * Disable notification

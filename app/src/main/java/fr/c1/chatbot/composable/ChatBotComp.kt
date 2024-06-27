@@ -30,6 +30,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import android.util.Log
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.ui.unit.dp
 import kotlin.time.Duration.Companion.seconds
 
 private const val TAG = "ChatBotComp"
@@ -164,7 +167,7 @@ object ChatBotComp {
 
                 addAnswer(i)
             }
-
+            Spacer(modifier = Modifier.height(15.dp))
             fun search(value: String) {
                 when (sbState.action) {
                     //If the action is to put a date
@@ -206,6 +209,7 @@ object ChatBotComp {
                 proposals = sbState.list,
                 onSearch = ::search
             )
+            Spacer(modifier = Modifier.height(15.dp))
         }
     }
 

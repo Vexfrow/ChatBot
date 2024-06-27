@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import fr.c1.chatbot.model.activity.AbstractActivity
@@ -33,6 +34,7 @@ import fr.c1.chatbot.model.activity.Museum
 import fr.c1.chatbot.model.activity.Site
 import fr.c1.chatbot.utils.LocationHandler
 import fr.c1.chatbot.utils.LocationHandler.currentLocation
+import fr.c1.chatbot.utils.LocationHandler.startLocationUpdates
 import fr.c1.chatbot.utils.Resource
 import fr.c1.chatbot.viewModel.ActivitiesVM
 import org.osmdroid.api.IGeoPoint
@@ -102,6 +104,7 @@ private fun MapView.unselectAllPoints() {
 @Composable
 fun OsmdroidMapView(aVM: ActivitiesVM) {
     // Variable pour stocker la MapView
+    val ctx = LocalContext.current
     var mapView by remember { mutableStateOf<MapView?>(null) }
 
     AndroidView(
@@ -124,6 +127,7 @@ fun OsmdroidMapView(aVM: ActivitiesVM) {
                 }
                 val mLocationOverlay = MyLocationNewOverlay(this)
                 mLocationOverlay.enableMyLocation()
+
 
                 overlays.apply {
                     // create overlays with differents themes
@@ -160,6 +164,7 @@ fun OsmdroidMapView(aVM: ActivitiesVM) {
         onClick = {
             // Action à réaliser lorsqu'on clique sur le bouton
             // Vous pouvez interagir avec la MapView ici si nécessaire
+            startLocationUpdates(ctx)
             mapView?.controller?.setCenter(
                 GeoPoint(
                     LocationHandler.currentLocation!!.latitude,

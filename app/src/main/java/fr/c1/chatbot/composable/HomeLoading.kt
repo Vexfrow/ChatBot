@@ -48,6 +48,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+/**
+ * Component of the home system
+ *
+ * @param app Current application
+ * @param userVM View model to manage the users
+ * @param onInited Callback when the application is ready to start
+ * (user selected and application inited)
+ */
 @Composable
 fun HomeLoading(
     app: ChatBot,
@@ -91,6 +99,12 @@ fun HomeLoading(
     }
 }
 
+/**
+ * Component listing all the [UserVM.users]
+ *
+ * @param userVM View model to manage the users
+ * @param onCreate Callback when the user want to create a new account
+ */
 @Composable
 private fun UserList(
     userVM: UserVM,
@@ -141,16 +155,37 @@ private fun UserList(
     }
 }
 
+/**
+ * Component representing a [user]
+ *
+ * @param onSelect Callback when the [user] is selected
+ * @param onDelete Callback when the [user] is deleted
+ */
 @Composable
 fun UserComp(
     user: User,
-    onSelect: (() -> Unit),
+    onSelect: () -> Unit,
     onDelete: (() -> Unit)? = null,
 ) = UserComp(
     firstName = user.firstName, lastName = user.lastName,
     onDelete = onDelete, onSelect = onSelect
 )
 
+/**
+ * Component representing a user
+ *
+ * In a column :
+ * - An [icon]
+ * - The [firstName]
+ * - The [lastName]
+ *
+ * @param icon Icon of the user, [Icons.Filled.AccountCircle] by default
+ * @param firstName First name of the user (first line)
+ * @param lastName Last name of the user
+ * @param onSelect Callback when the user is selected
+ * @param onDelete If not null, add a remove button and callback when the user is deleted
+ * @receiver
+ */
 @Composable
 fun UserComp(
     icon: ImageVector = Icons.Default.AccountCircle,
@@ -197,6 +232,12 @@ fun UserComp(
         }
 }
 
+/**
+ * Component to create a new [User]
+ *
+ * @param onUndo Callback when the user cancel the creation
+ * @param onValidate Callback when the user confirm the new account
+ */
 @Composable
 fun NewUser(
     onUndo: () -> Unit,

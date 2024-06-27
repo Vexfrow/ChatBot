@@ -27,7 +27,9 @@ import androidx.compose.runtime.toMutableStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import fr.c1.chatbot.composable.utils.MyText
 import java.text.Collator
 import java.util.Locale
 
@@ -110,7 +112,14 @@ object AccountComp {
 
     @Composable
     fun Preferences(modifier: Modifier = Modifier) =
-        ToDo(name = "Afficher les différentes préférences hebdomadaires")
+        MyText(
+            text = "Cet onglet permet à l'utilisateur de préciser ses préférences d'horaires pour chaque semaine.\n" +
+                    "Par exemple, l'utilisateur peut préciser qu'il est libre tous les lundi matin\n" +
+                    "Cela permet de pouvoir proposer des activités à l'utilisateur pendant les périodes marqués comme étant \"libres\" \n" +
+                    "Ce n'est pas encore implémenté",
+            textAlign = TextAlign.Center
+        )
+
 
     @Composable
     fun PassionsList(

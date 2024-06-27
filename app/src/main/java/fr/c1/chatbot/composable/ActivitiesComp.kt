@@ -52,7 +52,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import java.util.UUID
 
+/** All [AbstractActivity] component */
 object ActivitiesComp {
+    /**
+     * Component of the [Tab.ChatBotResults]
+     *
+     * @param list List of the [AbstractActivity] to show
+     */
     @Composable
     operator fun invoke(
         list: List<AbstractActivity>,
@@ -77,6 +83,11 @@ object ActivitiesComp {
         }
     }
 
+    /**
+     * Show a [text] under an [icon]
+     *
+     * @param style Style of thr [text]
+     */
     @Composable
     fun TextWithIcon(
         text: String,
@@ -89,6 +100,7 @@ object ActivitiesComp {
         Text(text = text, style = style)
     }
 
+    /** Chip with a specified [text] and an [icon] and no click listener */
     @Composable
     fun MyChip(text: String, icon: ImageVector) = SuggestionChip(
         onClick = { },
@@ -96,6 +108,12 @@ object ActivitiesComp {
         icon = { Icon(imageVector = icon, contentDescription = text) }
     )
 
+    /**
+     * Column for the [AbstractActivity]
+     *
+     * @param accessible Indicate if the [AbstractActivity] is accessible
+     * @param url Url of the [AbstractActivity]. Null by default
+     */
     @Composable
     private fun MyColumn(
         accessible: Boolean,

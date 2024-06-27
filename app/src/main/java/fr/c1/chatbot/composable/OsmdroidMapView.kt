@@ -1,5 +1,27 @@
 package fr.c1.chatbot.composable
 
+import android.graphics.Color
+import android.graphics.Paint
+import android.location.Location
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MyLocation
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import fr.c1.chatbot.model.activity.AbstractActivity
 import fr.c1.chatbot.model.activity.Association
 import fr.c1.chatbot.model.activity.Building
@@ -10,6 +32,7 @@ import fr.c1.chatbot.model.activity.Garden
 import fr.c1.chatbot.model.activity.Museum
 import fr.c1.chatbot.model.activity.Site
 import fr.c1.chatbot.utils.LocationHandler
+import fr.c1.chatbot.utils.LocationHandler.currentLocation
 import fr.c1.chatbot.utils.Resource
 import fr.c1.chatbot.viewModel.ActivitiesVM
 import org.osmdroid.api.IGeoPoint
@@ -20,6 +43,7 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.ClickableIconOverlay
 import org.osmdroid.views.overlay.OverlayWithIW
 import org.osmdroid.views.overlay.infowindow.InfoWindow
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
@@ -28,16 +52,6 @@ import org.osmdroid.views.overlay.simplefastpoint.LabelledGeoPoint
 import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlay
 import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlayOptions
 import org.osmdroid.views.overlay.simplefastpoint.SimplePointTheme
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.viewinterop.AndroidView
-import android.graphics.Color
-import android.graphics.Paint
-import android.util.Log
 import androidx.compose.ui.graphics.Color as ColorX
 
 private const val TAG = "OsmdroidMapView"
@@ -85,14 +99,16 @@ private fun MapView.unselectAllPoints() {
         overlay.selectedPoint = -1
     }
 }
-
 @Composable
 fun OsmdroidMapView(aVM: ActivitiesVM) {
     // Variable pour stocker la MapView
+    var mapView by remember { mutableStateOf<MapView?>(null) }
+
     AndroidView(
         modifier = Modifier.fillMaxSize(),
         factory = { context ->
             MapView(context).apply mv@{
+                mapView = this
                 setTileSource(TileSourceFactory.MAPNIK)
                 zoomController.setVisibility(CustomZoomButtonsController.Visibility.SHOW_AND_FADEOUT)
 
@@ -106,7 +122,7 @@ fun OsmdroidMapView(aVM: ActivitiesVM) {
                         )
                     )
                 }
-                val mLocationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(context), this)
+                val mLocationOverlay = MyLocationNewOverlay(this)
                 mLocationOverlay.enableMyLocation()
 
                 overlays.apply {
@@ -124,11 +140,7 @@ fun OsmdroidMapView(aVM: ActivitiesVM) {
                     add(mLocationOverlay)
                 }
 
-                setOnClickListener {
-                    Log.i(TAG, "OsmdroidMapView: Click")
-                }
-
-                this.addMapListener(object : MapListener {
+                addMapListener(object : MapListener {
                     override fun onScroll(event: ScrollEvent?): Boolean {
                         InfoWindow.closeAllInfoWindowsOn(this@mv)
                         return true
@@ -141,7 +153,32 @@ fun OsmdroidMapView(aVM: ActivitiesVM) {
                 })
             }
         }
+
     )
+    // Bouton en bas de la carte
+    IconButton(
+        onClick = {
+            // Action à réaliser lorsqu'on clique sur le bouton
+            // Vous pouvez interagir avec la MapView ici si nécessaire
+            mapView?.controller?.setCenter(
+                GeoPoint(
+                    LocationHandler.currentLocation!!.latitude,
+                    LocationHandler.currentLocation!!.longitude
+                )
+            )
+            // Rafraîchir la carte pour afficher les modifications
+            mapView?.invalidate()
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Icon(
+            imageVector = Icons.Default.MyLocation,
+            contentDescription = ""
+        )
+    }
+
 }
 
 object Obj : OverlayWithIW() {

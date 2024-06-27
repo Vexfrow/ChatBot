@@ -98,7 +98,26 @@ private fun UserList(
 ) = Box(modifier = Modifier.fillMaxSize()) {
     val ctx = LocalContext.current
 
+    Text(
+        modifier = Modifier.align(Alignment.TopCenter),
+        text = stringResource(R.string.app_name)
+    )
+
+    Box(
+        modifier = Modifier
+            .fillMaxHeight(.5f)
+            .fillMaxWidth()
+    ) {
+        Text(
+            modifier = Modifier
+                .align(Alignment.Center),
+            text = "Veuillez sélectionner un compte",
+            style = MaterialTheme.typography.bodyMedium
+        )
+    }
+
     LazyRow(
+        modifier = Modifier.fillMaxSize(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(50.dp, Alignment.CenterHorizontally)
     ) {

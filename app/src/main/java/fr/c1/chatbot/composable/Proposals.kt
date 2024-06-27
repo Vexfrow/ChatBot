@@ -27,6 +27,12 @@ import android.util.Log
 
 private const val TAG = "QuestionsList"
 
+/**
+ * Component that list the proposals of answer
+ *
+ * @param proposals Proposals to show
+ * @param onPropose Callback when a proposal is selected
+ */
 @Composable
 fun Proposals(
     modifier: Modifier = Modifier,
@@ -80,6 +86,7 @@ fun Proposals(
     }
 }
 
+/** Component representing a single [proposal] */
 @Composable
 private fun Proposal(
     proposal: String,

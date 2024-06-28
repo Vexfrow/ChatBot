@@ -1,6 +1,5 @@
 package fr.c1.chatbot.viewModel
 
-import fr.c1.chatbot.repositories.ActivitiesRepository
 import fr.c1.chatbot.model.User
 import fr.c1.chatbot.model.activity.AbstractActivity
 import fr.c1.chatbot.model.activity.Association
@@ -13,6 +12,7 @@ import fr.c1.chatbot.model.activity.Museum
 import fr.c1.chatbot.model.activity.Site
 import fr.c1.chatbot.model.activity.SportEquipment
 import fr.c1.chatbot.model.activity.Type
+import fr.c1.chatbot.repositories.ActivitiesRepository
 import fr.c1.chatbot.utils.Resource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
@@ -34,14 +34,14 @@ private const val TAG = "ActivitiesVM"
 /**
  * Activities view model
  *
- * @property user
- * @property repo
- * @constructor Create empty Activities v m
+ * @property user Current [User]
+ * @property repo Repository of the [AbstractActivity]
  */
 class ActivitiesVM(
     val user: User,
     val repo: ActivitiesRepository,
 ) : ViewModel() {
+    /** [Resource] of the [AbstractActivity] filtered */
     var result: Resource<List<AbstractActivity>> by mutableStateOf(Resource.None())
         private set
 
@@ -55,9 +55,7 @@ class ActivitiesVM(
     private var sportEquipments: Resource<List<SportEquipment>> by mutableStateOf(Resource.None())
     private var associations: Resource<List<Association>> by mutableStateOf(Resource.None())
 
-    /**
-     * All activities
-     */
+    /** All activities */
     val all: List<Resource<out List<AbstractActivity>>>
         get() = listOf(
             museums,
@@ -71,22 +69,26 @@ class ActivitiesVM(
             associations,
         )
 
+    /** Jobs for each [AbstractActivity] load or null */
     private val jobs: Array<Job?> = Array(all.size) { null }
+    /** Job for the result filter */
     private var resultJob: Job? = null
 
+    /**
+     * Launch a coroutine in the [viewModelScope]
+     *
+     * @see CoroutineScope.launch
+     */
     private fun CoroutineContext.launch(
         start: CoroutineStart = CoroutineStart.DEFAULT,
         block: suspend CoroutineScope.() -> Unit
     ) = viewModelScope.launch(this, start, block)
 
+    /** Do [block] on the [Dispatchers.Main] */
     private suspend fun <T> withMain(block: suspend CoroutineScope.() -> T) =
         withContext(Dispatchers.Main, block)
 
-    /**
-     * Load activities
-     *
-     * @param ctx
-     */
+    /** Load activities */
     fun load(ctx: Context) {
         jobs[0] = Dispatchers.IO.launch {
             Log.i(TAG, "load: Start museums")
@@ -156,7 +158,7 @@ class ActivitiesVM(
     /**
      * Update result
      *
-     * @param onFinish
+     * @param onFinish Callback at the end of all jobs to filter the results
      */
     private fun updateResult(onFinish: suspend (List<AbstractActivity>) -> List<AbstractActivity>) {
         Dispatchers.Default.launch {
@@ -194,22 +196,20 @@ class ActivitiesVM(
         }
     }
 
+    /** History of all results */
     private val history: ArrayDeque<List<AbstractActivity>> = ArrayDeque()
 
-    /**
-     * Undo
-     */
+    /** Undo */
     fun undo() {
         result = history.removeLastOrNull()?.let { Resource.Success(it) } ?: Resource.None()
     }
 
-    /**
-     * Reset
-     */
+    /** Reset */
     fun reset() {
         result = Resource.None()
     }
 
+    /** Date */
     var date: String = ""
         get() = field
         set(value) {
@@ -223,10 +223,7 @@ class ActivitiesVM(
             field = value
         }
 
-    /**
-     * Add type
-     * @param type
-     */
+    /** Add type */
     fun addType(type: Type) {
         updateResult {
             Log.i(TAG, "addType: Filter by type started")
@@ -237,6 +234,7 @@ class ActivitiesVM(
         user.addType(type)
     }
 
+    /** City */
     var city: String
         get() = throw Exception()
         set(value) {
@@ -249,6 +247,7 @@ class ActivitiesVM(
             user.addCity(value)
         }
 
+    /** Distance */
     var distance: Int = -1
         get() = field
         set(value) {

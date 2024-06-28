@@ -1,7 +1,7 @@
 package model
 
 import fr.c1.chatbot.ChatBot
-import fr.c1.chatbot.model.ActivitiesRepository
+import fr.c1.chatbot.repositories.ActivitiesRepository
 import fr.c1.chatbot.model.activity.Museum
 import org.junit.After
 import org.junit.Assert

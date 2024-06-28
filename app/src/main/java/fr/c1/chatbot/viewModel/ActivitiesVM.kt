@@ -1,6 +1,6 @@
 package fr.c1.chatbot.viewModel
 
-import fr.c1.chatbot.model.ActivitiesRepository
+import fr.c1.chatbot.repositories.ActivitiesRepository
 import fr.c1.chatbot.model.User
 import fr.c1.chatbot.model.activity.AbstractActivity
 import fr.c1.chatbot.model.activity.Association

@@ -1,6 +1,6 @@
 package fr.c1.chatbot
 
-import fr.c1.chatbot.model.ActivitiesRepository
+import fr.c1.chatbot.repositories.ActivitiesRepository
 import fr.c1.chatbot.model.Settings
 import fr.c1.chatbot.utils.TTS
 import androidx.compose.runtime.getValue

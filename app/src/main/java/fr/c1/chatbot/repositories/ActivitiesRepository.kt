@@ -1,6 +1,7 @@
-package fr.c1.chatbot.model
+package fr.c1.chatbot.repositories
 
 import fr.c1.chatbot.R
+import fr.c1.chatbot.model.User
 import fr.c1.chatbot.model.activity.AbstractActivity
 import fr.c1.chatbot.model.activity.Association
 import fr.c1.chatbot.model.activity.Building

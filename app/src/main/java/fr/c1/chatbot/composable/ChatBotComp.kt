@@ -2,7 +2,7 @@ package fr.c1.chatbot.composable
 
 import fr.c1.chatbot.composable.utils.BotLoading
 import fr.c1.chatbot.composable.utils.MyText
-import fr.c1.chatbot.model.ActivitiesRepository
+import fr.c1.chatbot.repositories.ActivitiesRepository
 import fr.c1.chatbot.model.messageManager.TypeAction
 import fr.c1.chatbot.utils.Resource
 import fr.c1.chatbot.utils.UnitLaunchedEffect

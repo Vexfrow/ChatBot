@@ -1,0 +1,331 @@
+{
+  "robot": [
+    {
+      "id": 0,
+      "text": "Bonjour, que puis-je faire pour vous ?"
+    },
+    {
+      "id": 1,
+      "text": "Quand est-ce que vous souhaitez la faire ?"
+    },
+    {
+      "id": 2,
+      "text": "Où êtes-vous situé ?"
+    },
+    {
+      "id": 3,
+      "text": "Jusqu'à quelle distance, en kilomètres, pouvez-vous vous déplacer ?"
+    },
+    {
+      "id": 4,
+      "text": "Quelle type d'activité souhaitez-vous faire ?"
+    },
+    {
+      "id": 5,
+      "text": "A quelle fréquence faîtes vous des activités physiques ?"
+    },
+    {
+      "id": 6,
+      "text": "Souhaitez-vous rencontrer d'autres personnes ?"
+    },
+    {
+      "id": 7,
+      "text": "Quelles sont vos centres d'intérêt ?"
+    },
+    {
+      "id": 8,
+      "text": "Veuillez écrire un nom de ville"
+    },
+    {
+      "id": 9,
+      "text": "Comment puis-je vous aider ?"
+    },
+    {
+      "id": 10,
+      "text": "Vous pouvez accéder à votre historique en cliquant sur l'onglet \"Historique\""
+    },
+    {
+      "id": 11,
+      "text": "Si vous ne trouvez plus une activité qui vous intéresse regardez dans :\n- L'historique de recherche\n- Les activités enregistrées"
+    },
+    {
+      "id": 12,
+      "text": "Cette action n'est pas possible pour le moment"
+    },
+    {
+      "id": 13,
+      "text": "Très bien, les activités que je vous propose sont disponibles dans l'onglet 'Résultats'",
+      "action": "ShowResults"
+    },
+    {
+      "id": 14,
+      "text": "Toutes les notifications ont été supprimées",
+      "action": "DeleteNotifs"
+    },
+    {
+      "id": 15,
+      "text": "A quelle distance autour de cette ville pouvez-vous vous déplacer ?"
+    }
+  ],
+  "humain": [
+    {
+      "id": 1000,
+      "text": "Bonjour, je souhaite faire une activité"
+    },
+    {
+      "id": 1001,
+      "text": "Choisir une date",
+      "action": "DateInput"
+    },
+    {
+      "id": 1002,
+      "text": "Choisir une ville",
+      "action": "CityInput"
+    },
+    {
+      "id": 1003,
+      "text": "Rentrer une distance (en km)",
+      "action": "DistanceInput"
+    },
+    {
+      "id": 1004,
+      "text": "Activité physique",
+      "action": "PhysicalActivity"
+    },
+    {
+      "id": 1005,
+      "text": "Activité Culturelle",
+      "action": "CulturalActivity"
+    },
+    {
+      "id": 1006,
+      "text": "Utiliser la géolocalisation",
+      "action": "Geolocation"
+    },
+    {
+      "id": 1007,
+      "text": "Je souhaite la faire à distance"
+    },
+    {
+      "id": 1008,
+      "text": "Oui",
+      "action": "Meeting"
+    },
+    {
+      "id": 1009,
+      "text": "Non",
+      "action": "NoMeeting"
+    },
+    {
+      "id": 1010,
+      "text": "N'importe",
+      "action": "PerhapsMeeting"
+    },
+    {
+      "id": 1011,
+      "text": "Bonjour, je souhaite trouver une association"
+    },
+    {
+      "id": 1012,
+      "text": "Bonjour, j'ai besoin d'aide"
+    },
+    {
+      "id": 1013,
+      "text": "Je souhaite accéder à mon historique de recherche ?"
+    },
+    {
+      "id": 1014,
+      "text": "Je ne trouve plus d'activité intéressante"
+    },
+    {
+      "id": 1015,
+      "text": "Je souhaite proposer de nouvelles activités"
+    },
+    {
+      "id": 1016,
+      "text": "Choisir centres d'intérêt",
+      "actions": "ChoosePassions"
+    },
+    {
+      "id": 1017,
+      "text": "Passer à la suite",
+      "action": "Skip"
+    },
+    {
+      "id": 1018,
+      "text": "Je souhaite désactiver toutes les notifications"
+    },
+    {
+      "id": 1019,
+      "text": "Régulièrement",
+      "action": "BigSportif"
+    },
+    {
+      "id": 1020,
+      "text": "De temps en temps",
+      "action": "LittleSportif"
+    },
+    {
+      "id": 1021,
+      "text": "Très peu",
+      "action": "InexistantSportif"
+    },
+    {
+      "id": 1022,
+      "text": "Aujourd'hui",
+      "action": "Today"
+    },
+    {
+      "id": 1023,
+      "text": "Demain",
+      "action": "Tomorrow"
+    },
+    {
+      "id": -1,
+      "text": "Retour",
+      "action": "Back"
+    },
+    {
+      "id": -2,
+      "text": "Recommencer conversation",
+      "action": "Restart"
+    },
+    {
+      "id": -3,
+      "text": "Afficher les filtres",
+      "action": "ShowFilters"
+    }
+  ],
+  "link": [
+    {
+      "from": 0,
+      "to": 1,
+      "answer": 1000
+    },
+    {
+      "from": 0,
+      "to": 8,
+      "answer": 1011
+    },
+    {
+      "from": 0,
+      "to": 9,
+      "answer": 1012
+    },
+    {
+      "from": 1,
+      "to": 2,
+      "answer": 1001
+    },
+    {
+      "from": 1,
+      "to": 2,
+      "answer": 1022
+    },
+    {
+      "from": 1,
+      "to": 2,
+      "answer": 1023
+    },
+    {
+      "from": 2,
+      "to": 3,
+      "answer": 1002
+    },
+    {
+      "from": 2,
+      "to": 3,
+      "answer": 1006
+    },
+    {
+      "from": 2,
+      "to": 4,
+      "answer": 1007
+    },
+    {
+      "from": 3,
+      "to": 4,
+      "answer": 1003
+    },
+    {
+      "from": 4,
+      "to": 5,
+      "answer": 1004
+    },
+    {
+      "from": 4,
+      "to": 7,
+      "answer": 1005
+    },
+    {
+      "from": 5,
+      "to": 6,
+      "answer": 1019
+    },
+    {
+      "from": 5,
+      "to": 6,
+      "answer": 1020
+    },
+    {
+      "from": 5,
+      "to": 6,
+      "answer": 1021
+    },
+    {
+      "from": 7,
+      "to": 6,
+      "answer": 1016
+    },
+    {
+      "from": 6,
+      "to": 13,
+      "answer": 1008
+    },
+    {
+      "from": 6,
+      "to": 13,
+      "answer": 1009
+    },
+    {
+      "from": 6,
+      "to": 13,
+      "answer": 1010
+    },
+    {
+      "from": 8,
+      "to": 15,
+      "answer": 1006
+    },
+    {
+      "from": 15,
+      "to": 13,
+      "answer": 1003
+    },
+    {
+      "from": 8,
+      "to": 15,
+      "answer": 1002
+    },
+    {
+      "from": 9,
+      "to": 10,
+      "answer": 1013
+    },
+    {
+      "from": 9,
+      "to": 11,
+      "answer": 1014
+    },
+    {
+      "from": 9,
+      "to": 12,
+      "answer": 1015
+    },
+    {
+      "from": 9,
+      "to": 14,
+      "answer": 1018
+    }
+  ]
+}

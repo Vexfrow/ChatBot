@@ -1,50 +1,43 @@
 [versions]
-composeBom = "2024.05.00"
-
-activityCompose = "1.9.0"
-agp = "8.4.1"
-appcompat = "1.6.1"
-core = "1.13.1"
-gson = "2.10.1"
-junit = "5.9.2"
+agp = "8.4.0"
 kotlin = "1.9.0"
-material = "1.12.0"
-testCore = "1.5.0"
-testRunner = "1.5.2"
+coreKtx = "1.10.1"
+junit = "4.13.2"
+junitVersion = "1.1.5"
+espressoCore = "3.5.1"
+appcompat = "1.6.1"
+material = "1.10.0"
+material3 = "1.2.1"
+lifecycleRuntimeKtx = "2.6.1"
+activityCompose = "1.8.0"
+composeBom = "2023.08.00"
+coil = "2.6.0"
+coreKtxVersion = "1.5.0"
+playServicesLocation = "21.2.0"
+preferenceKtx = "1.2.1"
 
 [libraries]
-
-#region androidx
-
-androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-androidx-core = { group = "androidx.core", name = "core-ktx", version.ref = "core" }
-
-#region test
-
-androidx-test-core = { group = "androidx.test", name = "core-ktx", version.ref = "testCore" }
-androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "testRunner" }
-
-#endregion
-
-#region compose
-
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
-
-androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+androidx-preference-ktx = { group = "androidx.preference", name = "preference-ktx", version.ref = "preferenceKtx" }
 
-#endregion
-#endregion
-
-#region google
-
-google-gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
-google-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-
-#endregion
-
-junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junit" }
+coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "coreKtxVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

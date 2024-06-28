@@ -29,40 +29,25 @@ import java.util.concurrent.TimeUnit
 
 private const val TAG = "ActivitiesRepository"
 
-/**
- * Activities repository
- *
- * @constructor Create Activities repository
- */
+/** Activities repository */
 class ActivitiesRepository {
     companion object {
-        /**
-         * Interests list
-         */
+        /** Interests list */
         val passionList: Set<String>
             get() = Association.passions union Content.passions union Site.passions union Museum.passions union Garden.passions union Festival.passions union Exposition.passions union SportEquipment.passions union Building.passions
     }
 
-    /**
-     * Cities list
-     */
+    /** Cities list */
     private val cityList = sortedSetOf<String>()
     val cities: Set<String> get() = cityList
 
-    /**
-     * Distance choosen by the user (in km)
-     * Default value is 10 km
-     */
+    /** Distance choosen by the user (in km), 10 by default */
     var distance = 10 // 10 km par défaut
 
-    /**
-     * Location of the terminal
-     */
+    /** Location of the terminal */
     var location: Location = Location("")
 
-    /**
-     * Add a city to the list
-     */
+    /** Add a city to the list */
     private fun addCity(str: String) {
         if (str.isBlank())
             return
@@ -87,8 +72,7 @@ class ActivitiesRepository {
     /**
      * Get museums
      *
-     * @param app
-     * @return List<Museum>
+     * @param currentUser Current user to get the [User.passions]
      */
     fun getMuseums(currentUser: User, ctx: Context): List<Museum> {
         if (currentUser.passions.run { isNotEmpty() && any(Museum.passions::contains) })
@@ -136,8 +120,7 @@ class ActivitiesRepository {
     /**
      * Get sites
      *
-     * @param app
-     * @return
+     * @param currentUser Current user to get the [User.passions]
      */
     fun getSites(currentUser: User, ctx: Context): List<Site> {
         if (currentUser.passions.run { isNotEmpty() && any(Site.passions::contains) })
@@ -171,8 +154,7 @@ class ActivitiesRepository {
     /**
      * Get expositions
      *
-     * @param app
-     * @return
+     * @param currentUser Current user to get the [User.passions]
      */
     fun getExpositions(currentUser: User, ctx: Context): List<Exposition> {
         if (currentUser.passions.run { isNotEmpty() && any(Exposition.passions::contains) })
@@ -212,8 +194,7 @@ class ActivitiesRepository {
     /**
      * Get contents
      *
-     * @param app
-     * @return List<Content>
+     * @param currentUser Current user to get the [User.passions]
      */
     fun getContents(currentUser: User, ctx: Context): List<Content> {
         if (currentUser.passions.run { isNotEmpty() && any(Content.passions::contains) })
@@ -255,8 +236,7 @@ class ActivitiesRepository {
     /**
      * Get buildings
      *
-     * @param app
-     * @return List<Building>
+     * @param currentUser Current user to get the [User.passions]
      */
     fun getBuildings(currentUser: User, ctx: Context): List<Building> {
         if (currentUser.passions.run { isNotEmpty() && any(Building.passions::contains) })
@@ -299,8 +279,7 @@ class ActivitiesRepository {
     /**
      * Get gardens
      *
-     * @param app
-     * @return List<Garden>
+     * @param currentUser Current user to get the [User.passions]
      */
     fun getGardens(currentUser: User, ctx: Context): List<Garden> {
         if (currentUser.passions.run { isNotEmpty() && any(Garden.passions::contains) })
@@ -341,8 +320,7 @@ class ActivitiesRepository {
     /**
      * Get festivals
      *
-     * @param app
-     * @return List<Festival>
+     * @param currentUser Current user to get the [User.passions]
      */
     fun getFestivals(currentUser: User, ctx: Context): List<Festival> {
         if (currentUser.passions.run { isNotEmpty() && any(Festival.passions::contains) })
@@ -388,8 +366,7 @@ class ActivitiesRepository {
     /**
      * Get sport equipments
      *
-     * @param app
-     * @return List<SportEquipment>
+     * @param currentUser Current user to get the [User.passions]
      */
     fun getSportEquipments(currentUser: User, ctx: Context): List<SportEquipment> {
         if (currentUser.passions.run { isNotEmpty() && any(SportEquipment.passions::contains) })
@@ -432,8 +409,7 @@ class ActivitiesRepository {
     /**
      * Get associations
      *
-     * @param app
-     * @return List<Association>
+     * @param currentUser Current user to get the [User.passions]
      */
     fun getAssociations(currentUser: User, ctx: Context): List<Association> {
         if (currentUser.passions.let { it.isNotEmpty() && it.any(Association.passions::contains) })
@@ -482,21 +458,11 @@ class ActivitiesRepository {
         }
     }
 
-    /**
-     * Display list
-     *
-     * @param list
-     */
     fun displayList(list: List<AbstractActivity>) {
         list.forEach { println(it) }
     }
 
-    /**
-     * Sort by region
-     *
-     * @param list
-     * @return List<AbstractActivity>
-     */
+    /** Sort by region */
     @Suppress("UNCHECKED_CAST")
     fun sortByRegion(list: List<AbstractActivity>): List<AbstractActivity> = when (list.first()) {
         is Museum -> (list as List<Museum>).sortedBy { it.region }
@@ -508,13 +474,7 @@ class ActivitiesRepository {
         else -> list
     }
 
-    /**
-     * Select by region
-     *
-     * @param list
-     * @param region
-     * @return List<AbstractActivity>
-     */
+    /** Select by [region] */
     @Suppress("UNCHECKED_CAST")
     fun selectByRegion(list: List<AbstractActivity>, region: String): List<AbstractActivity> =
         when (list.first()) {
@@ -545,12 +505,7 @@ class ActivitiesRepository {
             else -> list
         }
 
-    /**
-     * Sort by departement
-     *
-     * @param list
-     * @return List<AbstractActivity>
-     */
+    /** Sort by departement */
     @Suppress("UNCHECKED_CAST")
     fun sortByDepartement(list: List<AbstractActivity>): List<AbstractActivity> =
         when (list.first()) {
@@ -565,13 +520,7 @@ class ActivitiesRepository {
             else -> list
         }
 
-    /**
-     * Select by departement
-     *
-     * @param list
-     * @param departement
-     * @return List<T>
-     */
+    /** Select by [departement] */
     @Suppress("UNCHECKED_CAST")
     fun selectByDepartement(
         list: List<AbstractActivity>,
@@ -612,12 +561,7 @@ class ActivitiesRepository {
         else -> list
     }
 
-    /**
-     * Sort by commune
-     *
-     * @param list
-     * @return List<AbstractActivity>
-     */
+    /** Sort by commune */
     @Suppress("UNCHECKED_CAST")
     fun sortByCommune(list: List<AbstractActivity>): List<AbstractActivity> = when (list.first()) {
         is Museum -> (list as List<Museum>).sortedBy { it.commune }
@@ -632,22 +576,11 @@ class ActivitiesRepository {
         else -> list
     }
 
-    /**
-     * Select by commune
-     *
-     * @param list
-     * @param commune
-     * @return List<AbstractActivity>
-     */
+    /** Select by [commune] */
     fun selectByCommune(list: List<AbstractActivity>, commune: String): List<AbstractActivity> =
         list.filter { it.commune.equals(commune, true) }
 
-    /**
-     * Sort by name
-     *
-     * @param list
-     * @return List<AbstractActivity>
-     */
+    /** Sort by name */
     @Suppress("UNCHECKED_CAST")
     fun sortByName(list: List<AbstractActivity>): List<AbstractActivity> = when (list.first()) {
         is Museum -> (list as List<Museum>).sortedBy { it.name }
@@ -661,57 +594,46 @@ class ActivitiesRepository {
         else -> list
     }
 
-    /**
-     * Select by name
-     *
-     * @param list
-     * @param nom
-     * @return List<AbstractActivity>
-     */
+    /** Select by [name] */
     @Suppress("UNCHECKED_CAST")
-    fun selectByName(list: List<AbstractActivity>, nom: String): List<AbstractActivity> =
+    fun selectByName(list: List<AbstractActivity>, name: String): List<AbstractActivity> =
         when (list.first()) {
             is Museum -> (list as List<Museum>).filter {
-                it.name.lowercase().contains(nom.lowercase())
+                it.name.lowercase().contains(name.lowercase())
             }
 
             is Exposition -> (list as List<Exposition>).filter {
-                it.name.lowercase().contains(nom.lowercase())
+                it.name.lowercase().contains(name.lowercase())
             }
 
             is Content -> (list as List<Content>).filter {
-                it.name.lowercase().contains(nom.lowercase())
+                it.name.lowercase().contains(name.lowercase())
             }
 
             is Building -> (list as List<Building>).filter {
-                it.name.lowercase().contains(nom.lowercase())
+                it.name.lowercase().contains(name.lowercase())
             }
 
             is Garden -> (list as List<Garden>).filter {
-                it.name.lowercase().contains(nom.lowercase())
+                it.name.lowercase().contains(name.lowercase())
             }
 
             is Festival -> (list as List<Festival>).filter {
-                it.name.lowercase().contains(nom.lowercase())
+                it.name.lowercase().contains(name.lowercase())
             }
 
             is SportEquipment -> (list as List<SportEquipment>).filter {
-                it.name.lowercase().contains(nom.lowercase())
+                it.name.lowercase().contains(name.lowercase())
             }
 
             is Association -> (list as List<Association>).filter {
-                it.name.lowercase().contains(nom.lowercase())
+                it.name.lowercase().contains(name.lowercase())
             }
 
             else -> list
         }
 
-    /**
-     * Sort by location
-     *
-     * @param list
-     * @return List<AbstractActivity>
-     */
+    /** Sort by location */
     @Suppress("UNCHECKED_CAST")
     fun sortByLocation(list: List<AbstractActivity>): List<AbstractActivity> =
         when (list.first()) {
@@ -720,32 +642,22 @@ class ActivitiesRepository {
             else -> list
         }
 
-    /**
-     * Select by location
-     *
-     * @param list
-     * @param lieu
-     * @return List<AbstractActivity>
-     */
-    fun selectByLocation(list: List<AbstractActivity>, lieu: String): List<AbstractActivity> =
+    /** Select by [location] */
+    @Suppress("UNCHECKED_CAST")
+    fun selectByLocation(list: List<AbstractActivity>, location: String): List<AbstractActivity> =
         when (list.first()) {
             is Museum -> (list as List<Museum>).filter {
-                it.location.lowercase().contains(lieu.lowercase())
+                it.location.lowercase().contains(location.lowercase())
             }
 
             is Content -> (list as List<Content>).filter {
-                it.location.lowercase().contains(lieu.lowercase())
+                it.location.lowercase().contains(location.lowercase())
             }
 
             else -> list
         }
 
-    /**
-     * Sort by postal code
-     *
-     * @param list
-     * @return List<AbstractActivity>
-     */
+    /** Sort by postal code */
     @Suppress("UNCHECKED_CAST")
     fun sortByPostalCode(list: List<AbstractActivity>): List<AbstractActivity> =
         when (list.first()) {
@@ -758,52 +670,40 @@ class ActivitiesRepository {
             else -> list
         }
 
-    /**
-     * Select by postal code
-     *
-     * @param list
-     * @param codePostal
-     * @return List<AbstractActivity>
-     */
+    /** Select by [postalCode] */
     @Suppress("UNCHECKED_CAST")
     fun selectByPostalCode(
         list: List<AbstractActivity>,
-        codePostal: String
+        postalCode: String
     ): List<AbstractActivity> = when (list.first()) {
         is Museum -> (list as List<Museum>).filter {
-            it.postalCode.lowercase().contains(codePostal.lowercase())
+            it.postalCode.lowercase().contains(postalCode.lowercase())
         }
 
         is Content -> (list as List<Content>).filter {
-            it.postalCode.lowercase().contains(codePostal.lowercase())
+            it.postalCode.lowercase().contains(postalCode.lowercase())
         }
 
         is Garden -> (list as List<Garden>).filter {
-            it.postalCode.lowercase().contains(codePostal.lowercase())
+            it.postalCode.lowercase().contains(postalCode.lowercase())
         }
 
         is Festival -> (list as List<Festival>).filter {
-            it.postalCode.lowercase().contains(codePostal.lowercase())
+            it.postalCode.lowercase().contains(postalCode.lowercase())
         }
 
         is SportEquipment -> (list as List<SportEquipment>).filter {
-            it.postalCode.lowercase().contains(codePostal.lowercase())
+            it.postalCode.lowercase().contains(postalCode.lowercase())
         }
 
         is Association -> (list as List<Association>).filter {
-            it.postalCode.lowercase().contains(codePostal.lowercase())
+            it.postalCode.lowercase().contains(postalCode.lowercase())
         }
 
         else -> list
     }
 
-    /**
-     * Select by accessible
-     *
-     * @param list
-     * @param accessible
-     * @return List<AbstractActivity>
-     */
+    /** Select by [accessible] */
     @Suppress("UNCHECKED_CAST")
     fun selectByAccessible(
         list: List<AbstractActivity>,
@@ -821,12 +721,7 @@ class ActivitiesRepository {
         else -> list
     }
 
-    /**
-     * Sort by identifiant
-     *
-     * @param list
-     * @return List<AbstractActivity>
-     */
+    /** Sort by identifiant */
     @Suppress("UNCHECKED_CAST")
     fun sortByIdentifiant(list: List<AbstractActivity>): List<AbstractActivity> =
         when (list.first()) {
@@ -837,17 +732,15 @@ class ActivitiesRepository {
             else -> list
         }
 
-    /**
-     * Select by passion
-     *
-     * @param list
-     * @param passion
-     * @return List<AbstractActivity>
-     */
+    /** Select by [passion] */
     fun selectByPassion(list: List<AbstractActivity>, passion: String): List<AbstractActivity> =
         list.filter { it.passions.contains(passion.lowercase()) }
 
-
+    /**
+     * Get coordinates of a [commune]
+     *
+     * @return Longitude and latitude of the [commune]
+     */
     suspend fun getCoordinates(commune: String): Pair<Double, Double>? {
         return withContext(Dispatchers.IO) {
             val client = OkHttpClient().newBuilder().connectTimeout(30, TimeUnit.SECONDS)
@@ -874,13 +767,7 @@ class ActivitiesRepository {
         }
     }
 
-    /**
-     * Select by distance
-     *
-     * @param list
-     * @param distanceMax
-     * @return List<AbstractActivity>
-     */
+    /** Select by [distanceMax] */
     fun selectByDistance(
         list: List<AbstractActivity>,
         distanceMax: Int,
@@ -907,13 +794,7 @@ class ActivitiesRepository {
         return resultList
     }
 
-    /**
-     * Select by type
-     *
-     * @param it
-     * @param type
-     * @return List<AbstractActivity>
-     */
+    /** Select by [type] */
     fun selectByType(
         it: List<AbstractActivity>, type: Type
     ): List<AbstractActivity> {

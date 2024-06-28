@@ -1,14 +1,6 @@
 package fr.c1.chatbot.composable
 
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
-import fr.c1.chatbot.model.Settings
-import fr.c1.chatbot.ui.shape.SpeechBubbleShape
-import fr.c1.chatbot.ui.theme.ChatBotPrev
-import fr.c1.chatbot.ui.theme.getColorList
-import fr.c1.chatbot.utils.disableNotification
-import fr.c1.chatbot.utils.enableNotification
-import fr.c1.chatbot.utils.rememberMutableStateOf
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -21,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -55,11 +48,19 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import android.net.Uri
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import fr.c1.chatbot.model.Settings
+import fr.c1.chatbot.ui.shape.SpeechBubbleShape
+import fr.c1.chatbot.ui.theme.ChatBotPrev
+import fr.c1.chatbot.ui.theme.getColorList
+import fr.c1.chatbot.utils.disableNotification
+import fr.c1.chatbot.utils.enableNotification
+import fr.c1.chatbot.utils.rememberMutableStateOf
 
 /** Component of the [Tab.Settings] tab */
 @Composable
-fun SettingsComp() {
+fun SettingsComp(onDidact: () -> Unit) {
     val context = LocalContext.current
 
     //Vars to manage icon's changes
@@ -87,14 +88,15 @@ fun SettingsComp() {
         }
 
     Column(
+        modifier = Modifier.fillMaxHeight(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.spacedBy(25.dp, Alignment.CenterVertically)
     ) {
         //First Row with parameter for both user and bot
         Row(
             modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            val mod = Modifier.size(100.dp)
+            val mod = Modifier.size(75.dp)
 
             @Composable
             fun MyIcon(icon: ImageVector) = Icon(
@@ -108,6 +110,8 @@ fun SettingsComp() {
                 ), contentDescription = null
             )
 
+            val shapeB = SpeechBubbleShape(15.dp, 7.dp, Size(187f, 75f))
+
             //Colum for Bot
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 if (Settings.botImage == null) MyIcon(icon = Settings.botIcon)
@@ -119,10 +123,10 @@ fun SettingsComp() {
                 }) { Text(text = "Changer l'icône du Robot") }
 
                 Spacer(modifier = Modifier.height(20.dp))
-                val shapeB = SpeechBubbleShape(15.dp, 15.dp, Size(350f, 170f))
+
                 Box(
                     modifier = Modifier
-                        .size(250.dp, 100.dp)
+                        .size(187.dp, 75.dp)
                         .clip(shapeB)
                         .background(Settings.bubbleSpeechBotColor)
                         .border(width = 4.dp, color = Color.Black, shape = shapeB)
@@ -148,11 +152,10 @@ fun SettingsComp() {
                 }) { Text(text = "Changer l'icône de l'utilisateur") }
 
                 Spacer(modifier = Modifier.height(20.dp))
-                val shapeB = SpeechBubbleShape(15.dp, 15.dp, Size(350f, 170f))
 
                 Box(
                     modifier = Modifier
-                        .size(250.dp, 100.dp)
+                        .size(187.dp, 75.dp)
                         .graphicsLayer(rotationY = 180f)
                         .clip(shapeB)
                         .background(Settings.bubbleSpeechUserColor)
@@ -170,22 +173,25 @@ fun SettingsComp() {
 
         }
 
-        Spacer(modifier = Modifier.height(25.dp))
-        Text(
-            text = "Faites glisser le curseur pour changer la taille du texte",
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(8.dp)
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "Faites glisser le curseur pour changer la taille du texte",
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(8.dp)
+            )
 
-        Slider(
-            value = Settings.textSize.value,
-            onValueChange = { Settings.textSize = it.sp },
-            valueRange = 30f..48f,
-            modifier = Modifier.padding(horizontal = 50.dp)
-        )
+            Slider(
+                value = Settings.textSize.value,
+                onValueChange = { Settings.textSize = it.sp },
+                valueRange = 30f..48f,
+                modifier = Modifier.padding(horizontal = 50.dp)
+            )
+        }
 
 
-        Spacer(modifier = Modifier.height(25.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             Button(onClick = {
                 botColorPicker = false
@@ -200,7 +206,6 @@ fun SettingsComp() {
             }) { Text(text = "Changer la personnalité du robot") }
         }
 
-        Spacer(modifier = Modifier.height(25.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             Button(colors = ButtonDefaults.buttonColors(containerColor = with(Color) { if (Settings.tts) Green else Red }),
                 onClick = {
@@ -212,8 +217,9 @@ fun SettingsComp() {
                     if (Settings.notifications) enableNotification(context)
                     else disableNotification(context)
                 }) { Text(text = "Notifications : ${if (Settings.notifications) "Activé" else "Désactivé"}") }
-
         }
+
+        Button(onClick = onDidact) { Text("Relancer le didactitiel") }
     }
     if (isDialogOpen) {
         Dialog(onDismissRequest = { isDialogOpen = false }) {
@@ -384,7 +390,7 @@ fun SettingsComp() {
                                     },
                             ) {
                                 Text(
-                                    text = if(name == "Georges") "Blagueur" else if(name == "Rob") "Formel" else if(name == "Amy") "Attentionné" else name,
+                                    text = if (name == "Georges") "Blagueur" else if (name == "Rob") "Formel" else if (name == "Amy") "Attentionné" else name,
                                     style = MaterialTheme.typography.bodyMedium
                                 )
                             }
@@ -420,4 +426,4 @@ fun IconOption(imageVector: ImageVector, size: Dp = 100.dp, onClick: () -> Unit)
 
 @Preview(showBackground = true, device = Devices.TABLET)
 @Composable
-private fun Prev() = ChatBotPrev { SettingsComp() }
+private fun Prev() = ChatBotPrev { SettingsComp {} }

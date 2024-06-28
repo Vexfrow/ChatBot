@@ -87,8 +87,13 @@ class MainActivity : ComponentActivity() {
      */
     @Composable
     private operator fun invoke() = ChatBotTheme {
-        val sharedPreferences = getSharedPreferences("app_preferences", MODE_PRIVATE)
-        val isFirstLaunch = remember { sharedPreferences.getBoolean("is_first_launch", true) }
+        val sharedPreferences = remember { getSharedPreferences("app_preferences", MODE_PRIVATE) }
+        var tuto by rememberMutableStateOf(
+            value = sharedPreferences.getBoolean(
+                "is_first_launch",
+                true
+            )
+        )
 
         var inited by rememberMutableStateOf(value = false)
         val userVM = remember { UserVM() }
@@ -121,12 +126,12 @@ class MainActivity : ComponentActivity() {
 
         var tab by rememberMutableStateOf(value = Tab.ChatBot.finalTab)
 
-        if (isFirstLaunch)
+        if (tuto)
             ShowcaseSample(
                 onNextTab = { tab = it },
                 onShowcaseComplete = {
                     sharedPreferences.edit().putBoolean("is_first_launch", false).apply()
-                    //PermissionsContent(context = this)
+                    tuto = false
                 })
 
         fun switchTab(value: Tab) {
@@ -160,7 +165,7 @@ class MainActivity : ComponentActivity() {
                     ) { tab = Tab.ChatBotResults }
 
                     Tab.ChatBotResults -> ChatBotComp.Result(activitiesVM)
-                    Tab.Settings -> SettingsComp()
+                    Tab.Settings -> SettingsComp { tuto = true }
 
                     Tab.AccountPassions -> AccountComp.PassionsList(
                         userVM = userVM,

@@ -52,12 +52,12 @@ enum class Tab(
     ChatBotChat(0.0f, "Conversation", Icons.Default.Forum),
     ChatBotResults(0.1f, "Résultats", Icons.Default.ContentPasteSearch),
     ChatBotMap(0.2f, "Carte", Icons.Default.Map),
-    Suggestion(1, "Suggestion", Icons.Default.Lightbulb),
+    Suggestion(1, "Suggestions", Icons.Default.Lightbulb),
     History(2, "Historique", Icons.Default.History),
     Account(3, "Compte", Icons.Default.AccountCircle),
-    AccountData(3.0f, "Données", Icons.Default.AccountCircle),
-    AccountPreferences(3.1f, "Préférences hebdomadaire", Icons.Default.DateRange),
-    AccountPassions(3.2f, "Centres d'intérêt", Icons.Default.SentimentVerySatisfied),
+    AccountData(3.0f, "Informations", Icons.Default.AccountCircle),
+    AccountPreferences(3.1f, "Préférences hebdomadaires", Icons.Default.DateRange),
+    AccountPassions(3.2f, "Centres d'intérêts", Icons.Default.SentimentVerySatisfied),
     Settings(4, "Paramètres", Icons.Default.Settings);
 
     /** Get a list of all sub tabs of the current tab */

@@ -44,6 +44,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import android.net.Uri
 
+private const val TAG = "SpeechBubble"
+
 /**
  * Component representing the speech bubble
  *

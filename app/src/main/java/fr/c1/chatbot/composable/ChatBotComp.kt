@@ -190,7 +190,12 @@ object ChatBotComp {
                             sbState.answerId,
                             "Je peux me déplacer sur une distance de $value kilomètres"
                         )
-                        activitiesVM.distance = value.toInt()
+                        try {
+                            activitiesVM.distance = value.toInt()
+                        } catch (e: NumberFormatException) {
+                            Log.e(TAG, "search: $value is not a number")
+                            activitiesVM.distance = Int.MAX_VALUE
+                        }
                     }
 
 

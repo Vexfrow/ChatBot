@@ -73,52 +73,52 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation("com.google.code.gson:gson:2.10.1")
-    implementation("com.squareup.sdk:point-of-sale-sdk:2.1")
-    implementation("com.squareup.moshi:moshi:1.15.1")
-    implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
-    implementation("androidx.compose.material:material-icons-extended:1.6.7")
+    implementation(libs.gson)
+    implementation(libs.point.of.sale.sdk)
+    implementation(libs.moshi)
+    implementation(libs.moshi.kotlin)
+    implementation(libs.androidx.material.icons.extended)
 
     implementation(libs.coil)
     implementation(libs.core.ktx)
-    implementation("org.osmdroid:osmdroid-android:6.1.18")
+    implementation(libs.osmdroid.android)
     implementation(libs.play.services.location)
-    implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation(libs.play.services.location.v2101)
     implementation(libs.androidx.preference.ktx)
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0")
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
 
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
-    androidTestImplementation("androidx.test:runner:1.5.2")
+    testImplementation(libs.junit.jupiter)
+    androidTestImplementation(libs.androidx.runner)
 
-    implementation("com.opencsv:opencsv:5.5.2")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.7.0")
+    implementation(libs.opencsv)
+    implementation(libs.kotlin.reflect)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    androidTestImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
+    androidTestImplementation(libs.junit.jupiter)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation("com.canopas.intro-showcase-view:introshowcaseview:2.0.1")
+    implementation(libs.intro.showcase.view.introshowcaseview)
 
-    val workVersion = "2.9.0"
     // Kotlin + coroutines
-    implementation("androidx.work:work-runtime-ktx:$workVersion")
+    implementation(libs.androidx.work.runtime.ktx)
     // optional - RxJava2 support
-    implementation("androidx.work:work-rxjava2:$workVersion")
+    implementation(libs.androidx.work.rxjava2)
     // optional - GCMNetworkManager support
-    implementation("androidx.work:work-gcm:$workVersion")
+    implementation(libs.androidx.work.gcm)
     // optional - Test helpers
-    androidTestImplementation("androidx.work:work-testing:$workVersion")
+    androidTestImplementation(libs.androidx.work.testing)
     // optional - Multiprocess support
-    implementation("androidx.work:work-multiprocess:$workVersion")
+    implementation(libs.androidx.work.multiprocess)
 }
 
 tasks.withType<DokkaTask>().configureEach {
+    outputDirectory = layout.projectDirectory.dir("doc/html")
     dokkaSourceSets.configureEach {
         suppressInheritedMembers = true
         documentedVisibilities = Visibility.values().toSet()

@@ -1,11 +1,16 @@
 [versions]
 agp = "8.4.0"
+gson = "2.10.1"
+introshowcaseviewVersion = "2.0.1"
+junitJupiter = "5.8.1"
 kotlin = "1.9.0"
 coreKtx = "1.10.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
 appcompat = "1.6.1"
+kotlinReflect = "1.9.22"
+kotlinxCoroutinesCore = "1.7.3"
 material = "1.10.0"
 material3 = "1.2.1"
 lifecycleRuntimeKtx = "2.6.1"
@@ -13,16 +18,38 @@ activityCompose = "1.8.0"
 composeBom = "2023.08.00"
 coil = "2.6.0"
 coreKtxVersion = "1.5.0"
+materialIconsExtended = "1.6.8"
+moshi = "1.15.1"
+moshiKotlin = "1.14.0"
+opencsv = "5.5.2"
+osmdroidAndroid = "6.1.18"
 playServicesLocation = "21.2.0"
+playServicesLocationVersion = "21.0.1"
+pointOfSaleSdk = "2.1"
 preferenceKtx = "1.2.1"
+runner = "1.6.1"
+workVersion = "2.9.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
+androidx-runner = { module = "androidx.test:runner", version.ref = "runner" }
+androidx-work-gcm = { module = "androidx.work:work-gcm", version.ref = "workVersion" }
+androidx-work-multiprocess = { module = "androidx.work:work-multiprocess", version.ref = "workVersion" }
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workVersion" }
+androidx-work-rxjava2 = { module = "androidx.work:work-rxjava2", version.ref = "workVersion" }
+androidx-work-testing = { module = "androidx.work:work-testing", version.ref = "workVersion" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+intro-showcase-view-introshowcaseview = { module = "com.canopas.intro-showcase-view:introshowcaseview", version.ref = "introshowcaseviewVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junitJupiter" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlinReflect" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesCore" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -33,11 +60,17 @@ androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshiKotlin" }
+moshi = { module = "com.squareup.moshi:moshi", version.ref = "moshi" }
+opencsv = { module = "com.opencsv:opencsv", version.ref = "opencsv" }
+osmdroid-android = { module = "org.osmdroid:osmdroid-android", version.ref = "osmdroidAndroid" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 androidx-preference-ktx = { group = "androidx.preference", name = "preference-ktx", version.ref = "preferenceKtx" }
 
 coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "coreKtxVersion" }
+play-services-location-v2101 = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocationVersion" }
+point-of-sale-sdk = { module = "com.squareup.sdk:point-of-sale-sdk", version.ref = "pointOfSaleSdk" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

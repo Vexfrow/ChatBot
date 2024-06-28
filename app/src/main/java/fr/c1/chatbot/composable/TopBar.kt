@@ -1,7 +1,6 @@
 package fr.c1.chatbot.composable
 
-import fr.c1.chatbot.ui.icons.Robot
-import fr.c1.chatbot.ui.theme.ChatBotPrev
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -29,9 +28,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import android.util.Log
-import androidx.compose.foundation.background
-import androidx.compose.ui.graphics.Color
+import fr.c1.chatbot.ui.icons.Robot
+import fr.c1.chatbot.ui.theme.ChatBotPrev
 
 /**
  * Enumeration representing all the tabs of the application
@@ -64,8 +62,10 @@ enum class Tab(
 
     /** Get a list of all sub tabs of the current tab */
     val subTabs: List<Tab> get() = entries.filter { it.value !is Int && it.value.toInt() == value.toInt() }
+
     /** Get the sub value of the current subtab */
     val subValue: Int get() = ((value.toFloat() * 10) % 10).toInt()
+
     /** Get the final tab or subtab of the current one */
     val finalTab: Tab get() = if (value is Float) this else subTabs.firstOrNull() ?: this
 }
@@ -89,9 +89,11 @@ fun TopBar(
         onTabSelected(state)
     }
 
-    Column(modifier = Modifier
-        .statusBarsPadding()
-        .background(Color.White)) {
+    Column(
+        modifier = Modifier
+            .statusBarsPadding()
+            .background(Color.White)
+    ) {
         TabRow(selectedTabIndex = state.value.toInt()) {
             Tab.entries.filter { it.value is Int }.forEach { tab ->
                 Tab(

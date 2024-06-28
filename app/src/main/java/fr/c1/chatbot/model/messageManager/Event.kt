@@ -1,13 +1,13 @@
 package fr.c1.chatbot.model.messageManager
 
-import android.util.Log
-import androidx.activity.ComponentActivity
-import androidx.work.WorkManager
 import fr.c1.chatbot.utils.EventReminderWorker
 import fr.c1.chatbot.utils.toDate
+import androidx.activity.ComponentActivity
+import androidx.work.WorkManager
+import android.util.Log
 
 /**
- * Event
+ * Represent an event
  *
  * @property id Event ID
  * @property title Event title
@@ -21,11 +21,19 @@ data class Event(
     val dtStart: Long,
     val dtEnd: Long
 ) {
+    /** Utility class to manage event notification */
     object Notifs {
         private const val TAG = "Event.Notifs"
 
+        /** Indicate if the notification system is initialized */
         private var inited: Boolean = true
 
+        /**
+         * Add a notification
+         *
+         * @param events Event corresponding to the notification
+         * @param ctx Current Android context
+         */
         fun addNotification(events: List<Event>, ctx: ComponentActivity) {
             val workManager = WorkManager.getInstance(ctx)
             if (inited) return

@@ -852,7 +852,7 @@ fun ShowcaseSample(
                                     fontSize = 26.sp,
                                     color = Color.White
                                 )
-                                Spacer(modifier = Modifier.height(4.dp))
+                                Spacer(modifier = Modifier.height(20.dp))
                                 Text(
                                     text = "Clique sur l'onglet pour fermer le didacticiel",
                                     fontSize = 26.sp,

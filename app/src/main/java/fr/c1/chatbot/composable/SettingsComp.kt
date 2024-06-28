@@ -179,7 +179,7 @@ fun SettingsComp() {
         Slider(
             value = Settings.textSize.value,
             onValueChange = { Settings.textSize = it.sp },
-            valueRange = 30f..50f,
+            valueRange = 30f..48f,
             modifier = Modifier.padding(horizontal = 50.dp)
         )
 

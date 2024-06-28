@@ -118,9 +118,9 @@ dependencies {
 }
 
 tasks.withType<DokkaTask>().configureEach {
-    outputDirectory = layout.projectDirectory.dir("doc/html")
     dokkaSourceSets.configureEach {
         suppressInheritedMembers = true
+        outputDirectory = layout.projectDirectory.dir("../Chat-Bot-Doc.github.io")
         documentedVisibilities = Visibility.values().toSet()
         includes.from(fileTree("src/main/java") {
             include("**/package.md")

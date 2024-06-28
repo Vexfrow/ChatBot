@@ -58,27 +58,22 @@ import androidx.compose.ui.graphics.Color as ColorX
 
 private const val TAG = "OsmdroidMapView"
 
+/**
+ * Information Window that opens when a point is clicked on the map
+ * @param mapView the map to add the window
+ */
 class CustomInfoWindow(private val mapView: MapView) : InfoWindow(
     ComposeView(mapView.context), mapView
 ) {
     override fun onOpen(item: Any?) {
-        // Following command
+        // Ferme les autres fenetres ouvertes sur la map
         closeAllInfoWindowsOn(mapView)
-//
-//        val title = mView.findViewById<TextView>(R.id.title)
-//        val snippet = mView.findViewById<TextView>(R.id.snippet)
-//
-//        // Assurez-vous que l'objet item est de type adéquat (ici on suppose qu'il est de type Point)
+//       // Assurez-vous que l'objet item est de type adéquat (ici on suppose qu'il est de type LabelledGeoPoint)
         val point = item as LabelledGeoPoint
 //
 //        title.text = point.label
-//
-//        // You can set an onClickListener on the InfoWindow itself.
-//        // This is so that you can close the InfoWindow once it has been tapped.
-//
-//        // Instead, you could also close the InfoWindows when the map is pressed.
-//        // This is covered in the Map Listeners guide.
-//
+
+        //Ferme la fenetre quand on re clique sur le point
         mView.setOnClickListener {
             close()
         }
@@ -101,12 +96,18 @@ private fun MapView.unselectAllPoints() {
         overlay.selectedPoint = -1
     }
 }
+
+/**
+ * MapView Component to display a map
+ * @param aVM class with request results
+ */
 @Composable
 fun OsmdroidMapView(aVM: ActivitiesVM) {
     // Variable pour stocker la MapView
     val ctx = LocalContext.current
     var mapView by remember { mutableStateOf<MapView?>(null) }
 
+    // Map's default setup
     AndroidView(
         modifier = Modifier.fillMaxSize(),
         factory = { context ->
@@ -120,18 +121,18 @@ fun OsmdroidMapView(aVM: ActivitiesVM) {
                     setZoom(15.0)
                     setCenter(
                         GeoPoint(
-                            LocationHandler.currentLocation!!.latitude,
-                            LocationHandler.currentLocation!!.longitude
+                            currentLocation!!.latitude,
+                            currentLocation!!.longitude
                         )
                     )
                 }
+                // Overlay to display current location on the map
                 val mLocationOverlay = MyLocationNewOverlay(this)
                 mLocationOverlay.enableMyLocation()
 
-
+                // Add overlays to the map
                 overlays.apply {
-                    // create overlays with differents themes
-                    // add overlays
+                    // add all points on the map sorted by type with specific colors
                     setResult(aVM.result)
                     add(setSFPO(this@mv, festivalsLocations, "#ff4f29"))
                     add(setSFPO(this@mv, associationsLocations, "#e478ff"))
@@ -141,6 +142,7 @@ fun OsmdroidMapView(aVM: ActivitiesVM) {
                     add(setSFPO(this@mv, contenuLocations, "#fffc93"))
                     add(setSFPO(this@mv, edificesLocations, "#b87800"))
                     add(setSFPO(this@mv, jardinLocations, "#6cff40"))
+
                     add(mLocationOverlay)
                 }
 
@@ -159,19 +161,19 @@ fun OsmdroidMapView(aVM: ActivitiesVM) {
         }
 
     )
-    // Bouton en bas de la carte
+    // Button to display current location on the center of the map
     IconButton(
         onClick = {
-            // Action à réaliser lorsqu'on clique sur le bouton
-            // Vous pouvez interagir avec la MapView ici si nécessaire
+            // Start new location (see LocationHandler)
             startLocationUpdates(ctx)
+            // center map on last current location
             mapView?.controller?.setCenter(
                 GeoPoint(
                     LocationHandler.currentLocation!!.latitude,
                     LocationHandler.currentLocation!!.longitude
                 )
             )
-            // Rafraîchir la carte pour afficher les modifications
+            // Refresh map to display changes
             mapView?.invalidate()
         },
         modifier = Modifier
@@ -192,8 +194,7 @@ object Obj : OverlayWithIW() {
     }
 }
 
-// create 10k labelled points
-// in most cases, there will be no problems of displaying >100k points, feel free to try
+// Lists of points to display sorted by Type
 var festivalsLocations = ArrayList<IGeoPoint>()
 var associationsLocations = ArrayList<IGeoPoint>()
 var museesLocations = ArrayList<IGeoPoint>()
@@ -203,7 +204,10 @@ var contenuLocations = ArrayList<IGeoPoint>()
 var edificesLocations = ArrayList<IGeoPoint>()
 var jardinLocations = ArrayList<IGeoPoint>()
 
-// create label style
+/**
+ * Map points style
+ * @param color
+ */
 fun Paint.setTextStyle(color: String) {
     style = Paint.Style.FILL
     this.color = Color.parseColor(color)
@@ -211,6 +215,10 @@ fun Paint.setTextStyle(color: String) {
     textSize = 24f
 }
 
+/**
+ * sort request result in different lists
+ * @param res are request results
+ */
 private fun setResult(res: Resource<List<AbstractActivity>>) {
     res.data?.forEach {
         when (it) {
@@ -265,6 +273,12 @@ private fun setResult(res: Resource<List<AbstractActivity>>) {
     }
 }
 
+/**
+ * Create SimpleFastOverlay pour to display several points with same style
+ * @param mapView
+ * @param points
+ * @param color
+ */
 fun setSFPO(mapView: MapView, points: ArrayList<IGeoPoint>, color: String): SimpleFastPointOverlay {
     val textStyle = Paint()
     val pointStyle = Paint()

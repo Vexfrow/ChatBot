@@ -30,7 +30,7 @@ object LocationHandler {
 
     /**
      * Init location
-     *
+     * ACCESS_FINE_LOCATION needed or will be asked
      * @param ctx
      */
     fun initLocation(ctx: Context) {
@@ -59,11 +59,13 @@ object LocationHandler {
     }
 
     /**
-     * Start location updates
-     *
+     * Start Location updates
+     * The Location Request should be initialized
+     * The Location Callback should be initialized
      * @param ctx
      */
     fun startLocationUpdates(ctx: Context) {
+        // Will check for permissions before trying to start location updates
         if (ActivityCompat.checkSelfPermission(ctx, Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED
         ) {

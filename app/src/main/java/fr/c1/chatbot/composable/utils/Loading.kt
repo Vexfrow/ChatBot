@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
+/** Show an infinite loading bar with a [message] */
 @Composable
 fun Loading(message: String) = Column(
     modifier = Modifier.fillMaxSize(),
@@ -39,9 +40,13 @@ fun Loading(message: String) = Column(
     )
 }
 
+/** Range of the icon rotation */
 private const val rotationRange = 45f
+
+/** Duration of the full icon rotation */
 private const val rotationDuration = 500
 
+/** Show an infinite loading bar with the bot icon animated */
 @Composable
 fun BotLoading() = Box(
     modifier = Modifier.fillMaxSize(),
@@ -69,20 +74,22 @@ fun BotLoading() = Box(
         modifier = Modifier.size(96.dp)
     )
 
-    if (Settings.botImage == null) Icon(
-        modifier = Modifier
-            .size(48.dp)
-            .graphicsLayer(rotationZ = rot),
-        imageVector = Settings.botIcon,
-        contentDescription = "Robot loading"
-    )
-    else Image(
-        modifier = Modifier
-            .size(48.dp)
-            .graphicsLayer(rotationZ = rot),
-        painter = rememberAsyncImagePainter(
-            ImageRequest.Builder(LocalContext.current).data(Settings.botImage).build()
-        ),
-        contentDescription = "Robot loading"
-    )
+    if (Settings.botImage == null)
+        Icon(
+            modifier = Modifier
+                .size(48.dp)
+                .graphicsLayer(rotationZ = rot),
+            imageVector = Settings.botIcon,
+            contentDescription = "Robot loading"
+        )
+    else
+        Image(
+            modifier = Modifier
+                .size(48.dp)
+                .graphicsLayer(rotationZ = rot),
+            painter = rememberAsyncImagePainter(
+                ImageRequest.Builder(LocalContext.current).data(Settings.botImage).build()
+            ),
+            contentDescription = "Robot loading"
+        )
 }

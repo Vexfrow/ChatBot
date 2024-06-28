@@ -2,5 +2,5 @@
 
 # Components
 
-This package contains all the components, corresponding to @Composable functions representign the
+This package contains all the components, corresponding to @Composable functions representing the
 Vue

@@ -30,7 +30,21 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.ui.graphics.Color
 
+/**
+ * Enumeration representing all the tabs of the application
+ *
+ * @property value Value of the tab
+ * @param value Value of the tab. Can be an [Int] or a [Float]
+ * - [Int]: Tab [value]
+ * - [Float]: Tab [value] with [Float.toInt] and subtab ([value] * 10) % 10
+ * @property title Title of the tab
+ * @property icon Icon of the tab
+ *
+ * @constructor Create a Tab with all his property
+ */
 enum class Tab(
     val value: Number,
     val title: String,
@@ -40,19 +54,29 @@ enum class Tab(
     ChatBotChat(0.0f, "Conversation", Icons.Default.Forum),
     ChatBotResults(0.1f, "Résultats", Icons.Default.ContentPasteSearch),
     ChatBotMap(0.2f, "Carte", Icons.Default.Map),
-    Suggestion(1, "Suggestion", Icons.Default.Lightbulb),
+    Suggestion(1, "Suggestions", Icons.Default.Lightbulb),
     History(2, "Historique", Icons.Default.History),
-    Account(3, "Profile", Icons.Default.AccountCircle),
-    AccountData(3.0f, "Données", Icons.Default.AccountCircle),
-    AccountPreferences(3.1f, "Préférences hebdomadaire", Icons.Default.DateRange),
-    AccountPassions(3.2f, "Centres d'intérêt", Icons.Default.SentimentVerySatisfied),
+    Account(3, "Compte", Icons.Default.AccountCircle),
+    AccountData(3.0f, "Informations", Icons.Default.AccountCircle),
+    AccountPreferences(3.1f, "Préférences hebdomadaires", Icons.Default.DateRange),
+    AccountPassions(3.2f, "Centres d'intérêts", Icons.Default.SentimentVerySatisfied),
     Settings(4, "Paramètres", Icons.Default.Settings);
 
+    /** Get a list of all sub tabs of the current tab */
     val subTabs: List<Tab> get() = entries.filter { it.value !is Int && it.value.toInt() == value.toInt() }
+    /** Get the sub value of the current subtab */
     val subValue: Int get() = ((value.toFloat() * 10) % 10).toInt()
+    /** Get the final tab or subtab of the current one */
     val finalTab: Tab get() = if (value is Float) this else subTabs.firstOrNull() ?: this
 }
 
+/**
+ * Top bar of the application
+ *
+ * @param tabSelected Current tab selected
+ * @param onTabSelected Callback when a tab is selected
+ * @receiver
+ */
 @Composable
 fun TopBar(
     tabSelected: Tab,
@@ -65,7 +89,9 @@ fun TopBar(
         onTabSelected(state)
     }
 
-    Column(modifier = Modifier.statusBarsPadding().background(Color.White)) {
+    Column(modifier = Modifier
+        .statusBarsPadding()
+        .background(Color.White)) {
         TabRow(selectedTabIndex = state.value.toInt()) {
             Tab.entries.filter { it.value is Int }.forEach { tab ->
                 Tab(

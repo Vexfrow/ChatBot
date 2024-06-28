@@ -8,6 +8,7 @@ import fr.c1.chatbot.utils.focusRequesterIfNotNull
 import fr.c1.chatbot.utils.rememberMutableStateOf
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -78,6 +79,37 @@ import java.util.Locale
 
 private const val TAG = "SearchBar"
 
+/**
+ * Reprensent a search bar. See the [SearchBar source code](https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:compose/material3/material3/src/androidMain/kotlin/androidx/compose/material3/SearchBar.android.kt;bpv=0)
+ *
+ * @param query The input [String] text to be shown in the text field
+ * @param onQueryChange The callback that is triggered when the input service updates the text. An
+ * updated text comes as a parameter of the callback
+ * @param onSearch The callback that is triggered when the search is validate (by keyboard action
+ * or icon)
+ * @param enabled Controls the enabled state of the [BasicTextField]. When `false`, the text
+ * field will be neither editable nor focusable, the input of the text field will not be selectable
+ * @param placeholder The optional placeholder to be displayed when the text field is in focus
+ * and the input text is empty. The default text style for internal [Text] is
+ * @param leadingIcon The optional leading icon to be displayed at the beginning of the text
+ * field container
+ * @param trailingIcon The optional trailing icon to be displayed at the end of the text field
+ * container
+ * @param shape The shape of this search bar
+ * @param colors [SearchBarColors] that will be used to resolve the colors used for this search bar
+ * in different states. See [SearchBarDefaults.colors]
+ * @param tonalElevation When [SearchBarColors.containerColor] is [ColorScheme.surface], a
+ * translucent primary color overlay is applied on top of the container. A higher tonal elevation
+ * value will result in a darker color in light theme and lighter color in dark theme.
+ * See also: [Surface]
+ * @param shadowElevation The elevation for the shadow below this search bar
+ * @param interactionSource The [MutableInteractionSource] representing the stream of
+ * [Interaction]s for this TextField. You can create and pass in your own remembered
+ * [MutableInteractionSource] if you want to observe [Interaction]s and customize the
+ * appearance / behavior of this TextField in different [Interaction]s.
+ * @param keyboardType The keyboard type to be used in this text field. If equals to
+ * @param focus Optional [FocusRequester] to add
+ */
 @ExperimentalMaterial3Api
 @Composable
 fun SearchBar(
@@ -168,6 +200,19 @@ fun SearchBar(
     }
 }
 
+/**
+ * Reprensent the bottom [SearchBar]
+ *
+ * Can be accompanied by:
+ * - A [MyDatePicker]
+ * - A [DropDown]
+ *
+ * @param placeholder Placholder [String] of the search bar
+ * @param enabled Indicate if the search bar is enabled or not
+ * @param action Indicate the [TypeAction] required
+ * @param proposals If not null, list of the proposals on the [DropDown]
+ * @param onSearch Callback when the search is validate (by keyboard action or icon)
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MySearchBar(
@@ -291,12 +336,22 @@ fun MySearchBar(
         UnitLaunchedEffect { focus.requestFocus() }
 }
 
+/**
+ * Placeholder of the [MySearchBar]
+ *
+ * @param text Text of the placeholder
+ */
 @Composable
 fun Placeholder(text: String) = Text(
     text = text,
     fontSize = MaterialTheme.typography.titleMedium.fontSize
 )
 
+/**
+ * Validate icon of the [MySearchBar]
+ *
+ * @param onSearch Callback when the search is validate by icon
+ */
 @Composable
 fun TrailingIcon(onSearch: () -> Unit) = IconButton(
     modifier = Modifier.size(60.dp),
@@ -309,6 +364,15 @@ fun TrailingIcon(onSearch: () -> Unit) = IconButton(
     )
 }
 
+/**
+ * Custom [DatePickerDialog]
+ *
+ * @param state State of the [DatePickerDialog]
+ * @param onDismiss Called when the user tries to dismiss the Dialog by clicking outside
+ * or pressing the back button. This is not called when the dismiss button is clicked.
+ * @param onConfirm Called when the user validate the current date
+ * (saved on [DatePickerState.selectedDateMillis])
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyDatePicker(
@@ -327,6 +391,18 @@ fun MyDatePicker(
     ) { DatePicker(state = state) }
 }
 
+/**
+ * Custom [ExposedDropdownMenuBox]
+ *
+ * @param query The input [String] text to be shown in the text field
+ * @param placeholder The placeholder to be displayed when the text field is in focus
+ * @param proposals List of items on the dropdown
+ * @param onValueChanged The callback that is triggered when the input service updates the text. An
+ * updated text comes as a parameter of the callback
+ * @param onProposalSelected The callback that is triggered when any item of [proposals] is selected
+ * @param onSearch Callback when the search is validate (by keyboard action or icon)
+ * @param focus Optional FocusRequester to add
+ */
 @ExperimentalMaterial3Api
 @Composable
 fun DropDown(

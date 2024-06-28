@@ -19,9 +19,7 @@ import android.util.Log
 
 private const val TAG = "PermissionComponent"
 
-/**
- * Composable that handles permissions requests
- */
+/** Composable that handles permissions requests */
 @Composable
 fun PermissionsContent(context: ComponentActivity) {
     var hasReadPermission by remember { mutableStateOf(false) }

@@ -1,7 +1,7 @@
 package fr.c1.chatbot.composable
 
 import fr.c1.chatbot.composable.utils.MyText
-import fr.c1.chatbot.model.ActivitiesRepository
+import fr.c1.chatbot.repositories.ActivitiesRepository
 import fr.c1.chatbot.model.User
 import fr.c1.chatbot.utils.items
 import fr.c1.chatbot.utils.rememberMutableStateOf

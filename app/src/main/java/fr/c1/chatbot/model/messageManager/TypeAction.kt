@@ -10,24 +10,25 @@ enum class TypeAction {
     /** Int */
     DistanceInput,
 
-    /** Dropdown with auto completion */
+    /** Dropdown */
     CityInput,
 
     /** Result Tab */
     ShowResults,
 
-    /** ToDo: city ? */
+    /** Get the Android last location */
     Geolocation,
 
-    /** Dropdown with multiple choices */
+    /** Moved on another tab */
     ChoosePassions,
 
-    /** Just a suggestion */
+    /** Keep physical activities */
     PhysicalActivity,
 
-    /** Just a suggestion */
+    /** Keep cultural activities */
     CulturalActivity,
 
+    /** Disable the notification */
     DeleteNotifs,
 
 
@@ -45,8 +46,10 @@ enum class TypeAction {
     Today,
     Tomorrow,
 
-    /** Just a suggestion */
+    /** Undo last message */
     Back,
+    /** Restart chat */
     Restart,
+    /** Show the filters */
     ShowFilters,
 }

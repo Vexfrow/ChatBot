@@ -10,13 +10,7 @@ import java.util.UUID
 
 private const val TAG = "TTS"
 
-/**
- * Tts
- *
- * @constructor
- *
- * @param ctx
- */
+/** TTS wrapper */
 class TTS(ctx: Context) {
     private object UtteranceLst : UtteranceProgressListener() {
         override fun onStart(utteranceId: String?) {}
@@ -33,18 +27,25 @@ class TTS(ctx: Context) {
         }
     }
 
+    /** @see [TextToSpeech] */
     private var _tts: TextToSpeech? = null
+
+    /** @see [_tts] */
     private val tts: TextToSpeech get() = _tts!!
 
+    /** Indicate if the system is inited */
     private var inited: Boolean = false
 
+    /** Queue for speak when ![inited] */
     private var list: MutableList<Pair<CharSequence, Boolean>>? = null
 
+    /** Get the list of the voices avaible */
     private val voices: List<Voice>
         get() = tts.voices
             .filter { v -> v.locale == Locale.FRANCE && !v.isNetworkConnectionRequired }
 
-    var voice: Voice
+    /** Get the current selected voice */
+    private var voice: Voice
         get() = tts.voice
         set(value) {
             tts.voice = value
@@ -76,12 +77,7 @@ class TTS(ctx: Context) {
         }
     }
 
-    /**
-     * Speak
-     *
-     * @param text
-     * @param flush
-     */
+    /** @see TextToSpeech.speak */
     fun speak(text: CharSequence, flush: Boolean = false) {
         if (!inited) {
             if (list == null)
@@ -106,10 +102,7 @@ class TTS(ctx: Context) {
         }
     }
 
-    /**
-     * Shutdown
-     *
-     */
+    /** @see TextToSpeech.shutdown */
     fun shutdown() {
         tts.shutdown()
     }

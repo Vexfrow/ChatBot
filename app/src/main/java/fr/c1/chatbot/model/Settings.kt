@@ -36,46 +36,99 @@ import android.util.Log
 
 private const val TAG = "Settings"
 
+/** Object containing the settings of the app */
 object Settings {
+    /** Object containing the default values of the [Settings] */
     private object Default {
+        /** @see bubbleSpeechUserColor */
         val defaultBubbleSpeechColor = Color.Blue
+
+        /** @see backgroundColor */
         val defaultBackgroundColor = Color.Unspecified
+
+        /** @see botName */
         const val defaultBotName = "Rob"
+
+        /** @see botPersonality */
         const val defaultBotPersonality = "Rob"
     }
 
+    /** Size of the text, 40 sp by default */
     var textSize: TextUnit by mutableStateOf(40.sp)
+
+    /** Indicate if the tts is enabled, disabled by default */
     var tts: Boolean by mutableStateOf(false)
+
+    /** Icon of the bot, [Icons.Filled.Bot] by default */
     var botIcon: ImageVector by mutableStateOf(Icons.Default.Bot)
+
+    /** Optional image of the bot, null by default */
     var botImage: Uri? by mutableStateOf(null)
+
+    /** Icon of the user, [Icons.Filled.Person] by default */
     var userIcon: ImageVector by mutableStateOf(Icons.Default.Person)
+
+    /** Optional image of the user, null by default */
     var userImage: Uri? by mutableStateOf(null)
+
+    /** Color of the bot speech bubble, [Default.defaultBubbleSpeechColor] by default */
     var bubbleSpeechBotColor: Color by mutableStateOf(Default.defaultBubbleSpeechColor)
+
+    /** Get the color of the text on the [bubbleSpeechBotColor] */
     val textBotColor: Color get() = bubbleSpeechBotColor.foreground
+
+    /** Color of the user speech bubble, [Default.defaultBubbleSpeechColor] by default */
     var bubbleSpeechUserColor: Color by mutableStateOf(Default.defaultBubbleSpeechColor)
+
+    /** Get the color of the text on the [bubbleSpeechUserColor] */
     val textUserColor: Color get() = bubbleSpeechUserColor.foreground
+
+    /** Color of the app background, [Default.defaultBackgroundColor] by default */
     var backgroundColor: Color by mutableStateOf(Default.defaultBackgroundColor)
+
+    /** Get the color of the text on the [backgroundColor] */
     val foregroundColor: Color get() = backgroundColor.foreground
+    /** Name of the bot, [Default.defaultBotName] by default */
     var botName: String by mutableStateOf(Default.defaultBotName)
+    /** Personality of the bot, [Default.defaultBotPersonality] by default */
     var botPersonality: String by mutableStateOf(Default.defaultBotPersonality)
+    /** Indicate if the notifications are enabled, disabled by default */
     var notifications: Boolean by mutableStateOf(true)
 
+    /** Icons avaible for the bot and the user */
     val iconsAvailable = with(Icons.Default) {
         listOf(
             Bot, Robot, RobotFace, Person, AccountCircle, AccountBox
         )
     }
 
-
+    /**
+     * Get the [iconsAvailable] from his [name]
+     *
+     * @param name [ImageVector.name]
+     */
     private fun iconFromName(name: String) = iconsAvailable.first { it.name == name }
 
+    /**
+     * Initialize the settings from the [SharedPreferences] or create it
+     *
+     * @param ctx Current Android context
+     * @see from Init from the [SharedPreferences]
+     * @see reset Create the [SharedPreferences]
+     */
     fun init(ctx: Context) {
         val pref = ctx.getSharedPreferences("Settings", Context.MODE_PRIVATE)
-        val night = ctx.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+        val night =
+            ctx.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
         if (pref.contains("init")) from(pref, night)
         else reset(night)
     }
 
+    /**
+     * Reset the settings
+     *
+     * @param night Indicate if the dark mode is enabled ([Configuration.UI_MODE_NIGHT_YES])
+     */
     private fun reset(night: Boolean) {
         textSize = 40.sp
         tts = false
@@ -94,6 +147,11 @@ object Settings {
 
     }
 
+    /**
+     * Get the settings from a [pref]
+     *
+     * @param night Indicate if the dark mode is enabled ([Configuration.UI_MODE_NIGHT_YES])
+     */
     private fun from(pref: SharedPreferences, night: Boolean) = pref.run {
         getSp(::textSize, 40.sp)
         getBool(::tts, false)
@@ -117,6 +175,13 @@ object Settings {
         Log.i(TAG, "Settings loaded: ${this@Settings}")
     }
 
+    /**
+     * Save the settings into a [SharedPreferences]
+     *
+     * @param context Current Android context
+     *
+     * @see SharedPreferences.Editor
+     */
     fun save(context: Context) =
         context.getSharedPreferences("Settings", Context.MODE_PRIVATE).edit(true) {
             putBoolean("init", true)

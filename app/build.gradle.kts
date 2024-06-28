@@ -103,6 +103,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    implementation("com.canopas.intro-showcase-view:introshowcaseview:2.0.1")
+
     val workVersion = "2.9.0"
     // Kotlin + coroutines
     implementation("androidx.work:work-runtime-ktx:$workVersion")

@@ -2,6 +2,7 @@ package fr.c1.chatbot.viewModel
 
 import fr.c1.chatbot.ChatBot
 import fr.c1.chatbot.R
+import fr.c1.chatbot.model.Settings
 import fr.c1.chatbot.model.activity.Type
 import fr.c1.chatbot.model.messageManager.Message
 import fr.c1.chatbot.model.messageManager.Tree
@@ -9,13 +10,12 @@ import fr.c1.chatbot.model.messageManager.TypeAction
 import fr.c1.chatbot.utils.LocationHandler
 import fr.c1.chatbot.utils.TTS
 import fr.c1.chatbot.utils.disableNotification
+import fr.c1.chatbot.utils.toDate
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
-import fr.c1.chatbot.model.Settings
-import fr.c1.chatbot.utils.toDate
 import java.io.InputStream
 import java.time.LocalDate
 
@@ -40,21 +40,21 @@ class MessageVM(
     private val context = ctx
 
 
-    //Initialise le messageManager (mm)
+    /** Initialize the [MessageVM] */
     fun initMessageManager() {
         chatBotTree.initTree(this, mapScript)
         chatBotTree.answersId.map { optionsAvailable.add(chatBotTree.getAnswerText(it)) }
         addMessage(Message(chatBotTree.question, isUser = false, isScript = true))
     }
 
-    //Rajoute un message à la liste des message
+    /** Add a message to the [messageHistory] */
     private fun addMessage(message: Message) {
         messageHistory.add(message)
         if (!message.isUser && Settings.tts)
             tts.speak(message.messageContent)
     }
 
-    //S'occupe de gérer les différentes actions
+    /** Do the action corresponding to [action] */
     private fun manageActions(action: TypeAction, app: ChatBot, activitiesVM: ActivitiesVM) {
         when (action) {
             TypeAction.None -> {}
@@ -257,6 +257,7 @@ class MessageVM(
         }
     }
 
+    /** Select an answer */
     fun selectAnswer(id: Int, text: String?, app: ChatBot, activitiesVM: ActivitiesVM) {
         optionsAvailable.removeAll(optionsAvailable.toSet())
         chatBotTree.selectAnswer(id)
@@ -278,6 +279,7 @@ class MessageVM(
         )
     }
 
+    /** Upadte the question */
     fun updateQuestion(app: ChatBot, activitiesVM: ActivitiesVM) {
         addMessage(
             Message(

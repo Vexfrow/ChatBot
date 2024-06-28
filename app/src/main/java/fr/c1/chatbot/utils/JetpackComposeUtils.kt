@@ -42,23 +42,15 @@ inline fun <T> LazyGridScope.items(
     }
 }
 
-/**
- * Focus requester if not null
- *
- * @param fr
- */
+/** Focus requester if [fr] not null */
 fun Modifier.focusRequesterIfNotNull(fr: FocusRequester?) =
     if (fr == null) this
     else focusRequester(fr)
 
-/**
- * Background if
- *
- * @param color
- * @param condition
- */
+/** Background [color] if [condition] */
 fun Modifier.backgroundIf(color: Color, condition: Boolean) =
     if (condition) background(color)
     else this
 
+/** [Settings.backgroundColor] as [background] */
 fun Modifier.boxBackground() = this.background(Settings.backgroundColor)

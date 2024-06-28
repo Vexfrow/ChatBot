@@ -16,15 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathFillType
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.graphics.vector.DefaultFillType
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.PathBuilder
-import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
@@ -44,10 +36,12 @@ import java.io.InputStreamReader
 import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KProperty0
 
+/** Get the [ChatBot] application on a [Composable] */
 val application: ChatBot
     @Composable
     get() = (LocalContext.current as Activity).application as ChatBot
 
+/** Get the [ChatBot] application on a [Activity] */
 val Activity.app: ChatBot get() = application as ChatBot
 
 /** [LaunchedEffect] with [Unit] as single key */
@@ -100,45 +94,17 @@ operator fun TextUnit.plus(f: Float) = (this.value + f).sp
 operator fun TextUnit.minus(f: Float) = (this.value - f).sp
 
 /**
- * Material path c
+ * Set the value of a [KMutableProperty0] from the [SharedPreferences]
  *
- * @param fill
- * @param fillAlpha
- * @param stroke
- * @param strokeAlpha
- * @param pathFillType
- * @param pathBuilder
- * @receiver
- */
-inline fun ImageVector.Builder.materialPathC(
-    fill: Color = Color.Black,
-    fillAlpha: Float = 1f,
-    stroke: Color? = null,
-    strokeAlpha: Float = 1f,
-    pathFillType: PathFillType = DefaultFillType,
-    pathBuilder: PathBuilder.() -> Unit
-) = path(
-    fill = SolidColor(fill),
-    fillAlpha = fillAlpha,
-    stroke = if (stroke == null) null else SolidColor(stroke),
-    strokeAlpha = strokeAlpha,
-    strokeLineWidth = 1f,
-    strokeLineCap = StrokeCap.Butt,
-    strokeLineJoin = StrokeJoin.Bevel,
-    strokeLineMiter = 1f,
-    pathFillType = pathFillType,
-    pathBuilder = pathBuilder
-)
-
-/**
- * Get nullable
+ * @param V Type of the property
+ * @param T Type of the object stored in the [SharedPreferences]
+ * @param ref Reference of the object to set
+ * @param ifNotNull Callback when the [ref] name exists:
+ * (key: [String], defaultValue: [T]) -> settingsValue: [V]
+ * @param defaultValue Default value to send to [ifNotNull]
  *
- * @param V
- * @param T
- * @param ref
- * @param ifNotNull
- * @param defaultValue
- * @receiver
+ * @return if the [SharedPreferences] doesn't contains the [KMutableProperty0.name], null
+ * otherwise the result of [ifNotNull]
  */
 fun <V, T> SharedPreferences.getNullable(
     ref: KMutableProperty0<V?>,
@@ -147,10 +113,12 @@ fun <V, T> SharedPreferences.getNullable(
 ) = ref.set(if (contains(ref.name)) ifNotNull(ref.name, defaultValue) else null)
 
 /**
- * Put or remove
+ * If the property is null, remove it from settings, otherwise store it
  *
- * @param T
- * @param ref
+ * Currently work only with [Uri]
+ *
+ * @param T Type of the property
+ * @param ref Reference to the object to store
  */
 fun <T> SharedPreferences.Editor.putOrRemove(ref: KProperty0<T>) = when (val value = ref.get()) {
     null -> remove(ref.name)
@@ -160,10 +128,11 @@ fun <T> SharedPreferences.Editor.putOrRemove(ref: KProperty0<T>) = when (val val
 }
 
 /**
- * Save image
+ * Copy the image at a specified [Uri] into the internal storage and store the new [Uri] into the
+ * preferences
  *
- * @param ref
- * @param context
+ * @param ref Reference to the [Uri] of the image
+ * @param context Android context
  */
 fun SharedPreferences.Editor.saveImage(ref: KProperty0<Uri?>, context: Context) {
     val file = File(context.filesDir, ref.name)
@@ -195,103 +164,61 @@ fun SharedPreferences.Editor.saveImage(ref: KProperty0<Uri?>, context: Context) 
     }
 }
 
-/**
- * Get sp
- *
- * @param ref
- * @param defaultValue
- */
+/** Get sp */
 fun SharedPreferences.getSp(
     ref: KMutableProperty0<TextUnit>,
     defaultValue: TextUnit
 ) = ref.set(getFloat(ref.name, defaultValue.value).sp)
 
-/**
- * Put sp
- *
- * @param ref
- */
+/** Put sp */
 fun SharedPreferences.Editor.putSp(ref: KMutableProperty0<TextUnit>) =
     putFloat(ref.name, ref.get().value)
 
-/**
- * Get bool
- *
- * @param ref
- * @param defaultValue
- */
+/** Get bool */
 fun SharedPreferences.getBool(
     ref: KMutableProperty0<Boolean>,
     defaultValue: Boolean
 ) = ref.set(getBoolean(ref.name, defaultValue))
 
-/**
- * Put string
- *
- * @param ref
- */
+/** Put string */
 fun SharedPreferences.Editor.putString(ref: KMutableProperty0<String>) =
     putString(ref.name, ref.get())
 
-/**
- * Get string
- *
- * @param ref
- * @param defaultValue
- */
+/** Get string */
 fun SharedPreferences.getString(
     ref: KMutableProperty0<String>,
     defaultValue: String
 ) = getString(ref.name, defaultValue)?.let { ref.set(it) }
 
-/**
- * Put bool
- *
- * @param ref
- */
+/** Put bool */
 fun SharedPreferences.Editor.putBool(ref: KMutableProperty0<Boolean>) =
     putBoolean(ref.name, ref.get())
 
-/**
- * Get uri
- *
- * @param key
- * @param defaultValue
- */
+/** Get uri */
 fun SharedPreferences.getUri(
     key: String,
     defaultValue: String
 ) = Uri.parse(getString(key, defaultValue))
 
-/**
- * Get uri
- *
- * @param ref
- * @param defaultValue
- */
+/** Get uri */
 fun SharedPreferences.getUri(
     ref: KMutableProperty0<Uri>,
     defaultValue: String
 ) = ref.set(getUri(ref.name, defaultValue))
 
-/**
- * Put uri
- *
- * @param key
- * @param value
- */
+/** Put uri */
 fun SharedPreferences.Editor.putUri(
     key: String,
     value: Uri
 ) = putString(key, value.toString())
 
 /**
- * Parse csv
+ * Parse an [InputStream] into a list of [T]. Note that the first line corrspond to the header and
+ * is ignored
  *
- * @param csvIS
- * @param onLine
- * @receiver
- * @return
+ * @param T Type of each csv line
+ * @param csvIS [InputStream] of the csv
+ * @param onLine Callback to map each csv line [T]
  */
 fun <T> parseCsv(csvIS: InputStream, onLine: (Array<String>) -> T): List<T> {
     val csvParser = CSVParserBuilder()
@@ -311,45 +238,42 @@ fun <T> parseCsv(csvIS: InputStream, onLine: (Array<String>) -> T): List<T> {
         .toList()
 }
 
+/** Get color */
 fun SharedPreferences.getColor(
     key: String,
     default: Color
 ) = Color(getInt(key, default.toArgb()))
 
+/** Geet color */
 fun SharedPreferences.getColor(
     ref: KMutableProperty0<Color>,
     defaultValue: Color
 ) = ref.set(getColor(ref.name, defaultValue))
 
+/** Put color */
 fun SharedPreferences.Editor.putColor(
     key: String,
     value: Color
 ) = putInt(key, value.toArgb())
 
+/** Put color */
 fun SharedPreferences.Editor.putColor(
     ref: KProperty0<Color>
 ): SharedPreferences.Editor = putColor(ref.name, ref.get())
 
-/**
- * Disable notification
- *
- * @param context
- */
+/** Disable notification */
 fun disableNotification(context: Context) {
     val workManager = WorkManager.getInstance(context)
     workManager.cancelAllWorkByTag("EventReminderWorker")
 }
 
-/**
- * Enable notification
- *
- * @param context
- */
+/** Enable notification */
 fun enableNotification(context: Context) {
     val events = Calendar.fetchCalendarEvents(context)
     Event.Notifs.addNotification(events, context as ComponentActivity)
 }
 
+/** Get the foreground on this background color */
 val Color.foreground: Color
     get() =
         if (ColorUtils.calculateLuminance(toArgb()) > .5) Color.Black

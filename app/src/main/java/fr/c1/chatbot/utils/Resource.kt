@@ -5,58 +5,27 @@ typealias ResourceList<T> = Resource<List<T>>
 /**
  * Resource
  *
- * @param T
- * @property data
- * @property error
- * @constructor Create empty Resource
+ * @param T Type of the resource
+ * @property data Optional data of the resource
+ * @property error Optional error of the resource
  */
 sealed class Resource<T>(
     val data: T? = null,
     val error: Throwable? = null
 ) {
-    /**
-     * None
-     *
-     * @param T
-     * @constructor Create empty None
-     */
+    /** The [Resource] is not initialized yet */
     class None<T> : Resource<T>()
 
-    /**
-     * Success
-     *
-     * @param T
-     * @constructor
-     *
-     * @param data
-     */
+    /** The [Resource] is complete */
     class Success<T>(data: T) : Resource<T>(data = data)
 
-    /**
-     * Loading
-     *
-     * @param T
-     * @constructor
-     *
-     * @param data
-     */
+    /** The [Resource] is incomplete and loading */
     class Loading<T>(data: T) : Resource<T>(data = data)
 
-    /**
-     * Failed
-     *
-     * @param T
-     * @constructor
-     *
-     * @param error
-     * @param data
-     */
+    /** The [Resource] have failed */
     class Failed<T>(error: Throwable, data: T? = null) : Resource<T>(error = error, data = data)
 
-    /**
-     * Succeed
-     *
-     */
+    /** Transform any [Resource] into a [Success] */
     fun succeed() = when (this) {
         is Success -> this
         is None -> Success(null)

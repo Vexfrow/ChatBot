@@ -8,6 +8,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
+/**
+ * Component representing a not implemented page
+ *
+ * @param name To do message
+ */
 @Composable
 fun ToDo(name: String) = Box(
     modifier = Modifier.fillMaxSize(),

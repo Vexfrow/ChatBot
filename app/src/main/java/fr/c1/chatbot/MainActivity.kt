@@ -1,29 +1,9 @@
 package fr.c1.chatbot
 
-import fr.c1.chatbot.composable.AccountComp
-import fr.c1.chatbot.composable.ChatBotComp
-import fr.c1.chatbot.composable.History
-import fr.c1.chatbot.composable.HomeLoading
-import fr.c1.chatbot.composable.OsmdroidMapView
-import fr.c1.chatbot.composable.PermissionsContent
-import fr.c1.chatbot.composable.SettingsComp
-import fr.c1.chatbot.composable.Suggestion
-import fr.c1.chatbot.composable.Tab
-import fr.c1.chatbot.composable.TopBar
-import fr.c1.chatbot.model.Settings
-import fr.c1.chatbot.repositories.UserRepository
-import fr.c1.chatbot.ui.theme.ChatBotTheme
-import fr.c1.chatbot.utils.UnitLaunchedEffect
-import fr.c1.chatbot.utils.app
-import fr.c1.chatbot.utils.rememberMutableStateOf
-import fr.c1.chatbot.viewModel.ActivitiesVM
-import fr.c1.chatbot.viewModel.MessageVM
-import fr.c1.chatbot.viewModel.UserVM
-import org.osmdroid.config.Configuration
+import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -38,7 +18,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.preference.PreferenceManager
-import android.os.Bundle
+import fr.c1.chatbot.composable.AccountComp
+import fr.c1.chatbot.composable.ChatBotComp
+import fr.c1.chatbot.composable.History
+import fr.c1.chatbot.composable.HomeLoading
+import fr.c1.chatbot.composable.OsmdroidMapView
+import fr.c1.chatbot.composable.PermissionsContent
+import fr.c1.chatbot.composable.SettingsComp
+import fr.c1.chatbot.composable.Suggestion
+import fr.c1.chatbot.composable.Tab
+import fr.c1.chatbot.composable.TopBar
+import fr.c1.chatbot.model.Settings
+import fr.c1.chatbot.repositories.UserRepository
+import fr.c1.chatbot.ui.theme.ChatBotTheme
+import fr.c1.chatbot.ui.tutorial.ShowcaseSample
+import fr.c1.chatbot.utils.UnitLaunchedEffect
+import fr.c1.chatbot.utils.app
+import fr.c1.chatbot.utils.boxBackground
+import fr.c1.chatbot.utils.rememberMutableStateOf
+import fr.c1.chatbot.viewModel.ActivitiesVM
+import fr.c1.chatbot.viewModel.MessageVM
+import fr.c1.chatbot.viewModel.UserVM
+import org.osmdroid.config.Configuration
 
 /** MainActivity TAG */
 private const val TAG = "MainActivity"

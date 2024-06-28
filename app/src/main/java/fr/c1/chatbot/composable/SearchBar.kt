@@ -394,7 +394,7 @@ fun MyDatePicker(
 /**
  * Custom [ExposedDropdownMenuBox]
  *
- * @param query The input String text to be shown in the text field
+ * @param query The input [String] text to be shown in the text field
  * @param placeholder The placeholder to be displayed when the text field is in focus
  * @param proposals List of items on the dropdown
  * @param onValueChanged The callback that is triggered when the input service updates the text. An

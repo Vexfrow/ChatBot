@@ -44,6 +44,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import android.net.Uri
 
+/**
+ * Component representing the speech bubble
+ *
+ * @param text [String] text on the bubble
+ * @param cornerRadius Optional radius of the bubble, 20 dp by default
+ * @param tipSize Optional size of the tip, 15 dp by default
+ * @param isUser Optional boolean to indicate if it's a user bubble, false by default
+ */
 @Composable
 fun SpeechBubble(
     text: String,
@@ -107,7 +115,12 @@ fun SpeechBubble(
     }
 }
 
-
+/**
+ * Component representing a full message
+ *
+ * @param text [String] message
+ * @param isUser Optional boolean to indicate if it's a user bubble, false by default
+ */
 @Composable
 fun MessageComponent(
     text: String,

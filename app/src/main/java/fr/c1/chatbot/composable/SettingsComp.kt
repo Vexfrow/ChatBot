@@ -57,6 +57,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import android.net.Uri
 
+/** Component of the [Tab.Settings] tab */
 @Composable
 fun SettingsComp() {
     val context = LocalContext.current
@@ -398,6 +399,14 @@ fun SettingsComp() {
     }
 }
 
+/**
+ * Custom [IconButton] for the bot / user icon choice
+ *
+ * @param imageVector The possible bot / user [ImageVector]
+ * @param size Optional size of the icon, 100 dp by default
+ * @param onClick Callback when the [IconButton] is clicked
+ * @receiver
+ */
 @Composable
 fun IconOption(imageVector: ImageVector, size: Dp = 100.dp, onClick: () -> Unit) = IconButton(
     modifier = Modifier.size(size), onClick = onClick

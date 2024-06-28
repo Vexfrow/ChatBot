@@ -9,6 +9,7 @@ import java.io.FileFilter
 
 private const val TAG = "UserRepository"
 
+/** User repository */
 object UserRepository {
     /** Load all users informations */
     fun loadAll(context: Context): List<User> {
@@ -74,7 +75,7 @@ object UserRepository {
         Log.i(TAG, "store: $user stored")
     }
 
-    /** Delete the spicified [user] */
+    /** Delete the specified [user] */
     fun delete(user: User, context: Context) {
         context.deleteFile("${user.id}.json")
     }

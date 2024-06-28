@@ -1,5 +1,28 @@
 package fr.c1.chatbot.composable
 
+import android.graphics.Color
+import android.graphics.Paint
+import android.location.Location
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MyLocation
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import fr.c1.chatbot.model.activity.AbstractActivity
 import fr.c1.chatbot.model.activity.Association
 import fr.c1.chatbot.model.activity.Building
@@ -10,6 +33,8 @@ import fr.c1.chatbot.model.activity.Garden
 import fr.c1.chatbot.model.activity.Museum
 import fr.c1.chatbot.model.activity.Site
 import fr.c1.chatbot.utils.LocationHandler
+import fr.c1.chatbot.utils.LocationHandler.currentLocation
+import fr.c1.chatbot.utils.LocationHandler.startLocationUpdates
 import fr.c1.chatbot.utils.Resource
 import fr.c1.chatbot.viewModel.ActivitiesVM
 import org.osmdroid.api.IGeoPoint
@@ -20,6 +45,7 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.ClickableIconOverlay
 import org.osmdroid.views.overlay.OverlayWithIW
 import org.osmdroid.views.overlay.infowindow.InfoWindow
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
@@ -28,41 +54,26 @@ import org.osmdroid.views.overlay.simplefastpoint.LabelledGeoPoint
 import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlay
 import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlayOptions
 import org.osmdroid.views.overlay.simplefastpoint.SimplePointTheme
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.viewinterop.AndroidView
-import android.graphics.Color
-import android.graphics.Paint
-import android.util.Log
 import androidx.compose.ui.graphics.Color as ColorX
 
 private const val TAG = "OsmdroidMapView"
 
+/**
+ * Information Window that opens when a point is clicked on the map
+ * @param mapView the map to add the window
+ */
 class CustomInfoWindow(private val mapView: MapView) : InfoWindow(
     ComposeView(mapView.context), mapView
 ) {
     override fun onOpen(item: Any?) {
-        // Following command
+        // Ferme les autres fenetres ouvertes sur la map
         closeAllInfoWindowsOn(mapView)
-//
-//        val title = mView.findViewById<TextView>(R.id.title)
-//        val snippet = mView.findViewById<TextView>(R.id.snippet)
-//
-//        // Assurez-vous que l'objet item est de type adéquat (ici on suppose qu'il est de type Point)
+//       // Assurez-vous que l'objet item est de type adéquat (ici on suppose qu'il est de type LabelledGeoPoint)
         val point = item as LabelledGeoPoint
 //
 //        title.text = point.label
-//
-//        // You can set an onClickListener on the InfoWindow itself.
-//        // This is so that you can close the InfoWindow once it has been tapped.
-//
-//        // Instead, you could also close the InfoWindows when the map is pressed.
-//        // This is covered in the Map Listeners guide.
-//
+
+        //Ferme la fenetre quand on re clique sur le point
         mView.setOnClickListener {
             close()
         }
@@ -86,13 +97,22 @@ private fun MapView.unselectAllPoints() {
     }
 }
 
+/**
+ * MapView Component to display a map
+ * @param aVM class with request results
+ */
 @Composable
 fun OsmdroidMapView(aVM: ActivitiesVM) {
     // Variable pour stocker la MapView
+    val ctx = LocalContext.current
+    var mapView by remember { mutableStateOf<MapView?>(null) }
+
+    // Map's default setup
     AndroidView(
         modifier = Modifier.fillMaxSize(),
         factory = { context ->
             MapView(context).apply mv@{
+                mapView = this
                 setTileSource(TileSourceFactory.MAPNIK)
                 zoomController.setVisibility(CustomZoomButtonsController.Visibility.SHOW_AND_FADEOUT)
 
@@ -101,17 +121,18 @@ fun OsmdroidMapView(aVM: ActivitiesVM) {
                     setZoom(15.0)
                     setCenter(
                         GeoPoint(
-                            LocationHandler.currentLocation!!.latitude,
-                            LocationHandler.currentLocation!!.longitude
+                            currentLocation!!.latitude,
+                            currentLocation!!.longitude
                         )
                     )
                 }
-                val mLocationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(context), this)
+                // Overlay to display current location on the map
+                val mLocationOverlay = MyLocationNewOverlay(this)
                 mLocationOverlay.enableMyLocation()
 
+                // Add overlays to the map
                 overlays.apply {
-                    // create overlays with differents themes
-                    // add overlays
+                    // add all points on the map sorted by type with specific colors
                     setResult(aVM.result)
                     add(setSFPO(this@mv, festivalsLocations, "#ff4f29"))
                     add(setSFPO(this@mv, associationsLocations, "#e478ff"))
@@ -121,14 +142,11 @@ fun OsmdroidMapView(aVM: ActivitiesVM) {
                     add(setSFPO(this@mv, contenuLocations, "#fffc93"))
                     add(setSFPO(this@mv, edificesLocations, "#b87800"))
                     add(setSFPO(this@mv, jardinLocations, "#6cff40"))
+
                     add(mLocationOverlay)
                 }
 
-                setOnClickListener {
-                    Log.i(TAG, "OsmdroidMapView: Click")
-                }
-
-                this.addMapListener(object : MapListener {
+                addMapListener(object : MapListener {
                     override fun onScroll(event: ScrollEvent?): Boolean {
                         InfoWindow.closeAllInfoWindowsOn(this@mv)
                         return true
@@ -141,7 +159,33 @@ fun OsmdroidMapView(aVM: ActivitiesVM) {
                 })
             }
         }
+
     )
+    // Button to display current location on the center of the map
+    IconButton(
+        onClick = {
+            // Start new location (see LocationHandler)
+            startLocationUpdates(ctx)
+            // center map on last current location
+            mapView?.controller?.setCenter(
+                GeoPoint(
+                    LocationHandler.currentLocation!!.latitude,
+                    LocationHandler.currentLocation!!.longitude
+                )
+            )
+            // Refresh map to display changes
+            mapView?.invalidate()
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Icon(
+            imageVector = Icons.Default.MyLocation,
+            contentDescription = ""
+        )
+    }
+
 }
 
 object Obj : OverlayWithIW() {
@@ -150,8 +194,7 @@ object Obj : OverlayWithIW() {
     }
 }
 
-// create 10k labelled points
-// in most cases, there will be no problems of displaying >100k points, feel free to try
+// Lists of points to display sorted by Type
 var festivalsLocations = ArrayList<IGeoPoint>()
 var associationsLocations = ArrayList<IGeoPoint>()
 var museesLocations = ArrayList<IGeoPoint>()
@@ -161,7 +204,10 @@ var contenuLocations = ArrayList<IGeoPoint>()
 var edificesLocations = ArrayList<IGeoPoint>()
 var jardinLocations = ArrayList<IGeoPoint>()
 
-// create label style
+/**
+ * Map points style
+ * @param color
+ */
 fun Paint.setTextStyle(color: String) {
     style = Paint.Style.FILL
     this.color = Color.parseColor(color)
@@ -169,6 +215,10 @@ fun Paint.setTextStyle(color: String) {
     textSize = 24f
 }
 
+/**
+ * sort request result in different lists
+ * @param res are request results
+ */
 private fun setResult(res: Resource<List<AbstractActivity>>) {
     res.data?.forEach {
         when (it) {
@@ -223,6 +273,12 @@ private fun setResult(res: Resource<List<AbstractActivity>>) {
     }
 }
 
+/**
+ * Create SimpleFastOverlay pour to display several points with same style
+ * @param mapView
+ * @param points
+ * @param color
+ */
 fun setSFPO(mapView: MapView, points: ArrayList<IGeoPoint>, color: String): SimpleFastPointOverlay {
     val textStyle = Paint()
     val pointStyle = Paint()
